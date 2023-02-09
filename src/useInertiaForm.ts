@@ -1,11 +1,8 @@
 import { unsetCompact, fillEmptyValues } from './utils'
-import { useForm } from '@inertiajs/inertia-react'
+import { useForm } from '@inertiajs/react'
 import { cloneDeep, set, get } from 'lodash'
 import { useCallback } from 'react'
-
-import { type InertiaFormProps as DefaultInertiaFormProps } from '@inertiajs/inertia-react'
-
-type TCallBack = (data: Record<string, any>) => Record<string, any>
+import type { InertiaFormProps as DefaultInertiaFormProps } from '@inertiajs/react/types/useForm'
 
 function useInertiaForm<TForm = Record<string, any>>(initialValues?: TForm): InertiaFormProps<TForm>
 function useInertiaForm<TForm = Record<string, any>>(rememberKey: string, initialValues?: TForm): InertiaFormProps<TForm>
@@ -17,17 +14,19 @@ function useInertiaForm<TForm extends Record<string, unknown>>(
 	const rememberKey = typeof rememberKeyOrInitialValues === 'string' ? rememberKeyOrInitialValues : null
 	const initialValues = fillEmptyValues(typeof rememberKeyOrInitialValues === 'string' ? (maybeInitialValues || {}) : rememberKeyOrInitialValues || {}) || {}
 
-	let form: DefaultInertiaFormProps
+	let form: DefaultInertiaFormProps<typeof initialValues>
 	if(rememberKey) {
 		form = useForm<typeof initialValues>(rememberKey, initialValues)
 	} else {
 		form = useForm<typeof initialValues>(initialValues)
 	}
 
+	type SetDataKey = string | Record<string, any> | ((data: Record<string, any>) => Record<string, any>)
+
 	/**
 	 * Override Inertia's setData method to allow setting nested values
 	 */
-	const setData: InertiaFormProps['setData'] = (key: Record<string, any>|string|((data: Record<string, any>) => Record<string, any>), value?: any) => {
+	const setData: InertiaFormProps['setData'] = (key: SetDataKey, value?: any) => {
 		if(typeof key === 'string'){
 			form.setData((data: Record<string, any>) => {
 				return set(cloneDeep(data), key, value)
@@ -61,10 +60,13 @@ function useInertiaForm<TForm extends Record<string, unknown>>(
 		return setData(clone)
 	}
 
+
+	type TransformCallBack = (data: Record<string, any>) => Record<string, any>
+
 	/**
 	 * Fix for transform method until Inertia team fixes it
 	 */
-	const transform = useCallback((cb: TCallBack) => {
+	const transform = useCallback((cb: TransformCallBack) => {
 		form.transform(() => cb(cloneDeep(form.data)))
 	}, [form.data])
 

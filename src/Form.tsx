@@ -1,5 +1,4 @@
 import React, { useEffect, useReducer, useCallback } from 'react'
-import { FormProps } from 'react-html-props'
 import { createContext } from './utils'
 import axios from 'axios'
 import useInertiaForm from './useInertiaForm'
@@ -8,18 +7,18 @@ import { get, set, unset } from 'lodash'
 const [useForm, FormProvider] = createContext<Inertia.FormProps>()
 export { useForm }
 
-type TFormMetaValue = {
+type FormMetaValue = {
 	nestedAttributes: Set<string>
 	addAttribute: (attribute: string) => void
 	model?: string
 }
 
-const [useFormMeta, FormMetaProvider] = createContext<TFormMetaValue>()
+const [useFormMeta, FormMetaProvider] = createContext<FormMetaValue>()
 export { useFormMeta }
 
 export type TInputType = 'button'|'checkbox'|'color'|'currency'|'date'|'datetime-local'|'email'|'file'|'hidden'|'image'|'month'|'number'|'password'|'radio'|'range'|'reset'|'search'|'select'|'submit'|'tel'|'text'|'textarea'|'time'|'url'
 
-interface IFormProps<T> extends Omit<FormProps, 'onChange'|'onSubmit'|'onError'> {
+interface FormProps<T> extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange'|'onSubmit'|'onError'> {
 	data: T
 	model?: string
 	method?: HTTPVerb
@@ -50,7 +49,7 @@ const Form = <T extends Record<keyof T, unknown>>(
 		onError,
 		className,
 		...props
-	}: IFormProps<T>,
+	}: FormProps<T>,
 	ref: React.ForwardedRef<HTMLFormElement>,
 ) => {
 	const attributesReducer = (state: Set<string>, attribute: string) => {
@@ -60,7 +59,7 @@ const Form = <T extends Record<keyof T, unknown>>(
 	}
 
 	const [nestedAttributes, addAttribute] = useReducer(attributesReducer, new Set<string>())
-	const metaValues: TFormMetaValue = {
+	const metaValues: FormMetaValue = {
 		nestedAttributes,
 		addAttribute,
 		model,
