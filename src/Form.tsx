@@ -74,7 +74,7 @@ const Form = <T extends Record<keyof T, unknown>>(
 	const contextValueObject: () => Inertia.FormProps = useCallback(() => ({ ...form, model, method, to, submit }), [form.data])
 
 	/**
-	 * Submits the form. If async was passed to the Form component, submits using axios,
+	 * Submits the form. If async prop is true, submits using axios,
 	 * otherwise submits using Inertia's form methods
 	 * @returns Promise
 	 */
