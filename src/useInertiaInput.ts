@@ -15,6 +15,7 @@ const inputPropsStrategy: TInputPropsStrategy = (model, name) => {
 	}
 
 	let inputName: string
+
 	if(name.charAt(0) === '[') {
 		inputName = `${model}${name}`
 	} else {

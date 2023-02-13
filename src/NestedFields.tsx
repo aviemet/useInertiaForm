@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { createContext } from './utils'
 import { useFormMeta } from './Form'
 
-interface INestedFieldsProps {
+export interface NestedFieldsProps {
 	children: React.ReactNode
 	model: string
 }
@@ -10,7 +10,7 @@ interface INestedFieldsProps {
 const [useNestedAttribute, NestedAttributeProvider] = createContext<string>()
 export { useNestedAttribute }
 
-const NestedFields = ({ children, model }: INestedFieldsProps) => {
+const NestedFields = ({ children, model }: NestedFieldsProps) => {
 	let inputModel = model
 
 	try {

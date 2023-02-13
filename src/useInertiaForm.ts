@@ -4,13 +4,20 @@ import { cloneDeep, set, get } from 'lodash'
 import { useCallback } from 'react'
 import type { InertiaFormProps as DefaultInertiaFormProps } from '@inertiajs/react/types/useForm'
 
-function useInertiaForm<TForm = Record<string, any>>(initialValues?: TForm): InertiaFormProps<TForm>
-function useInertiaForm<TForm = Record<string, any>>(rememberKey: string, initialValues?: TForm): InertiaFormProps<TForm>
+export interface UseInertiaForm<TForm = Record<string, unknown>> extends Omit<DefaultInertiaFormProps<Record<string, unknown>>, 'errors'> {
+	errors?: Partial<Record<keyof TForm, string|string[]>>
+	getData: (key: string) => any
+	unsetData: (key: string) => void
+	getError: (data: string) => string|undefined
+}
+
+function useInertiaForm<TForm = Record<string, any>>(initialValues?: TForm): UseInertiaForm<TForm>
+function useInertiaForm<TForm = Record<string, any>>(rememberKey: string, initialValues?: TForm): UseInertiaForm<TForm>
 
 function useInertiaForm<TForm extends Record<string, unknown>>(
 	rememberKeyOrInitialValues?: string | TForm,
 	maybeInitialValues?: TForm,
-): InertiaFormProps {
+): UseInertiaForm {
 	const rememberKey = typeof rememberKeyOrInitialValues === 'string' ? rememberKeyOrInitialValues : null
 	const initialValues = fillEmptyValues(typeof rememberKeyOrInitialValues === 'string' ? (maybeInitialValues || {}) : rememberKeyOrInitialValues || {}) || {}
 
@@ -26,7 +33,7 @@ function useInertiaForm<TForm extends Record<string, unknown>>(
 	/**
 	 * Override Inertia's setData method to allow setting nested values
 	 */
-	const setData: InertiaFormProps['setData'] = (key: SetDataKey, value?: any) => {
+	const setData: UseInertiaForm['setData'] = (key: SetDataKey, value?: any) => {
 		if(typeof key === 'string'){
 			form.setData((data: Record<string, any>) => {
 				return set(cloneDeep(data), key, value)

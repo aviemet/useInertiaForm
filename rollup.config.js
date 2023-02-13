@@ -1,10 +1,8 @@
 import external from 'rollup-plugin-peer-deps-external'
-import json from '@rollup/plugin-json'
-import typescript from 'rollup-plugin-typescript2'
+import ts from 'rollup-plugin-ts'
 import commonjs from '@rollup/plugin-commonjs'
-import resolve from '@rollup/plugin-node-resolve'
 import sourcemaps from 'rollup-plugin-sourcemaps'
-import { terser } from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser';
 import filesize from 'rollup-plugin-filesize'
 import pkg from './package.json'
 
@@ -22,12 +20,8 @@ export default [
 		},
 		plugins: [
 			external(),
-			json(),
-			typescript({
-				clean: true,
-			}),
+			ts(),
 			commonjs(),
-			resolve(),
 			sourcemaps(),
 			terser(),
 			filesize(),
@@ -49,13 +43,10 @@ export default [
 		],
 		plugins: [
 			external(),
-			json(),
-			typescript({
-				clean: true,
-			}),
+			ts(),
 			commonjs(),
-			resolve(),
 			sourcemaps(),
+			terser(),
 			filesize(),
 		],
 	},

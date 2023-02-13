@@ -4,7 +4,22 @@ import axios from 'axios'
 import useInertiaForm from './useInertiaForm'
 import { get, set, unset } from 'lodash'
 
-const [useForm, FormProvider] = createContext<Inertia.FormProps>()
+import { type UseInertiaForm } from './useInertiaForm'
+import { type AxiosResponse } from 'axios' 
+
+export type HTTPVerb = 'post' | 'put' | 'get' | 'patch' | 'delete'
+
+export interface UseFormProps extends UseInertiaForm {
+	model?: string
+	method: HTTPVerb
+	to?: string
+	getData: (key: string) => any
+	getError: (data: string) => string|undefined
+	unsetData: (key: string) => void
+	submit: () => Promise<AxiosResponse<any> | UseInertiaForm | void>
+}
+
+const [useForm, FormProvider] = createContext<UseFormProps>()
 export { useForm }
 
 type FormMetaValue = {
@@ -16,9 +31,7 @@ type FormMetaValue = {
 const [useFormMeta, FormMetaProvider] = createContext<FormMetaValue>()
 export { useFormMeta }
 
-export type TInputType = 'button'|'checkbox'|'color'|'currency'|'date'|'datetime-local'|'email'|'file'|'hidden'|'image'|'month'|'number'|'password'|'radio'|'range'|'reset'|'search'|'select'|'submit'|'tel'|'text'|'textarea'|'time'|'url'
-
-interface FormProps<T> extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange'|'onSubmit'|'onError'> {
+export interface FormComponentProps<T> extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange'|'onSubmit'|'onError'> {
 	data: T
 	model?: string
 	method?: HTTPVerb
@@ -27,10 +40,10 @@ interface FormProps<T> extends Omit<React.FormHTMLAttributes<HTMLFormElement>, '
 	grid?: boolean
 	remember?: boolean
 	renameNestedAttributes?: false | ((attribute: string) => string)
-	onSubmit?: (object: Inertia.FormProps) => boolean|void
-	onChange?: (object: Inertia.FormProps) => void
-	onSuccess?: (object: Inertia.FormProps) => void
-	onError?: (object: Inertia.FormProps) => void
+	onSubmit?: (object: UseFormProps) => boolean|void
+	onChange?: (object: UseFormProps) => void
+	onSuccess?: (object: UseFormProps) => void
+	onError?: (object: UseFormProps) => void
 }
 
 const Form = <T extends Record<keyof T, unknown>>(
@@ -49,7 +62,7 @@ const Form = <T extends Record<keyof T, unknown>>(
 		onError,
 		className,
 		...props
-	}: FormProps<T>,
+	}: FormComponentProps<T>,
 	ref: React.ForwardedRef<HTMLFormElement>,
 ) => {
 	const attributesReducer = (state: Set<string>, attribute: string) => {
@@ -70,7 +83,7 @@ const Form = <T extends Record<keyof T, unknown>>(
 	// Expand Inertia's form object to include other useful data
 	// TS type definition is in app/frontend/types/inertia.d.ts
 	// Uses useCallback to force re-render when form.data changes
-	const contextValueObject: () => Inertia.FormProps = useCallback(() => ({ ...form, model, method, to, submit }), [form.data])
+	const contextValueObject: () => UseFormProps = useCallback(() => ({ ...form, model, method, to, submit }), [form.data])
 
 	/**
 	 * Submits the form. If async prop is true, submits using axios,
