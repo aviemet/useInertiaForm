@@ -26,7 +26,8 @@
     "url": "https://github.com/aviemet/useInertiaForm/issues"
   },
   "scripts": {
-    "build": "npm run clean && rollup -c --bundleConfigAsCjs",
+    "build": "yarn clean && rollup -c --bundleConfigAsCjs",
+    "watch": "rollup --watch -c --bundleConfigAsCjs",
     "clean": "rimraf dist",
     "lint": "eslint '**/*.{js,ts}'",
     "lint:fix": "npm run lint -- --fix",

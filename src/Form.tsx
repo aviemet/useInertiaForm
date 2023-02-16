@@ -9,7 +9,7 @@ import { type AxiosResponse } from 'axios'
 
 export type HTTPVerb = 'post' | 'put' | 'get' | 'patch' | 'delete'
 
-export interface UseFormProps extends UseInertiaForm {
+export interface UseFormProps<T = Record<string, unknown>> extends UseInertiaForm<T> {
 	model?: string
 	method: HTTPVerb
 	to?: string
@@ -22,7 +22,7 @@ export interface UseFormProps extends UseInertiaForm {
 const [useForm, FormProvider] = createContext<UseFormProps>()
 export { useForm }
 
-type FormMetaValue = {
+export type FormMetaValue = {
 	nestedAttributes: Set<string>
 	addAttribute: (attribute: string) => void
 	model?: string
@@ -40,10 +40,10 @@ export interface FormComponentProps<T> extends Omit<React.FormHTMLAttributes<HTM
 	grid?: boolean
 	remember?: boolean
 	renameNestedAttributes?: false | ((attribute: string) => string)
-	onSubmit?: (object: UseFormProps) => boolean|void
-	onChange?: (object: UseFormProps) => void
-	onSuccess?: (object: UseFormProps) => void
-	onError?: (object: UseFormProps) => void
+	onSubmit?: (form: UseFormProps) => boolean|void
+	onChange?: (form: UseFormProps) => void
+	onSuccess?: (form: UseFormProps) => void
+	onError?: (form: UseFormProps) => void
 }
 
 const Form = <T extends Record<keyof T, unknown>>(
@@ -138,7 +138,7 @@ const Form = <T extends Record<keyof T, unknown>>(
 		})
 	}, [])
 
-	// Conditional calls to callbacks
+	// Callbacks
 	useEffect(() => {
 		if(onChange) onChange(contextValueObject())
 	}, [form.data])

@@ -3,7 +3,7 @@ import { createContext } from './utils'
 import { useFormMeta } from './Form'
 
 export interface NestedFieldsProps {
-	children: React.ReactNode
+	children: React.ReactNode | React.ReactElement[]
 	model: string
 }
 
@@ -26,7 +26,7 @@ const NestedFields = ({ children, model }: NestedFieldsProps) => {
 
 	return (
 		<NestedAttributeProvider value={ inputModel }>
-			{ children }
+			{ Array.isArray(children) ? children.map((child, i) => React.cloneElement(child, { key: i})): children }
 		</NestedAttributeProvider>
 	)
 }

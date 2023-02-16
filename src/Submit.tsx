@@ -1,24 +1,23 @@
 import React from 'react'
 import { useForm } from './Form'
 
-const Button = ({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
-	return <button { ...props }>{ children }</button>
-}
-
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-	component: React.ElementType
+	component: string | JSX.Element
 }
 
-const Submit = ({ children, type="submit", disabled, component = Button, ...props }: ButtonProps) => {
+const Submit = React.forwardRef<HTMLButtonElement, ButtonProps>((
+	{ children, type="submit", disabled, component = 'button', ...props },
+	ref,
+) => {
 	const { processing } = useForm()
 
+	const finalProps = { children, type, disabled: disabled || processing, ref, ...props }
+
 	if(typeof component === 'string') {
-		return React.createElement(component, { children, type, disabled: disabled || processing, ...props })
+		return React.createElement(component, finalProps)
 	}
 
-	return React.cloneElement(component, { children, type, disabled: disabled || processing, ...props })
-}
+	return React.cloneElement(component, finalProps)
+})
 
 export default Submit
-
-
