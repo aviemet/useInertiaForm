@@ -15,8 +15,13 @@ const NestedFields = ({ children, model }: NestedFieldsProps) => {
 
 	try {
 		const nested = useNestedAttribute()
-		inputModel = `${nested}.${model}`
-	} catch (e) {}
+
+		if(model.charAt(0) === '[') {
+			inputModel = `${nested}${model}`
+		} else {
+			inputModel = `${nested}.${model}`
+		}
+	} catch(e) {}
 
 	const { addAttribute } = useFormMeta()
 
@@ -26,7 +31,7 @@ const NestedFields = ({ children, model }: NestedFieldsProps) => {
 
 	return (
 		<NestedAttributeProvider value={ inputModel }>
-			{ Array.isArray(children) ? children.map((child, i) => React.cloneElement(child, { key: i})): children }
+			{ Array.isArray(children) ? children.map((child, i) => React.cloneElement(child, { key: i })) : children }
 		</NestedAttributeProvider>
 	)
 }

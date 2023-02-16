@@ -23,7 +23,7 @@ const inputStrategy: InputStrategy = (name, model) => {
 	}
 
 	return {
-		inputId: `${model}_${name}`,
+		inputId: `${model.replace('.', '_')}_${name}`.replace(/\[(\d)\]/, '_$1'),
 		inputName,
 	}
 }
@@ -34,7 +34,7 @@ interface UseInertiaInputProps {
 	strategy?: InputStrategy
 }
 
-const useInertiaInput = ({name, model, strategy = inputStrategy}: UseInertiaInputProps) => {
+const useInertiaInput = ({ name, model, strategy = inputStrategy }: UseInertiaInputProps) => {
 	const form = useForm()
 
 	let usedModel = model ?? form.model
@@ -42,7 +42,7 @@ const useInertiaInput = ({name, model, strategy = inputStrategy}: UseInertiaInpu
 	try {
 		const nested = useNestedAttribute()
 		usedModel += `.${nested}`
-	} catch (e) {}
+	} catch(e) {}
 
 	const { inputName, inputId } = strategy(name, usedModel)
 

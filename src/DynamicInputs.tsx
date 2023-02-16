@@ -1,20 +1,20 @@
 import React from 'react'
 import { useForm, useFormMeta } from './Form'
 import { cloneDeep, get, set } from 'lodash'
-import { useNestedAttribute } from './NestedFields'
+import NestedFields, { useNestedAttribute } from './NestedFields'
 
 interface IDynamicInputsProps {
 	children: React.ReactNode
 	emptyData: Record<string, any>
-	addInputButton: JSX.Element
-	removeInputButton: JSX.Element
+	addInputButton?: JSX.Element
+	removeInputButton?: JSX.Element
 }
 
-const DynamicInputs = ({ 
-	children, 
-	emptyData, 
+const DynamicInputs = ({
+	children,
+	emptyData,
 	addInputButton = <button>+</button>,
-	removeInputButton = <button>-</button>
+	removeInputButton = <button>-</button>,
 }: IDynamicInputsProps) => {
 	const { setData, unsetData, getData } = useForm()
 	const { model: formModel } = useFormMeta()
@@ -28,13 +28,13 @@ const DynamicInputs = ({
 	const handleAddInputs = () => {
 		if(!formModel) return
 
-		setData((formData: Record<string, any>) => {
+		setData((formData: Record<string, unknown>) => {
 			const clone = cloneDeep(formData)
-			let node = get(clone, inputModel)
+			let node: unknown[] = get(clone, inputModel) as unknown[]
 
-			if(!node) {
+			if(!node || !Array.isArray(node)) {
 				set(clone, inputModel, [])
-				node = get(clone, inputModel)
+				node = get(clone, inputModel) as unknown[]
 			}
 
 			node.push(emptyData)
@@ -48,17 +48,20 @@ const DynamicInputs = ({
 		unsetData(`${inputModel}[${i}]`)
 	}
 
+	const data = getData(inputModel)
+
 	return (
 		<>
-			{ React.cloneElement(addInputButton, { onClick: handleAddInputs }) }
-			{ Array.isArray(getData(inputModel)) && getData(inputModel).map((_: any, i: number) => (
-				<>
+			{ React.cloneElement(addInputButton, { onClick: handleAddInputs, type: 'button' }) }
+			{ Array.isArray(data) && data.map((_: any, i: number) => (
+				<NestedFields key={ i } model={ `[${i}]` }>
 					<div>{ children }</div>
-					{ React.cloneElement(removeInputButton, { onClick: handleRemoveInputs(i) })}
-				</>
+					{ React.cloneElement(removeInputButton, { onClick: () => handleRemoveInputs(i), type: 'button' }) }
+				</NestedFields>
 			)) }
 		</>
 	)
 }
 
 export default DynamicInputs
+

@@ -1,11 +1,11 @@
-import React, { useEffect, useReducer, useCallback } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import { createContext } from './utils'
 import axios from 'axios'
 import useInertiaForm from './useInertiaForm'
 import { get, set, unset } from 'lodash'
 
 import { type UseInertiaForm } from './useInertiaForm'
-import { type AxiosResponse } from 'axios' 
+import { type AxiosResponse } from 'axios'
 
 export type HTTPVerb = 'post' | 'put' | 'get' | 'patch' | 'delete'
 
@@ -81,9 +81,7 @@ const Form = <T extends Record<keyof T, unknown>>(
 	const form = remember ? useInertiaForm(`${method}/${model}`, data) : useInertiaForm(data)
 
 	// Expand Inertia's form object to include other useful data
-	// TS type definition is in app/frontend/types/inertia.d.ts
-	// Uses useCallback to force re-render when form.data changes
-	const contextValueObject: () => UseFormProps = useCallback(() => ({ ...form, model, method, to, submit }), [form.data])
+	const contextValueObject: () => UseFormProps = () => ({ ...form, model, method, to, submit })
 
 	/**
 	 * Submits the form. If async prop is true, submits using axios,
@@ -166,4 +164,4 @@ const Form = <T extends Record<keyof T, unknown>>(
 	)
 }
 
-export default React.memo(React.forwardRef(Form))
+export default React.forwardRef(Form)
