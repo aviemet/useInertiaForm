@@ -19,3 +19,7 @@ workflows:
           version: '16.10'
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: yarn
+
+      - node/release:
+          version: '16.10'
+          pkg-manager: yarn
