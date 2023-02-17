@@ -4,10 +4,13 @@ orbs:
   node: circleci/node@5.1.0
 
 workflows:
-  test-and-release:
+  test:
     jobs:
       - node/test:
           version: '19.6.0'
           pkg-manager: yarn
-          command: |
-            yarn release
+
+  release:
+    jobs:
+      - node/run:
+          yarn-run: release
