@@ -4,20 +4,19 @@ import { cloneDeep, set, get } from 'lodash'
 import { useCallback } from 'react'
 import type { InertiaFormProps as DefaultInertiaFormProps } from '@inertiajs/react/types/useForm'
 
-export interface UseInertiaForm<TForm = Record<string, unknown>> extends Omit<DefaultInertiaFormProps<Record<string, unknown>>, 'errors'> {
-	errors?: Partial<Record<keyof TForm, string|string[]>>
-	getData: (key: string) => any
+export interface UseInertiaFormProps<TForm = Record<string, unknown>> extends DefaultInertiaFormProps<Record<keyof TForm, unknown>> {
+	getData: (key: string) => unknown
 	unsetData: (key: string) => void
 	getError: (data: string) => string|undefined
 }
 
-function useInertiaForm<TForm = Record<string, any>>(initialValues?: TForm): UseInertiaForm<TForm>
-function useInertiaForm<TForm = Record<string, any>>(rememberKey: string, initialValues?: TForm): UseInertiaForm<TForm>
+function useInertiaForm<TForm extends Record<string, unknown>>(initialValues?: TForm): UseInertiaFormProps<TForm>
+function useInertiaForm<TForm extends Record<string, unknown>>(rememberKey: string, initialValues?: TForm): UseInertiaFormProps<TForm>
 
 function useInertiaForm<TForm extends Record<string, unknown>>(
 	rememberKeyOrInitialValues?: string | TForm,
 	maybeInitialValues?: TForm,
-): UseInertiaForm {
+): UseInertiaFormProps<TForm> {
 	const rememberKey = typeof rememberKeyOrInitialValues === 'string' ? rememberKeyOrInitialValues : null
 	const initialValues = fillEmptyValues(typeof rememberKeyOrInitialValues === 'string' ? (maybeInitialValues || {}) : rememberKeyOrInitialValues || {}) || {}
 
@@ -28,14 +27,14 @@ function useInertiaForm<TForm extends Record<string, unknown>>(
 		form = useForm<typeof initialValues>(initialValues)
 	}
 
-	type SetDataKey = string | Record<string, any> | ((data: Record<string, any>) => Record<string, any>)
+	type SetDataKey = string | Record<string, unknown> | ((data: Record<string, unknown>) => Record<string, unknown>)
 
 	/**
 	 * Override Inertia's setData method to allow setting nested values
 	 */
-	const setData: UseInertiaForm['setData'] = (key: SetDataKey, value?: any) => {
+	const setData: UseInertiaFormProps['setData'] = (key: SetDataKey, value?: unknown) => {
 		if(typeof key === 'string'){
-			form.setData((data: Record<string, any>) => {
+			form.setData((data: TForm) => {
 				return set(cloneDeep(data), key, value)
 			})
 		} else {
@@ -46,7 +45,7 @@ function useInertiaForm<TForm extends Record<string, unknown>>(
 	/**
 	 * Getter for nested values of form data
 	 */
-	const getData = (key: string): any => {
+	const getData = (key: string): unknown => {
 		return get(form.data, key)
 	}
 
@@ -67,15 +66,14 @@ function useInertiaForm<TForm extends Record<string, unknown>>(
 		return setData(clone)
 	}
 
-
-	type TransformCallBack = (data: Record<string, any>) => Record<string, any>
-
 	/**
 	 * Fix for transform method until Inertia team fixes it
 	 */
-	const transform = useCallback((cb: TransformCallBack) => {
-		form.transform(() => cb(cloneDeep(form.data)))
+	const transform = useCallback((callback: (data: TForm ) => TForm) => {
+		form.transform(() => callback(form.data as TForm))
 	}, [form.data])
+
+	const { errors } = form
 
 	return { ...form, setData, getData, getError, unsetData, transform }
 }

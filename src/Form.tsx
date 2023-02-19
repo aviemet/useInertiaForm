@@ -4,19 +4,19 @@ import axios from 'axios'
 import useInertiaForm from './useInertiaForm'
 import { get, set, unset } from 'lodash'
 
-import { type UseInertiaForm } from './useInertiaForm'
+import { type UseInertiaFormProps } from './useInertiaForm'
 import { type AxiosResponse } from 'axios'
 
 export type HTTPVerb = 'post' | 'put' | 'get' | 'patch' | 'delete'
 
-export interface UseFormProps<T = Record<string, unknown>> extends UseInertiaForm<T> {
+export interface UseFormProps<T = Record<string, unknown>> extends UseInertiaFormProps<T> {
 	model?: string
 	method: HTTPVerb
 	to?: string
-	getData: (key: string) => any
+	getData: (key: string) => unknown
 	getError: (data: string) => string|undefined
 	unsetData: (key: string) => void
-	submit: () => Promise<AxiosResponse<any> | UseInertiaForm | void>
+	submit: () => Promise<AxiosResponse<any> | UseInertiaFormProps | void>
 }
 
 const [useForm, FormProvider] = createContext<UseFormProps>()

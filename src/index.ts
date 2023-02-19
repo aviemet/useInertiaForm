@@ -1,4 +1,4 @@
-export { default as useInertiaForm, type UseInertiaForm } from './useInertiaForm'
+export { default as useInertiaForm, type UseInertiaFormProps } from './useInertiaForm'
 export { default as useInertiaInput } from './useInertiaInput'
 export { default as Form, useForm, useFormMeta, type HTTPVerb, type UseFormProps, type FormComponentProps, type FormMetaValue } from './Form'
 export { default as NestedFields, type NestedFieldsProps } from './NestedFields'
