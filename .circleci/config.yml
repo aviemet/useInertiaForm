@@ -6,6 +6,7 @@ orbs:
 workflows:
   test:
     jobs:
+      resource_class: small
       - node/test:
           version: '19.6.0'
           pkg-manager: yarn
