@@ -16,4 +16,3 @@ workflows:
       jobs:
         - node/test:
             pkg-manager: yarn 
-        - build
