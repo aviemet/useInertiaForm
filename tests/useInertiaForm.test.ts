@@ -10,9 +10,11 @@ const initialData = {
 		last_name: 'last',
 	},
 	contact: {
-		phone: {
-			number: '1234567890',
-		},
+		phones: [
+			{
+				number: '1234567890',
+			},
+		],
 	},
 }
 
@@ -33,8 +35,7 @@ describe('setData', () => {
 	it('should update nested state', () => {
 		act(() => {
 			form.setData('user.username', 'changed')
-			console.log({ data: form.data })
 		})
-		expect(form.data.user.username).toStrictEqual('changed')
+		expect(form.data.contact.phones[0]).toStrictEqual('changed')
 	})
 })

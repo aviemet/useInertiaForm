@@ -6,10 +6,11 @@ import { get, set, unset } from 'lodash'
 
 import { type UseInertiaFormProps } from './useInertiaForm'
 import { type AxiosResponse } from 'axios'
+import { NestedObject } from './types'
 
 export type HTTPVerb = 'post' | 'put' | 'get' | 'patch' | 'delete'
 
-export interface UseFormProps<T = Record<string, unknown>> extends UseInertiaFormProps<T> {
+export interface UseFormProps<T = NestedObject> extends UseInertiaFormProps<T> {
 	model?: string
 	method: HTTPVerb
 	to?: string
