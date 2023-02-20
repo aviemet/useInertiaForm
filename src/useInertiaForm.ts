@@ -53,8 +53,8 @@ function useInertiaForm<TForm extends NestedObject>(
 	 */
 	const setData: setData<TForm> = (key, value?) => {
 		if(typeof key === 'string'){
-			form.setData((data: TForm) => {
-				return set(cloneDeep(data), key, value)
+			form.setData((formData: TForm) => {
+				return set(cloneDeep(formData), key, value)
 			})
 		} else {
 			/*
