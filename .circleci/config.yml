@@ -3,14 +3,35 @@ version: 2.1
 orbs:
   node: circleci/node@5.1.0
 
-workflows:
-  test:
-    jobs:
-      - node/test:
-          version: '19.6.0'
-          pkg-manager: yarn
+jobs:
+  build_and_test:
+    executor: node/default
 
-  release:
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          name: Run tests
+          command: yarn test
+      -run:
+          name: Build distributed files
+          command: yarn build
+
+
+workflows:
+  build_and_test_workflow:
     jobs:
-      - node/run:
-          yarn-run: release
+     - build_and_test
+
+# workflows:
+#   test:
+#     jobs:
+#       - node/test:
+#           version: '19.6.0'
+#           pkg-manager: yarn
+
+#   release:
+#     jobs:
+#       - node/run:
+#           yarn-run: release
