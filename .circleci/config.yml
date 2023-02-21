@@ -7,9 +7,12 @@ jobs:
   build:
     docker:
       # replace with your preferred image
-      - image: circleci/node@5.1.0
+      - image: cimg/node:19.6.1
     steps:
+      - checkout
       - node/install-yarn
+      - run: |
+          yarn build
 
 workflows:
     example-workflow:
