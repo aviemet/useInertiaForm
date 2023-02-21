@@ -12,6 +12,7 @@ jobs:
       - checkout
       - node/install-yarn
       - run: |
+          yarn install
           yarn build
 
 workflows:
