@@ -2,51 +2,78 @@ import { unsetCompact, fillEmptyValues } from './utils'
 import { useForm } from '@inertiajs/react'
 import { cloneDeep, set, get } from 'lodash'
 import { useCallback } from 'react'
-import type { InertiaFormProps as DefaultInertiaFormProps } from '@inertiajs/react/types/useForm'
+import type { InertiaFormProps } from '@inertiajs/react/types/useForm'
+import { type NestedObject } from './types'
 
-export interface UseInertiaForm<TForm = Record<string, unknown>> extends Omit<DefaultInertiaFormProps<Record<string, unknown>>, 'errors'> {
-	errors?: Partial<Record<keyof TForm, string|string[]>>
-	getData: (key: string) => any
+
+type setDataByObject<TForm> = (data: TForm) => void;
+type setDataByMethod<TForm> = (data: (previousData: TForm) => TForm) => void;
+type setDataByKeyValuePair = (key: string, value: unknown) => void;
+
+type setData<TForm> = (key: string | TForm | ((data: TForm) => TForm), value?: unknown) => void
+
+export interface UseInertiaFormProps<TForm = NestedObject> extends
+	Omit<InertiaFormProps<Record<keyof TForm, unknown>>, 'data'|'errors'|'setDefaults'|'reset'|'clearErrors'|'setError'|'setData'>
+{
+	data: TForm
+	errors
+	setDefaults(field: string, value: string): void
+	setDefaults(fields: Record<string, string>): void
+	reset: (...fields: (string)[]) => void
+	clearErrors: (...fields: (string)[]) => void
+	setError(field: string, value: string): void
+	setError(errors: Record<string, string>): void
+
+	// New methods to useInertiaForm
+	setData: setDataByObject<TForm> & setDataByMethod<TForm> & setDataByKeyValuePair
+	getData: (key: string) => unknown
 	unsetData: (key: string) => void
 	getError: (data: string) => string|undefined
 }
 
-function useInertiaForm<TForm = Record<string, any>>(initialValues?: TForm): UseInertiaForm<TForm>
-function useInertiaForm<TForm = Record<string, any>>(rememberKey: string, initialValues?: TForm): UseInertiaForm<TForm>
+function useInertiaForm<TForm extends NestedObject>(initialValues?: TForm): UseInertiaFormProps<TForm>
+function useInertiaForm<TForm extends NestedObject>(rememberKey: string, initialValues?: TForm): UseInertiaFormProps<TForm>
 
-function useInertiaForm<TForm extends Record<string, unknown>>(
+function useInertiaForm<TForm extends NestedObject>(
 	rememberKeyOrInitialValues?: string | TForm,
 	maybeInitialValues?: TForm,
-): UseInertiaForm {
+): UseInertiaFormProps<TForm> {
 	const rememberKey = typeof rememberKeyOrInitialValues === 'string' ? rememberKeyOrInitialValues : null
-	const initialValues = fillEmptyValues(typeof rememberKeyOrInitialValues === 'string' ? (maybeInitialValues || {}) : rememberKeyOrInitialValues || {}) || {}
 
-	let form: DefaultInertiaFormProps<typeof initialValues>
+	let form: InertiaFormProps<TForm>
 	if(rememberKey) {
-		form = useForm<typeof initialValues>(rememberKey, initialValues)
+		form = useForm<TForm>(rememberKey, fillEmptyValues(maybeInitialValues))
 	} else {
-		form = useForm<typeof initialValues>(initialValues)
+		// @ts-ignore - Inertia's useForm type doesn't support nested objects, but the implementation does
+		form = useForm<TForm>(fillEmptyValues(rememberKeyOrInitialValues))
 	}
-
-	type SetDataKey = string | Record<string, any> | ((data: Record<string, any>) => Record<string, any>)
 
 	/**
 	 * Override Inertia's setData method to allow setting nested values
 	 */
-	const setData: UseInertiaForm['setData'] = (key: SetDataKey, value?: any) => {
+	const setData: setData<TForm> = (key, value?) => {
 		if(typeof key === 'string'){
-			form.setData((data: Record<string, any>) => {
-				return set(cloneDeep(data), key, value)
+			form.setData((formData: TForm) => {
+				return set(cloneDeep(formData), key, value)
 			})
 		} else {
-			form.setData(key)
+			/*
+			Argument of type 'TForm | ((data: TForm) => TForm)' is not assignable to parameter of type 'keyof TForm'.
+				Type 'TForm' is not assignable to type 'keyof TForm'.
+					Type 'NestedObject' is not assignable to type 'keyof TForm'.
+						Type 'NestedObject' is not assignable to type 'string | number'.
+							Type 'TForm' is not assignable to type 'string | number'.
+								Type 'NestedObject' is not assignable to type 'string | number'.ts(2345)
+			*/
+			// @ts-ignore - key is not a string below, all errors are expeting a string
+			form.setData(key, value)
 		}
 	}
 
 	/**
 	 * Getter for nested values of form data
 	 */
-	const getData = (key: string): any => {
+	const getData = (key: string): unknown => {
 		return get(form.data, key)
 	}
 
@@ -67,17 +94,21 @@ function useInertiaForm<TForm extends Record<string, unknown>>(
 		return setData(clone)
 	}
 
-
-	type TransformCallBack = (data: Record<string, any>) => Record<string, any>
-
 	/**
 	 * Fix for transform method until Inertia team fixes it
 	 */
-	const transform = useCallback((cb: TransformCallBack) => {
-		form.transform(() => cb(cloneDeep(form.data)))
+	const transform = useCallback((callback: (data: TForm ) => TForm) => {
+		form.transform(() => callback(form.data as TForm))
 	}, [form.data])
 
-	return { ...form, setData, getData, getError, unsetData, transform }
+	return {
+		...form,
+		setData,
+		getData,
+		getError,
+		unsetData,
+		transform,
+	}
 }
 
 export default useInertiaForm

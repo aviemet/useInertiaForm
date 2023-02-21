@@ -3,14 +3,21 @@ version: 2.1
 orbs:
   node: circleci/node@5.1.0
 
-workflows:
-  test:
-    jobs:
-      - node/test:
-          version: '19.6.0'
-          pkg-manager: yarn
+jobs:
+  build:
+    docker:
+      # replace with your preferred image
+      - image: cimg/node:19.6.1
+    steps:
+      - checkout
+      - node/install-yarn
+      - run: |
+          yarn install
+          yarn build
 
-  release:
-    jobs:
-      - node/run:
-          yarn-run: release
+workflows:
+    example-workflow:
+      jobs:
+        - node/test:
+            pkg-manager: yarn 
+        - build

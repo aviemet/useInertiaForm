@@ -5,7 +5,7 @@ import NestedFields, { useNestedAttribute } from './NestedFields'
 
 interface IDynamicInputsProps {
 	children: React.ReactNode
-	emptyData: Record<string, any>
+	emptyData: Record<string, unknown>
 	addInputButton?: JSX.Element
 	removeInputButton?: JSX.Element
 }
@@ -53,7 +53,7 @@ const DynamicInputs = ({
 	return (
 		<>
 			{ React.cloneElement(addInputButton, { onClick: handleAddInputs, type: 'button' }) }
-			{ Array.isArray(data) && data.map((_: any, i: number) => (
+			{ Array.isArray(data) && data.map((_: unknown, i: number) => (
 				<NestedFields key={ i } model={ `[${i}]` }>
 					<div>{ children }</div>
 					{ React.cloneElement(removeInputButton, { onClick: () => handleRemoveInputs(i), type: 'button' }) }

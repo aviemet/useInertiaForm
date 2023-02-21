@@ -51,7 +51,7 @@ const useInertiaInput = ({ name, model, strategy = inputStrategy }: UseInertiaIn
 		inputName,
 		inputId,
 		value: form.getData(inputName),
-		setValue: (value: any) => {
+		setValue: (value: unknown) => {
 			return form.setData(inputName, value)
 		},
 		error: form.getError(inputName),
