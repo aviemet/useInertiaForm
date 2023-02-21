@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # replace with your preferred image
-      - image: cimg/base:stable
+      - image: circleci/node@5.1.0
     steps:
       - node/install-yarn
 
