@@ -12,13 +12,9 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 17.x, 18.x, 19.x]
+        node-version: [17.x, 18.x, 19.x]
 
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is running on a ${{ runner.os }} server hosted by GitHub"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-
       - name: Checkout
         uses: actions/checkout@v3
 
