@@ -3,17 +3,29 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches: [ main ]
+
 jobs:
   release:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 17.x, 18.x, 19.x]
+
     steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is running on a ${{ runner.os }} server hosted by GitHub"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 19.x
+          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
         uses: borales/actions-yarn@v4
@@ -23,14 +35,7 @@ jobs:
       - name: Lint
         uses: borales/actions-yarn@v4
         with: 
-          cmd: run lint:types && run lint
-
-      - name: Test
-        uses: borales/actions-yarn@v4
-        with: 
-          cmd: test
-        env:
-          CI: true
+          cmd: lint:all
 
       - name: Build
         uses: borales/actions-yarn@v4

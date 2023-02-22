@@ -32,6 +32,7 @@
     "lint": "eslint '**/*.{js,ts}'",
     "lint:fix": "npm run lint -- --fix",
     "lint:types": "tsc --noEmit",
+    "lint:all": "yarn lint && yarn lint:types",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
