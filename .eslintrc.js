@@ -6,6 +6,9 @@ module.exports = {
 	'extends': ['plugin:react/recommended', 'plugin:import/typescript'],
 	'plugins': ['react', '@typescript-eslint', 'import'],
 	'settings': {
+		'react': {
+			'version': 'detect',
+		},
 		'import/resolver': {
 			'typescript': {},
 		},
