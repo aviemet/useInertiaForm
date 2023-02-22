@@ -17,6 +17,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "rootDir": "./src",
+    "skipLibCheck": true,
     "typeRoots": [
       "./node_modules/@types",
       "./src/types",
