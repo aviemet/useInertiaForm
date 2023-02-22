@@ -1,25 +1,24 @@
-name: CI
-on: [pull_request]
+name: Release
+on:
+  push:
+    branches:
+      - main
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [16.x, 19.x]
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 19.x
 
       - name: Install dependencies
         uses: borales/actions-yarn@v4
         with: 
-          cmd: install --frozen-lockfile
+          cmd: install
 
       - name: Lint
         uses: borales/actions-yarn@v4
@@ -38,3 +37,11 @@ jobs:
         uses: borales/actions-yarn@v4
         with: 
           cmd: build
+
+      - name: Release
+        uses: borales/actions-yarn@v4
+        with: 
+          cmd: run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
