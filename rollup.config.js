@@ -2,7 +2,7 @@ import external from 'rollup-plugin-peer-deps-external'
 import ts from 'rollup-plugin-ts'
 import commonjs from '@rollup/plugin-commonjs'
 import sourcemaps from 'rollup-plugin-sourcemaps'
-import terser from '@rollup/plugin-terser';
+import terser from '@rollup/plugin-terser'
 import filesize from 'rollup-plugin-filesize'
 import pkg from './package.json'
 
