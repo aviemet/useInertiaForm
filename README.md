@@ -1,8 +1,8 @@
 # Introduction
 
-A hook for using Inertia.js forms which is meant to be used as a direct replacement of Inertia's `useForm` hook. It address two issues with the original; [the bug preventing the `transform` method from running on submit](https://github.com/inertiajs/inertia/issues/1131#issuecomment-1278533036), and the lack of support for nested data.
+A hook for using Inertia.js forms which is meant to be used as a direct replacement of Inertia's `useForm` hook. It address two issues with the original; [the bug preventing the `transform` method from running on submit](https://github.com/inertiajs/inertia/issues/1131), and the lack of support for nested data.
 
-This was developed alongside a Rails project, so the form handling ethos follows Rails conventions, however, I tried to make it as agnostic as possible and I believe it can be easily used in a Laravel application.
+This was developed alongside a Rails project, so the form handling ethos follows Rails conventions, however, effort was taken to make it as agnostic as possible and I believe it can be easily used in a Laravel application.
 
 This package provides three main exports; `useInertiaForm`, `useInertiaInput`, and `Form`.
 
@@ -59,7 +59,7 @@ getData('user.firstName')
 
 ### `unsetData`
 
-Safely destroy a nested value on the form data ojbect.
+Safely destroy a nested value on the form data object.
 
 ```javascript
 unsetData('user.brothers')
@@ -90,7 +90,7 @@ getError('user.firstName')
 
 ## useInertiaInput
 
-This hook must be consumed within the context of the privded `<Form>` component.
+This hook must be consumed within the context of the provided `<Form>` component.
 
 While it's possible to use this in a component to define each input for a form, it's intended to be used to define custom input components.
 
@@ -156,7 +156,7 @@ const PageWithFormOnIt = ({ user }) => {
 
 ```
 
-The above component produces the folowing HTML (assuming the TextInput component is the same as the example from the previous section):
+The above component produces the following HTML (assuming the TextInput component is the same as the example from the previous section):
 
 ```html
 <form>
@@ -171,7 +171,7 @@ The above component produces the folowing HTML (assuming the TextInput component
 </form>
 ```
 
-The form data ojbect would look as such:
+The form data object would look as such:
 
 ```javascript
 {
@@ -217,7 +217,7 @@ const PageWithFormOnIt = ({ user }) => {
 
 ```
 
-With the default Rails behavior of transforming nested attribute names, the server would recieve this data in the following form:
+With the default Rails behavior of transforming nested attribute names, the server would receive this data in the following form:
 
 ```javascript
 {
