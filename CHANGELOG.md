@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/aviemet/useInertiaForm/compare/v1.0.3...v1.0.4) (2023-02-24)
+
+
+### Bug Fixes
+
+* 🐛 Moves rollup plugin to dev dependencies ([6e819f1](https://github.com/aviemet/useInertiaForm/commit/6e819f1efa89df187fc3892894e379402fba2a76))
+
 ## [1.0.3](https://github.com/aviemet/useInertiaForm/compare/v1.0.2...v1.0.3) (2023-02-24)
 
 
