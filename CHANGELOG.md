@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/aviemet/useInertiaForm/compare/v1.0.4...v1.0.5) (2023-02-24)
+
+
+### Bug Fixes
+
+* 🐛 Classname was omitted from form definition ([139d3b1](https://github.com/aviemet/useInertiaForm/commit/139d3b1e3875941d9ec7345fb77e843acde21ce6))
+
 ## [1.0.4](https://github.com/aviemet/useInertiaForm/compare/v1.0.3...v1.0.4) (2023-02-24)
 
 
