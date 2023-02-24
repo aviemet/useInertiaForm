@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/aviemet/useInertiaForm/compare/v1.0.2...v1.0.3) (2023-02-24)
+
+
+### Bug Fixes
+
+* 🐛 Fixes typings ([4ebc54a](https://github.com/aviemet/useInertiaForm/commit/4ebc54a24e3bfc9dfac74b5a0a36689cb696625b))
+
 ## [1.0.2](https://github.com/aviemet/useInertiaForm/compare/v1.0.1...v1.0.2) (2023-02-24)
 
 
