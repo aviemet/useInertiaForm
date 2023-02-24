@@ -61,7 +61,6 @@ const Form = <T extends Record<keyof T, unknown>>(
 		onChange,
 		onSuccess,
 		onError,
-		className,
 		...props
 	}: FormComponentProps<T>,
 	ref: React.ForwardedRef<HTMLFormElement>,
@@ -124,7 +123,7 @@ const Form = <T extends Record<keyof T, unknown>>(
 		submit()
 	}
 
-	// Reset form after succesful submit
+	// Reset form after successful submit
 	useEffect(() => {
 		form.reset()
 	}, [form.wasSuccessful])
