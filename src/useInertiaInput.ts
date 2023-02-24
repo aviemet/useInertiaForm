@@ -28,14 +28,13 @@ const inputStrategy: InputStrategy = (name, model) => {
 	}
 }
 
-interface UseInertiaInputProps<T> {
-	value: T
+interface UseInertiaInputProps {
 	name: string
 	model?: string
 	strategy?: InputStrategy
 }
 
-const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = inputStrategy }: UseInertiaInputProps<T>) => {
+const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = inputStrategy }: UseInertiaInputProps) => {
 	const form = useForm()
 
 	let usedModel = model ?? form.model
@@ -52,7 +51,7 @@ const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = i
 		inputName,
 		inputId,
 		value: form.getData(inputName) as T,
-		setValue: (value: unknown) => {
+		setValue: (value: T) => {
 			return form.setData(inputName, value)
 		},
 		error: form.getError(inputName),
@@ -60,3 +59,4 @@ const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = i
 }
 
 export default useInertiaInput
+
