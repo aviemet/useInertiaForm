@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/aviemet/useInertiaForm/compare/v1.0.6...v1.0.7) (2023-03-14)
+
+
+### Bug Fixes
+
+* 🐛 Replaces lodash.cloneDeep with js native structuredClone ([347f226](https://github.com/aviemet/useInertiaForm/commit/347f22616f8912033eb8d340b845c5e1992c6648))
+
 ## [1.0.6](https://github.com/aviemet/useInertiaForm/compare/v1.0.5...v1.0.6) (2023-03-14)
 
 
