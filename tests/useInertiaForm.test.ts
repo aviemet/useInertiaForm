@@ -1,6 +1,18 @@
+/**
+ * @jest-environment jsdom
+ */
+
+import React from 'react'
 import { act, renderHook } from '@testing-library/react-hooks'
-import { useInertiaForm } from '../src'
+import { render, screen, waitFor } from '@testing-library/react'
+import { rest } from 'msw'
+import { setupServer } from 'msw/node'
+import { useInertiaForm, Form } from '../src'
 import { cloneDeep } from 'lodash'
+import axios from 'axios'
+import MockAdapter from 'axios-mock-adapter'
+
+const axiosMock = new MockAdapter(axios)
 
 const initialData = {
 	user: {
@@ -19,6 +31,7 @@ const initialData = {
 		],
 	},
 }
+
 
 describe('useInertiaForm', () => {
 	const { result } = renderHook(() => useInertiaForm(initialData))
@@ -86,3 +99,109 @@ describe('unsetData', () => {
 		})
 	})
 })
+
+// Test not strictly necessary since we don't override setError
+describe('setError', () => {
+	it('should set errors by key', () => {
+		const { result } = renderHook(() => useInertiaForm(initialData))
+
+		const key = 'person.middle_name'
+		const error = 'Value must not be empty'
+
+		act(() => {
+			result.current.setError(key, error)
+		})
+
+		act(() => {
+			expect(result.current.errors).toStrictEqual({ [key]: error })
+			expect(result.current.hasErrors).toBe(true)
+		})
+	})
+
+	it('should set errors by object', () => {
+		const { result } = renderHook(() => useInertiaForm(initialData))
+
+		const errors = {
+			'person.middle_name': 'Value must not be empty',
+			'contact.phones[1].number': 'Value is no good!',
+		}
+
+		act(() => {
+			result.current.setError(errors)
+		})
+
+		act(() => {
+			expect(result.current.errors).toStrictEqual(errors)
+			expect(result.current.hasErrors).toBe(true)
+		})
+	})
+})
+
+describe('getError', () => {
+	it('should return a single error by key', () => {
+		const { result } = renderHook(() => useInertiaForm(initialData))
+
+		const key = 'person.middle_name'
+		const error = 'Value must not be empty'
+
+		act(() => {
+			result.current.setError(key, error)
+		})
+
+		act(() => {
+			expect(result.current.getError(key)).toBe(error)
+		})
+	})
+})
+
+
+// describe('form submit', () => {
+// 	it('fetches', async () => {
+// 		const data = {
+// 			one: 'two',
+// 		}
+
+// 		const { result } = renderHook(() => useInertiaForm(initialData))
+
+// 		act(() => {
+// 			result.current.transform(data => ({ ...data, extra: 1 }))
+// 		})
+
+// 		axiosMock.onAny('/form').reply((config) => {
+// 			console.log(config)
+// 			return [200, data]
+// 		})
+
+// 		await act(async () => {
+// 			const response = await result.current.submit('post', '/form')
+// 			console.log({ response })
+// 		})
+// 	})
+// })
+
+// let response
+// const server = setupServer(
+// 	rest.post('/form', (req, res, ctx) => {
+// 		console.log('intercepted')
+// 		response = { req, res, ctx }
+// 	}),
+// )
+
+// describe('transform', () => {
+// 	it('should persist function and run before form submit', async () => {
+// 		server.listen()
+
+// 		const { result } = renderHook(() => useInertiaForm(initialData))
+
+// 		act(() => {
+// 			result.current.transform(data => ({ ...data, extra: 1 }))
+// 		})
+
+// 		await act(async () => {
+// 			await result.current.submit('post', '/form')
+// 			await setTimeout(() => console.log({ response }), 1000)
+// 		})
+
+// 		server.close()
+// 	})
+// })
