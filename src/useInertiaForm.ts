@@ -1,7 +1,7 @@
 import { unsetCompact, fillEmptyValues } from './utils'
 import { useForm } from '@inertiajs/react'
 import { cloneDeep, set, get } from 'lodash'
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import type { InertiaFormProps } from '@inertiajs/react/types/useForm'
 import { type NestedObject } from './types'
 
@@ -38,6 +38,7 @@ function useInertiaForm<TForm extends NestedObject>(
 	rememberKeyOrInitialValues?: string | TForm,
 	maybeInitialValues?: TForm,
 ): UseInertiaFormProps<TForm> {
+	const transformCallbackRef = useRef<(data: TForm) => TForm>()
 	const rememberKey = typeof rememberKeyOrInitialValues === 'string' ? rememberKeyOrInitialValues : null
 
 	let form: InertiaFormProps<TForm>
@@ -65,7 +66,7 @@ function useInertiaForm<TForm extends NestedObject>(
 							Type 'TForm' is not assignable to type 'string | number'.
 								Type 'NestedObject' is not assignable to type 'string | number'.ts(2345)
 			*/
-			// @ts-ignore - key is not a string below, all errors are expeting a string
+			// @ts-ignore - key is not a string below, all errors are expecting a string
 			form.setData(key, value)
 		}
 	}
@@ -81,7 +82,7 @@ function useInertiaForm<TForm extends NestedObject>(
 	 * Getter for nested error values of form errors
 	 */
 	const getError = (key: string) => {
-		return get(form.errors, key)
+		return form.errors[key]
 	}
 
 	/**
@@ -98,8 +99,17 @@ function useInertiaForm<TForm extends NestedObject>(
 	 * Fix for transform method until Inertia team fixes it
 	 */
 	const transform = useCallback((callback: (data: TForm ) => TForm) => {
-		form.transform(() => callback(form.data as TForm))
+		transformCallbackRef.current = callback
 	}, [form.data])
+
+	/**
+	 * Proxying the submit method allows us to call transform just before the original method is called,
+	 * but with the memoized transform method which won't be overwritten by renders
+	 */
+	const submit: typeof form.submit = (method, url, options = {}) => {
+		form.transform(transformCallbackRef.current)
+		form.submit(method, url, options)
+	}
 
 	return {
 		...form,
@@ -108,6 +118,7 @@ function useInertiaForm<TForm extends NestedObject>(
 		getError,
 		unsetData,
 		transform,
+		submit,
 	}
 }
 

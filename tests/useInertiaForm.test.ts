@@ -1,4 +1,9 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { act, renderHook } from '@testing-library/react-hooks'
+import { router } from '@inertiajs/core'
 import { useInertiaForm } from '../src'
 import { cloneDeep } from 'lodash'
 
@@ -19,6 +24,7 @@ const initialData = {
 		],
 	},
 }
+
 
 describe('useInertiaForm', () => {
 	const { result } = renderHook(() => useInertiaForm(initialData))
@@ -85,4 +91,81 @@ describe('unsetData', () => {
 			expect(result.current.data.contact.phones[1].number).toStrictEqual('3234567890')
 		})
 	})
+})
+
+// Test not strictly necessary since we don't override setError
+describe('setError', () => {
+	it('should set errors by key', () => {
+		const { result } = renderHook(() => useInertiaForm(initialData))
+
+		const key = 'person.middle_name'
+		const error = 'Value must not be empty'
+
+		act(() => {
+			result.current.setError(key, error)
+		})
+
+		act(() => {
+			expect(result.current.errors).toStrictEqual({ [key]: error })
+			expect(result.current.hasErrors).toBe(true)
+		})
+	})
+
+	it('should set errors by object', () => {
+		const { result } = renderHook(() => useInertiaForm(initialData))
+
+		const errors = {
+			'person.middle_name': 'Value must not be empty',
+			'contact.phones[1].number': 'Value is no good!',
+		}
+
+		act(() => {
+			result.current.setError(errors)
+		})
+
+		act(() => {
+			expect(result.current.errors).toStrictEqual(errors)
+			expect(result.current.hasErrors).toBe(true)
+		})
+	})
+})
+
+describe('getError', () => {
+	it('should return a single error by key', () => {
+		const { result } = renderHook(() => useInertiaForm(initialData))
+
+		const key = 'person.middle_name'
+		const error = 'Value must not be empty'
+
+		act(() => {
+			result.current.setError(key, error)
+		})
+
+		act(() => {
+			expect(result.current.getError(key)).toBe(error)
+		})
+	})
+})
+
+
+test('my form submits the correct data', async () => {
+	const testData = {
+		user: {
+			username: 'some name',
+		},
+	}
+
+	const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
+		expect(request?.data).toMatchObject({ ...testData, transformed: 'value' })
+		return Promise.resolve({ data: request?.data })
+	})
+
+	const { result } = renderHook(() => useInertiaForm(testData))
+
+	act(() => {
+		result.current.transform(data => ({ ...data, transformed: 'value' }))
+		result.current.submit('post', '/form')
+		expect(mockRequest).toBeCalled()
+	})
+
 })
