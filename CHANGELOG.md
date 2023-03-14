@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/aviemet/useInertiaForm/compare/v1.0.5...v1.0.6) (2023-03-14)
+
+
+### Bug Fixes
+
+* 🐛 Minor updates to cause release ([4f581ba](https://github.com/aviemet/useInertiaForm/commit/4f581ba801af0c509779e58f60637914bd0cad27))
+
 ## [1.0.5](https://github.com/aviemet/useInertiaForm/compare/v1.0.4...v1.0.5) (2023-02-24)
 
 
