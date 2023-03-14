@@ -38,7 +38,7 @@ function useInertiaForm<TForm extends NestedObject>(
 	rememberKeyOrInitialValues?: string | TForm,
 	maybeInitialValues?: TForm,
 ): UseInertiaFormProps<TForm> {
-	const originalDataRef = useRef<TForm>(null)
+	const transformCallbackRef = useRef<(data: TForm) => TForm>()
 	const rememberKey = typeof rememberKeyOrInitialValues === 'string' ? rememberKeyOrInitialValues : null
 
 	let form: InertiaFormProps<TForm>
@@ -99,21 +99,15 @@ function useInertiaForm<TForm extends NestedObject>(
 	 * Fix for transform method until Inertia team fixes it
 	 */
 	const transform = useCallback((callback: (data: TForm ) => TForm) => {
-		// Since the original transform method is overwritten to default with each render,
-		// we modify the actual form data just before submitting
-		originalDataRef.current = form.data
-		setData(() => callback(form.data))
+		transformCallbackRef.current = callback
 	}, [form.data])
 
+	/**
+	 * Proxying the submit method allows us to call transform just before the original method is called,
+	 * but with the memoized transform method which won't be overwritten by renders
+	 */
 	const submit: typeof form.submit = (method, url, options = {}) => {
-		// Just after submitting, we set it back to the unmodified version
-		if(originalDataRef.current !== null) {
-			const originalOnstart = options.onStart
-			options.onStart = (visit) => {
-				setData(originalDataRef.current)
-				if(originalOnstart) originalOnstart(visit)
-			}
-		}
+		form.transform(transformCallbackRef.current)
 		form.submit(method, url, options)
 	}
 

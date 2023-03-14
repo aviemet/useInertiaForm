@@ -2,17 +2,10 @@
  * @jest-environment jsdom
  */
 
-import React from 'react'
 import { act, renderHook } from '@testing-library/react-hooks'
-import { render, screen, waitFor } from '@testing-library/react'
-import { rest } from 'msw'
-import { setupServer } from 'msw/node'
-import { useInertiaForm, Form } from '../src'
+import { router } from '@inertiajs/core'
+import { useInertiaForm } from '../src'
 import { cloneDeep } from 'lodash'
-import axios from 'axios'
-import MockAdapter from 'axios-mock-adapter'
-
-const axiosMock = new MockAdapter(axios)
 
 const initialData = {
 	user: {
@@ -155,53 +148,24 @@ describe('getError', () => {
 })
 
 
-// describe('form submit', () => {
-// 	it('fetches', async () => {
-// 		const data = {
-// 			one: 'two',
-// 		}
+test('my form submits the correct data', async () => {
+	const testData = {
+		user: {
+			username: 'some name',
+		},
+	}
 
-// 		const { result } = renderHook(() => useInertiaForm(initialData))
+	const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
+		expect(request?.data).toMatchObject({ ...testData, transformed: 'value' })
+		return Promise.resolve({ data: request?.data })
+	})
 
-// 		act(() => {
-// 			result.current.transform(data => ({ ...data, extra: 1 }))
-// 		})
+	const { result } = renderHook(() => useInertiaForm(testData))
 
-// 		axiosMock.onAny('/form').reply((config) => {
-// 			console.log(config)
-// 			return [200, data]
-// 		})
+	act(() => {
+		result.current.transform(data => ({ ...data, transformed: 'value' }))
+		result.current.submit('post', '/form')
+		expect(mockRequest).toBeCalled()
+	})
 
-// 		await act(async () => {
-// 			const response = await result.current.submit('post', '/form')
-// 			console.log({ response })
-// 		})
-// 	})
-// })
-
-// let response
-// const server = setupServer(
-// 	rest.post('/form', (req, res, ctx) => {
-// 		console.log('intercepted')
-// 		response = { req, res, ctx }
-// 	}),
-// )
-
-// describe('transform', () => {
-// 	it('should persist function and run before form submit', async () => {
-// 		server.listen()
-
-// 		const { result } = renderHook(() => useInertiaForm(initialData))
-
-// 		act(() => {
-// 			result.current.transform(data => ({ ...data, extra: 1 }))
-// 		})
-
-// 		await act(async () => {
-// 			await result.current.submit('post', '/form')
-// 			await setTimeout(() => console.log({ response }), 1000)
-// 		})
-
-// 		server.close()
-// 	})
-// })
+})
