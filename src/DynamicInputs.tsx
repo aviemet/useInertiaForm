@@ -1,6 +1,6 @@
 import React from 'react'
 import { useForm, useFormMeta } from './Form'
-import { cloneDeep, get, set } from 'lodash'
+import { get, set } from 'lodash'
 import NestedFields, { useNestedAttribute } from './NestedFields'
 
 interface IDynamicInputsProps {
@@ -29,7 +29,7 @@ const DynamicInputs = ({
 		if(!formModel) return
 
 		setData((formData: Record<string, unknown>) => {
-			const clone = cloneDeep(formData)
+			const clone = structuredClone(formData)
 			let node: unknown[] = get(clone, inputModel) as unknown[]
 
 			if(!node || !Array.isArray(node)) {

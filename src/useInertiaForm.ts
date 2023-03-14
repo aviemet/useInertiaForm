@@ -1,6 +1,6 @@
 import { unsetCompact, fillEmptyValues } from './utils'
 import { useForm } from '@inertiajs/react'
-import { cloneDeep, set, get } from 'lodash'
+import { set, get } from 'lodash'
 import { useCallback, useRef } from 'react'
 import type { InertiaFormProps } from '@inertiajs/react/types/useForm'
 import { type NestedObject } from './types'
@@ -54,7 +54,7 @@ function useInertiaForm<TForm extends NestedObject>(
 	const setData: setData<TForm> = (key, value?) => {
 		if(typeof key === 'string'){
 			form.setData((formData: TForm) => {
-				return set(cloneDeep(formData), key, value)
+				return set(structuredClone(formData), key, value)
 			})
 		} else {
 			/*
@@ -88,7 +88,7 @@ function useInertiaForm<TForm extends NestedObject>(
 	 * Remove key/value pair by dot-notated key
 	 */
 	const unsetData = (key: string) => {
-		const clone = cloneDeep(form.data)
+		const clone = structuredClone(form.data)
 		unsetCompact(clone, key)
 
 		return setData(clone)

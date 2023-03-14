@@ -5,7 +5,6 @@
 import { act, renderHook } from '@testing-library/react-hooks'
 import { router } from '@inertiajs/core'
 import { useInertiaForm } from '../src'
-import { cloneDeep } from 'lodash'
 
 const initialData = {
 	user: {
@@ -31,7 +30,7 @@ describe('useInertiaForm', () => {
 	const { data } = result.current
 
 	it('data value should be equal to initialData, with undefined values converted to empty strings', () => {
-		const expectedValue = cloneDeep(initialData)
+		const expectedValue = structuredClone(initialData)
 		// @ts-ignore
 		expectedValue.person.middle_name = ''
 		expect(data).toStrictEqual(expectedValue)

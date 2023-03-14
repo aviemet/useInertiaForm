@@ -216,7 +216,6 @@ const PageWithFormOnIt = ({ user }) => {
     </Form>
   )
 }
-
 ```
 
 With the default Rails behavior of transforming nested attribute names, the server would receive this data in the following form:

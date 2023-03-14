@@ -1,5 +1,5 @@
 import React from 'react'
-import { cloneDeep, isPlainObject, unset, get, set } from 'lodash'
+import { isPlainObject, unset, get, set } from 'lodash'
 import { type NestedObject } from './types'
 
 export const createContext = <T extends {} | null>() => {
@@ -31,7 +31,7 @@ export const unsetCompact = (data: NestedObject, path: string) => {
 }
 
 export const fillEmptyValues = <TForm extends NestedObject>(data: TForm) => {
-	const sanitizedDefaultData = cloneDeep(data)
+	const sanitizedDefaultData = structuredClone(data)
 
 	for(const key in sanitizedDefaultData) {
 		if(isPlainObject(sanitizedDefaultData[key])) {
