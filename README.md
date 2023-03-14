@@ -1,8 +1,10 @@
 # Introduction
 
-A hook for using Inertia.js forms which is meant to be used as a direct replacement of Inertia's `useForm` hook. It address two issues with the original; [the bug preventing the `transform` method from running on submit](https://github.com/inertiajs/inertia/issues/1131), and the lack of support for nested data.
+A hook for using Inertia.js forms, meant to be used as a direct replacement of Inertia's `useForm` hook.
 
-This was developed alongside a Rails project, so the form handling ethos follows Rails conventions, however, effort was taken to make it as agnostic as possible and I believe it can be easily used in a Laravel application.
+It address two issues with the original; [the bug preventing the `transform` method from running on submit](https://github.com/inertiajs/inertia/issues/1131), and the lack of support for nested form data.
+
+This was developed alongside a Rails project, so the form handling ethos follows Rails conventions, however, effort was taken to make it as agnostic as possible and it should be useable in a Laravel application as well.
 
 This package provides three main exports; `useInertiaForm`, `useInertiaInput`, and `Form`.
 

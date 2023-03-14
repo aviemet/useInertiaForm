@@ -5,7 +5,6 @@ import { useCallback, useRef } from 'react'
 import type { InertiaFormProps } from '@inertiajs/react/types/useForm'
 import { type NestedObject } from './types'
 
-
 type setDataByObject<TForm> = (data: TForm) => void;
 type setDataByMethod<TForm> = (data: (previousData: TForm) => TForm) => void;
 type setDataByKeyValuePair = (key: string, value: unknown) => void;
