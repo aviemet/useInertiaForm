@@ -1,7 +1,7 @@
 export { default as useInertiaForm, type UseInertiaFormProps } from './useInertiaForm'
 export { default as useInertiaInput } from './useInertiaInput'
 export {
-	 default as Form,
+	 Form,
 	 useForm,
 	 useFormMeta,
 	 type HTTPVerb,

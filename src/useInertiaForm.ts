@@ -1,9 +1,10 @@
-import { unsetCompact, fillEmptyValues } from './utils'
+import { unsetCompact, fillEmptyValues, renameWithAttributes } from './utils'
 import { useForm } from '@inertiajs/react'
 import { set, get } from 'lodash'
 import { useCallback, useRef } from 'react'
 import type { InertiaFormProps } from '@inertiajs/react/types/useForm'
 import { type NestedObject } from './types'
+import { useFormMeta } from './Form'
 
 type setDataByObject<TForm> = (data: TForm) => void;
 type setDataByMethod<TForm> = (data: (previousData: TForm) => TForm) => void;
@@ -48,13 +49,22 @@ function useInertiaForm<TForm extends NestedObject>(
 		form = useForm<TForm>(fillEmptyValues(rememberKeyOrInitialValues))
 	}
 
+	// Check if this was called in the context of a Form component and store `railsAttributes`
+	let railsAttributes = false
+	try {
+		const meta = useFormMeta()
+		railsAttributes = meta.railsAttributes
+	} catch(e) {}
+
 	/**
 	 * Override Inertia's setData method to allow setting nested values
 	 */
 	const setData: setData<TForm> = (key, value?) => {
 		if(typeof key === 'string'){
+			const processedKey = railsAttributes ? renameWithAttributes(key) : key
+			// console.log({ processedKey })
 			form.setData((formData: TForm) => {
-				return set(structuredClone(formData), key, value)
+				return set(structuredClone(formData), processedKey, value)
 			})
 		} else {
 			/*
@@ -74,7 +84,8 @@ function useInertiaForm<TForm extends NestedObject>(
 	 * Getter for nested values of form data
 	 */
 	const getData = (key: string): unknown => {
-		return get(form.data, key)
+		const processedKey = railsAttributes ? renameWithAttributes(key) : key
+		return get(form.data, processedKey)
 	}
 
 	/**
@@ -88,8 +99,9 @@ function useInertiaForm<TForm extends NestedObject>(
 	 * Remove key/value pair by dot-notated key
 	 */
 	const unsetData = (key: string) => {
+		const processedKey = railsAttributes ? renameWithAttributes(key) : key
 		const clone = structuredClone(form.data)
-		unsetCompact(clone, key)
+		unsetCompact(clone, processedKey)
 
 		return setData(clone)
 	}

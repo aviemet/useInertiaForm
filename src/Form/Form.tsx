@@ -1,11 +1,11 @@
-import React, { useEffect, useReducer } from 'react'
-import { createContext, renameObjectWithAttributes } from './utils'
+import React, { useEffect } from 'react'
+import { createContext, renameObjectWithAttributes } from '../utils'
 import axios from 'axios'
-import useInertiaForm from './useInertiaForm'
-import { type UseInertiaFormProps } from './useInertiaForm'
+import useInertiaForm from '../useInertiaForm'
+import { type UseInertiaFormProps } from '../useInertiaForm'
 import { type AxiosResponse } from 'axios'
 import { type Visit } from '@inertiajs/core'
-import { NestedObject } from './types'
+import { NestedObject } from '../types'
 
 export type HTTPVerb = 'post' | 'put' | 'get' | 'patch' | 'delete'
 
@@ -21,16 +21,6 @@ export interface UseFormProps<T = NestedObject> extends UseInertiaFormProps<T> {
 
 const [useForm, FormProvider] = createContext<UseFormProps>()
 export { useForm }
-
-export type FormMetaValue = {
-	nestedAttributes: Set<string>
-	addAttribute: (attribute: string) => void
-	model?: string
-	railsAttributes: boolean
-}
-
-const [useFormMeta, FormMetaProvider] = createContext<FormMetaValue>()
-export { useFormMeta }
 
 export interface FormComponentProps<T> extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange'|'onSubmit'|'onError'|'errors'> {
 	data: T
@@ -65,20 +55,6 @@ const Form = <T extends Record<keyof T, NestedObject>>(
 	}: FormComponentProps<T>,
 	ref: React.ForwardedRef<HTMLFormElement>,
 ) => {
-	const attributesReducer = (state: Set<string>, attribute: string) => {
-		const newState = new Set(state)
-		newState.add(attribute)
-		return newState
-	}
-
-	const [nestedAttributes, addAttribute] = useReducer(attributesReducer, new Set<string>())
-	const metaValues: FormMetaValue = {
-		nestedAttributes,
-		addAttribute,
-		model,
-		railsAttributes,
-	}
-
 	const defaultData = railsAttributes ? renameObjectWithAttributes(data) : data
 	const form = remember ? useInertiaForm(`${method}/${model}`, defaultData) : useInertiaForm(defaultData)
 
@@ -137,15 +113,13 @@ const Form = <T extends Record<keyof T, NestedObject>>(
 
 	return (
 		<FormProvider value={ contextValueObject() }>
-			<FormMetaProvider value={ metaValues }>
-				<form
-					onSubmit={ handleSubmit }
-					ref={ ref }
-					{ ...props }
-				>
-					{ children }
-				</form>
-			</FormMetaProvider>
+			<form
+				onSubmit={ handleSubmit }
+				ref={ ref }
+				{ ...props }
+			>
+				{ children }
+			</form>
 		</FormProvider>
 	)
 }

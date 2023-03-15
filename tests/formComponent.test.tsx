@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import Form from '../src/Form'
+import { Form } from '../src/Form'
 import Input from '../src/Inputs/Input'
 import { Submit } from '../src'
 import { router } from '@inertiajs/react'
@@ -79,7 +79,7 @@ describe('Form submitting', () => {
 			return Promise.resolve({ data: request?.data })
 		})
 
-		render(<Form model="person" to="/form" data={ initialData }>
+		render(<Form model="person" to="/form" data={ initialData } railsAttributes>
 			<Input name="first_name" />
 			<Input name="nested.key" />
 			<Submit>Submit</Submit>

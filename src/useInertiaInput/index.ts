@@ -1,6 +1,6 @@
 import { useForm, useFormMeta } from '../Form'
 import { useNestedAttribute } from '../NestedFields'
-import { renameWithAttributes, stripAttributes } from '../utils'
+import { renameWithAttributes } from '../utils'
 import inputStrategy, { type InputStrategy } from './inputStrategy'
 
 interface UseInertiaInputProps {
