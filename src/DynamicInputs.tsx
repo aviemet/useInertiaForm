@@ -10,6 +10,11 @@ interface IDynamicInputsProps {
 	removeInputButton?: JSX.Element
 }
 
+/**
+ * Provides the basis for dynamic inputs.
+ * Uses dot notation for storing results in an array on the nested
+ *   data object. Buttons are configurable.
+ */
 const DynamicInputs = ({
 	children,
 	emptyData,

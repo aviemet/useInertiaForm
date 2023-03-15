@@ -81,7 +81,7 @@ function useInertiaForm<TForm extends NestedObject>(
 	 * Getter for nested error values of form errors
 	 */
 	const getError = (key: string): string|string[] => {
-		return form.errors[key]
+		return get(form.errors, key)
 	}
 
 	/**

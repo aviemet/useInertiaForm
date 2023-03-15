@@ -15,7 +15,7 @@ export interface UseFormProps<T = NestedObject> extends UseInertiaFormProps<T> {
 	method: HTTPVerb
 	to?: string
 	getData: (key: string) => unknown
-	getError: (data: string) => string|undefined
+	getError: (data: string) => string|string[]|undefined
 	unsetData: (key: string) => void
 	submit: () => Promise<AxiosResponse<any> | UseInertiaFormProps | void>
 }
@@ -34,7 +34,6 @@ export { useFormMeta }
 
 export interface FormComponentProps<T> extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange'|'onSubmit'|'onError'|'errors'> {
 	data: T
-	errors: string|string[]
 	model?: string
 	method?: HTTPVerb
 	to?: string
@@ -89,7 +88,7 @@ const Form = <T extends Record<keyof T, unknown>>(
 	 * otherwise submits using Inertia's form methods
 	 * @returns Promise
 	 */
-	const submit = async () => {
+	const submit = async (options?) => {
 		let shouldSubmit = onSubmit && onSubmit(contextValueObject()) === false ? false : true
 
 		if(shouldSubmit && to) {
@@ -112,7 +111,7 @@ const Form = <T extends Record<keyof T, unknown>>(
 			if(async) {
 				return axios[method](to, form.data)
 			} else {
-				return form[method](to)
+				return form.submit(method, to, options)
 			}
 		}
 	}

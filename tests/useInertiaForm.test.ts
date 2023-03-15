@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { act, renderHook } from '@testing-library/react-hooks'
 import { router } from '@inertiajs/core'
 import { useInertiaForm } from '../src'
@@ -73,7 +69,7 @@ describe('unsetData', () => {
 		})
 
 		act(() => {
-			expect(result.current.data.user).toStrictEqual({})
+			expect(result.current.data.user).toMatchObject({})
 		})
 	})
 

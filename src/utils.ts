@@ -45,3 +45,25 @@ export const fillEmptyValues = <TForm extends NestedObject>(data: TForm) => {
 
 	return sanitizedDefaultData
 }
+
+/**
+ * Appends a string to the end of parts of a dot notated string,
+ *   excepting those with array notation, and the first and last elements
+ */
+export const renameWithAttributes = (str: string, append = '_attributes') => {
+	const parts = str.split('.')
+
+	if(parts.length < 2) return str
+
+	for(let i = parts.length - 2; i > 0; i--) {
+		if(parts[i].charAt(parts[i].length - 1) !== ']') {
+			parts[i] = `${parts[i]}${append}`
+		}
+	}
+
+	return parts.join('.')
+}
+
+export const stripAttributes = (str: string, attribute = '_attributes') => {
+	return str.replace(new RegExp(`${attribute}\\.`), '.')
+}
