@@ -32,8 +32,9 @@ export type FormMetaValue = {
 const [useFormMeta, FormMetaProvider] = createContext<FormMetaValue>()
 export { useFormMeta }
 
-export interface FormComponentProps<T> extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange'|'onSubmit'|'onError'> {
+export interface FormComponentProps<T> extends Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange'|'onSubmit'|'onError'|'errors'> {
 	data: T
+	errors: string|string[]
 	model?: string
 	method?: HTTPVerb
 	to?: string

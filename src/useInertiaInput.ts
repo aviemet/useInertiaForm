@@ -6,6 +6,11 @@ export type InputStrategy = (name: string, model?: string) => {
 	inputName: string
 }
 
+/**
+ * Standard input strategy:
+ *  name: dot notation with array awareness
+ *  model: snake case based on nested models and input name
+ */
 const inputStrategy: InputStrategy = (name, model) => {
 	if(!model) {
 		return {
@@ -34,6 +39,9 @@ interface UseInertiaInputProps {
 	strategy?: InputStrategy
 }
 
+/**
+ * Returns form data and input specific methods to use with an input.
+ */
 const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = inputStrategy }: UseInertiaInputProps) => {
 	const form = useForm()
 

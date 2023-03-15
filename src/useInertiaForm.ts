@@ -15,7 +15,7 @@ export interface UseInertiaFormProps<TForm = NestedObject> extends
 	Omit<InertiaFormProps<Record<keyof TForm, unknown>>, 'data'|'errors'|'setDefaults'|'reset'|'clearErrors'|'setError'|'setData'>
 {
 	data: TForm
-	errors
+	errors: Record<string, string|string[]>
 	setDefaults(field: string, value: string): void
 	setDefaults(fields: Record<string, string>): void
 	reset: (...fields: (string)[]) => void
@@ -27,7 +27,7 @@ export interface UseInertiaFormProps<TForm = NestedObject> extends
 	setData: setDataByObject<TForm> & setDataByMethod<TForm> & setDataByKeyValuePair
 	getData: (key: string) => unknown
 	unsetData: (key: string) => void
-	getError: (data: string) => string|undefined
+	getError: (data: string) => string|string[]|undefined
 }
 
 function useInertiaForm<TForm extends NestedObject>(initialValues?: TForm): UseInertiaFormProps<TForm>
@@ -80,7 +80,7 @@ function useInertiaForm<TForm extends NestedObject>(
 	/**
 	 * Getter for nested error values of form errors
 	 */
-	const getError = (key: string) => {
+	const getError = (key: string): string|string[] => {
 		return form.errors[key]
 	}
 

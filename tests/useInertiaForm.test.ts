@@ -146,7 +146,6 @@ describe('getError', () => {
 	})
 })
 
-
 test('my form submits the correct data', async () => {
 	const testData = {
 		user: {
@@ -166,5 +165,4 @@ test('my form submits the correct data', async () => {
 		result.current.submit('post', '/form')
 		expect(mockRequest).toBeCalled()
 	})
-
 })
