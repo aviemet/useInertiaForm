@@ -2,6 +2,7 @@ import React from 'react'
 import { useForm, useFormMeta } from './Form'
 import { get, set } from 'lodash'
 import NestedFields, { useNestedAttribute } from './NestedFields'
+import { NestedObject } from './types'
 
 interface IDynamicInputsProps {
 	children: React.ReactNode
@@ -33,7 +34,7 @@ const DynamicInputs = ({
 	const handleAddInputs = () => {
 		if(!formModel) return
 
-		setData((formData: Record<string, unknown>) => {
+		setData((formData: NestedObject) => {
 			const clone = structuredClone(formData)
 			let node: unknown[] = get(clone, inputModel) as unknown[]
 

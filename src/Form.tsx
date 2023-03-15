@@ -1,11 +1,10 @@
 import React, { useEffect, useReducer } from 'react'
-import { createContext } from './utils'
+import { createContext, renameObjectWithAttributes } from './utils'
 import axios from 'axios'
 import useInertiaForm from './useInertiaForm'
-import { get, set, unset } from 'lodash'
-
 import { type UseInertiaFormProps } from './useInertiaForm'
 import { type AxiosResponse } from 'axios'
+import { type Visit } from '@inertiajs/core'
 import { NestedObject } from './types'
 
 export type HTTPVerb = 'post' | 'put' | 'get' | 'patch' | 'delete'
@@ -27,6 +26,7 @@ export type FormMetaValue = {
 	nestedAttributes: Set<string>
 	addAttribute: (attribute: string) => void
 	model?: string
+	railsAttributes: boolean
 }
 
 const [useFormMeta, FormMetaProvider] = createContext<FormMetaValue>()
@@ -40,14 +40,14 @@ export interface FormComponentProps<T> extends Omit<React.FormHTMLAttributes<HTM
 	async?: boolean
 	grid?: boolean
 	remember?: boolean
-	renameNestedAttributes?: false | ((attribute: string) => string)
+	railsAttributes?: boolean
 	onSubmit?: (form: UseFormProps) => boolean|void
 	onChange?: (form: UseFormProps) => void
 	onSuccess?: (form: UseFormProps) => void
 	onError?: (form: UseFormProps) => void
 }
 
-const Form = <T extends Record<keyof T, unknown>>(
+const Form = <T extends Record<keyof T, NestedObject>>(
 	{
 		children,
 		model,
@@ -56,7 +56,7 @@ const Form = <T extends Record<keyof T, unknown>>(
 		to,
 		async = false,
 		remember = true,
-		renameNestedAttributes = attribute => `${attribute}_attributes`,
+		railsAttributes = false,
 		onSubmit,
 		onChange,
 		onSuccess,
@@ -76,9 +76,11 @@ const Form = <T extends Record<keyof T, unknown>>(
 		nestedAttributes,
 		addAttribute,
 		model,
+		railsAttributes,
 	}
 
-	const form = remember ? useInertiaForm(`${method}/${model}`, data) : useInertiaForm(data)
+	const defaultData = railsAttributes ? renameObjectWithAttributes(data) : data
+	const form = remember ? useInertiaForm(`${method}/${model}`, defaultData) : useInertiaForm(defaultData)
 
 	// Expand Inertia's form object to include other useful data
 	const contextValueObject: () => UseFormProps = () => ({ ...form, model, method, to, submit })
@@ -88,26 +90,10 @@ const Form = <T extends Record<keyof T, unknown>>(
 	 * otherwise submits using Inertia's form methods
 	 * @returns Promise
 	 */
-	const submit = async (options?) => {
-		let shouldSubmit = onSubmit && onSubmit(contextValueObject()) === false ? false : true
+	const submit = async (options?: Partial<Visit>) => {
+		let shouldSubmit = to && onSubmit && onSubmit(contextValueObject()) === false ? false : true
 
-		if(shouldSubmit && to) {
-
-			// Transform nested attributes, concatenating '_attributes' for Rails controllers
-			if(renameNestedAttributes !== false && nestedAttributes.size > 0) {
-				form.transform(submitData => {
-					nestedAttributes.forEach(attribute => {
-						set(
-							submitData,
-							`${model}.${renameNestedAttributes(attribute)}`,
-							get(submitData, `${model}.${attribute}`),
-						)
-						unset(submitData, `${model}.${attribute}`)
-					})
-					return submitData
-				})
-			}
-
+		if(shouldSubmit) {
 			if(async) {
 				return axios[method](to, form.data)
 			} else {

@@ -1,9 +1,11 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
 import Form from '../src/Form'
 import Input from '../src/Inputs/Input'
+import { Submit } from '../src'
+import { router } from '@inertiajs/react'
+import { get } from 'lodash'
 
 const initialData = {
 	user: {
@@ -26,8 +28,8 @@ const initialData = {
 	},
 }
 
-const setup = (name: string, model?: string) => {
-	const form = render(<Form model={ model } to="/form" data={ initialData }>
+const setup = ({ name, model, rails = false }: { name: string, model?: string, rails?: boolean}) => {
+	const form = render(<Form model={ model } to="/form" data={ initialData } railsAttributes={ rails }>
 		<Input name={ name } />
 	</Form>)
 
@@ -36,31 +38,57 @@ const setup = (name: string, model?: string) => {
 	return { input, ...form }
 }
 
-describe('Form', () => {
+describe('Inputs', () => {
 	it('renders a form with values in inputs', () => {
-		const { input } = setup('user.username')
+		const { input } = setup({ name: 'user.username' })
 
 		expect(input).toHaveValue(initialData.user.username)
 	})
 
 	it('rewrites nested attributes', () => {
-		const { input } = setup('nested.key', 'person')
+		const { input } = setup({ name: 'nested.key', model: 'person', rails: true })
 
 		expect(input).toHaveAttribute('name', 'person.nested_attributes.key')
 		expect(input).toHaveValue(initialData.person.nested.key)
 	})
 
 	it('updates form data with user input', () => {
-		const { input } = setup('nested.key', 'person')
+		const { input } = setup({ name: 'nested.key', model: 'person' })
 
 		fireEvent.change(input, { target: { value: 'new value' } })
 		expect(input).toHaveValue('new value')
 	})
 
 	it('updates values with rails attributes naming', () => {
-		const { input } = setup('nested.key', 'person')
+		const { input } = setup({ name: 'nested.key', model: 'person' })
 
 		fireEvent.change(input, { target: { value: 'new value' } })
 		expect(input).toHaveValue('new value')
 	})
 })
+
+describe('Form submitting', () => {
+
+	it('sends the correct data to the server upon form submit', async () => {
+		const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
+			const data = request?.data
+			// console.log({ data })
+			const value = get(data, 'person.nested_attributes.key')
+			// console.log({ value })
+			// expect(get(data, 'person.nested_attributes.key')).toBe('value')
+			return Promise.resolve({ data: request?.data })
+		})
+
+		render(<Form model="person" to="/form" data={ initialData }>
+			<Input name="first_name" />
+			<Input name="nested.key" />
+			<Submit>Submit</Submit>
+		</Form>)
+
+		const button = screen.getByRole('button')
+		await fireEvent.click(button)
+
+		expect(mockRequest).toHaveBeenCalled()
+	})
+})
+

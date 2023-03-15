@@ -64,6 +64,42 @@ export const renameWithAttributes = (str: string, append = '_attributes') => {
 	return parts.join('.')
 }
 
+/**
+ * Removes appended string '_attributes' from dot notation
+ */
 export const stripAttributes = (str: string, attribute = '_attributes') => {
 	return str.replace(new RegExp(`${attribute}\\.`), '.')
+}
+
+export const renameObjectWithAttributes = (data: NestedObject, str = '_attributes') => {
+	const clone = structuredClone(data)
+
+	// Start at one level deep
+	Object.values(clone).forEach(value => {
+		if(isPlainObject(value)){
+		// @ts-ignore
+			recursiveRename(value, str)
+		}
+	})
+	return clone
+}
+
+const recursiveRename = (data: NestedObject, str) => {
+	Object.entries(data).forEach(([key, value]) => {
+		if(isPlainObject(value)) {
+			renameKey(data, key, `${key}${str}`)
+			// @ts-ignore
+			recursiveRename(value, str)
+		}
+	})
+}
+
+const renameKey = (obj, old_key, new_key) => {
+	if(old_key !== new_key) {
+		Object.defineProperty(
+			obj, new_key,
+			Object.getOwnPropertyDescriptor(obj, old_key),
+		)
+		delete obj[old_key]
+	}
 }

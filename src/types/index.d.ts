@@ -1,11 +1,17 @@
 export type NestedObject = {
-	[key: string]: unknown | NestedObject
+	[key: string]: NestedObject|unknown
 };
 
+type Primitive = string|number|symbol
+// type Empty = null|undefined
+
+// interface DocumentArray {
+// 	[index: number]: Primitive|DocumentArray
+// }
+// export type NestedObject = Record<Primitive, Primitive|DocumentArray|Empty>
 
 // Credit to: https://javascript.plainenglish.io/advanced-typescript-type-level-nested-object-paths-7f3d8901f29a
 
-type Primitive = string | number | symbol
 
 type GenericObject = Record<Primitive, unknown>
 

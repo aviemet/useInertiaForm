@@ -1,8 +1,8 @@
 import React from 'react'
-import { useForm } from './Form'
+import { useForm } from '../Form'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-	component: string | JSX.Element
+	component?: string | JSX.Element
 }
 
 const Submit = React.forwardRef<HTMLButtonElement, ButtonProps>((

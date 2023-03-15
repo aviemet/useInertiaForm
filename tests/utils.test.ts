@@ -1,6 +1,7 @@
-import { fillEmptyValues, renameWithAttributes, stripAttributes, unsetCompact } from '../src/utils'
+import { NestedObject } from '../src/types'
+import { fillEmptyValues, renameObjectWithAttributes, renameWithAttributes, stripAttributes, unsetCompact } from '../src/utils'
 
-const nestedData = {
+const nestedData: NestedObject = {
 	one: 'one',
 	two: {
 		three: 'three',
@@ -8,7 +9,9 @@ const nestedData = {
 			{ five: 'five' },
 			{ six: 'six' },
 		],
-		seven: 'seven',
+		seven: {
+			just: 'testing',
+		},
 	},
 }
 
@@ -25,7 +28,9 @@ describe('unsetCompact', () => {
 					{ five: 'five' },
 					{ six: 'six' },
 				],
-				seven: 'seven',
+				seven: {
+					just: 'testing',
+				},
 			},
 		})
 	})
@@ -41,7 +46,9 @@ describe('unsetCompact', () => {
 				four: [
 					{ six: 'six' },
 				],
-				seven: 'seven',
+				seven: {
+					just: 'testing',
+				},
 			},
 		})
 	})
@@ -95,5 +102,38 @@ describe('stripAttributes', () => {
 		const key2 = 'user.manager_attributes_sorted'
 		expect(stripAttributes(key1)).toEqual(key1)
 		expect(stripAttributes(key2)).toEqual(key2)
+	})
+})
+
+const mockFormData = {
+	user: {
+		id: 1,
+		username: 'something',
+		person: {
+			id: 1,
+			first_name: 'first',
+		},
+	},
+	roles: [
+		{ id: 1, name: 'admin' },
+	],
+}
+
+describe('renameObjectWithAttributes', () => {
+	it('should append attributes to keys deeper than the first level which contain another object', () => {
+		const data = renameObjectWithAttributes(mockFormData)
+		expect(data).toMatchObject({
+			user: {
+				id: 1,
+				username: 'something',
+				person_attributes: {
+					id: 1,
+					first_name: 'first',
+				},
+			},
+			roles: [
+				{ id: 1, name: 'admin' },
+			],
+		})
 	})
 })

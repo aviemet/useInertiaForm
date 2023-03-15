@@ -37,7 +37,7 @@ function useInertiaForm<TForm extends NestedObject>(
 	rememberKeyOrInitialValues?: string | TForm,
 	maybeInitialValues?: TForm,
 ): UseInertiaFormProps<TForm> {
-	const transformCallbackRef = useRef<(data: TForm) => TForm>()
+	const transformCallbackRef = useRef<(data: TForm) => TForm>(data => data)
 	const rememberKey = typeof rememberKeyOrInitialValues === 'string' ? rememberKeyOrInitialValues : null
 
 	let form: InertiaFormProps<TForm>

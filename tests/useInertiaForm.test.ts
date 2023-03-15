@@ -142,23 +142,26 @@ describe('getError', () => {
 	})
 })
 
-test('my form submits the correct data', async () => {
-	const testData = {
-		user: {
-			username: 'some name',
-		},
-	}
+describe('submit', () => {
+	it('should submit the correct data to the server', () => {
 
-	const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
-		expect(request?.data).toMatchObject({ ...testData, transformed: 'value' })
-		return Promise.resolve({ data: request?.data })
-	})
+		const testData = {
+			user: {
+				username: 'some name',
+			},
+		}
 
-	const { result } = renderHook(() => useInertiaForm(testData))
+		const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
+			expect(request?.data).toMatchObject({ ...testData, transformed: 'value' })
+			return Promise.resolve({ data: request?.data })
+		})
 
-	act(() => {
-		result.current.transform(data => ({ ...data, transformed: 'value' }))
-		result.current.submit('post', '/form')
-		expect(mockRequest).toBeCalled()
+		const { result } = renderHook(() => useInertiaForm(testData))
+
+		act(() => {
+			result.current.transform(data => ({ ...data, transformed: 'value' }))
+			result.current.submit('post', '/form')
+			expect(mockRequest).toBeCalled()
+		})
 	})
 })

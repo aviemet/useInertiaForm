@@ -1,5 +1,3 @@
-import { renameWithAttributes } from '../utils'
-
 export type InputStrategy = (name: string, model?: string) => {
 	inputId: string
 	inputName: string
@@ -14,7 +12,7 @@ const inputStrategy: InputStrategy = (name, model) => {
 	if(!model) {
 		return {
 			inputId: name,
-			inputName: renameWithAttributes(name),
+			inputName: name,
 		}
 	}
 
@@ -23,12 +21,12 @@ const inputStrategy: InputStrategy = (name, model) => {
 	if(name.charAt(0) === '[') {
 		inputName = `${model}${name}`
 	} else {
-		inputName = `${model}.${(name)}`
+		inputName = `${model}.${name}`
 	}
 
 	return {
 		inputId: `${model.replace('.', '_')}_${name}`.replace(/\[(\d)\]/, '_$1'),
-		inputName: renameWithAttributes(inputName),
+		inputName: inputName,
 	}
 }
 
