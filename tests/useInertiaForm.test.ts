@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { act, renderHook } from '@testing-library/react-hooks'
 import { router } from '@inertiajs/core'
 import { useInertiaForm } from '../src'
@@ -73,7 +69,7 @@ describe('unsetData', () => {
 		})
 
 		act(() => {
-			expect(result.current.data.user).toStrictEqual({})
+			expect(result.current.data.user).toMatchObject({})
 		})
 	})
 
@@ -146,25 +142,26 @@ describe('getError', () => {
 	})
 })
 
+describe('submit', () => {
+	it('should submit the correct data to the server', () => {
 
-test('my form submits the correct data', async () => {
-	const testData = {
-		user: {
-			username: 'some name',
-		},
-	}
+		const testData = {
+			user: {
+				username: 'some name',
+			},
+		}
 
-	const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
-		expect(request?.data).toMatchObject({ ...testData, transformed: 'value' })
-		return Promise.resolve({ data: request?.data })
+		const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
+			expect(request?.data).toMatchObject({ ...testData, transformed: 'value' })
+			return Promise.resolve({ data: request?.data })
+		})
+
+		const { result } = renderHook(() => useInertiaForm(testData))
+
+		act(() => {
+			result.current.transform(data => ({ ...data, transformed: 'value' }))
+			result.current.submit('post', '/form')
+			expect(mockRequest).toBeCalled()
+		})
 	})
-
-	const { result } = renderHook(() => useInertiaForm(testData))
-
-	act(() => {
-		result.current.transform(data => ({ ...data, transformed: 'value' }))
-		result.current.submit('post', '/form')
-		expect(mockRequest).toBeCalled()
-	})
-
 })

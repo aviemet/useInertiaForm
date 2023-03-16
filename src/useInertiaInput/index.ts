@@ -1,32 +1,7 @@
-import { useForm } from './Form'
-import { useNestedAttribute } from './NestedFields'
-
-export type InputStrategy = (name: string, model?: string) => {
-	inputId: string
-	inputName: string
-}
-
-const inputStrategy: InputStrategy = (name, model) => {
-	if(!model) {
-		return {
-			inputId: name,
-			inputName: name,
-		}
-	}
-
-	let inputName: string
-
-	if(name.charAt(0) === '[') {
-		inputName = `${model}${name}`
-	} else {
-		inputName = `${model}.${name}`
-	}
-
-	return {
-		inputId: `${model.replace('.', '_')}_${name}`.replace(/\[(\d)\]/, '_$1'),
-		inputName,
-	}
-}
+import { useForm, useFormMeta } from '../Form'
+import { useNestedAttribute } from '../NestedFields'
+import { renameWithAttributes } from '../utils'
+import inputStrategy, { type InputStrategy } from './inputStrategy'
 
 interface UseInertiaInputProps {
 	name: string
@@ -34,6 +9,9 @@ interface UseInertiaInputProps {
 	strategy?: InputStrategy
 }
 
+/**
+ * Returns form data and input specific methods to use with an input.
+ */
 const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = inputStrategy }: UseInertiaInputProps) => {
 	const form = useForm()
 
@@ -44,11 +22,20 @@ const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = i
 		usedModel += `.${nested}`
 	} catch(e) {}
 
+	let railsAttributes = false
+
+	try {
+		const meta = useFormMeta()
+		railsAttributes = meta.railsAttributes
+	} catch(e) {}
+
 	const { inputName, inputId } = strategy(name, usedModel)
+
+	const processedInputName = railsAttributes ? renameWithAttributes(inputName) : inputName
 
 	return {
 		form,
-		inputName,
+		inputName: processedInputName,
 		inputId,
 		value: form.getData(inputName) as T,
 		setValue: (value: T) => {
@@ -59,4 +46,3 @@ const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = i
 }
 
 export default useInertiaInput
-

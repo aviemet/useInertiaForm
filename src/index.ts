@@ -1,7 +1,7 @@
 export { default as useInertiaForm, type UseInertiaFormProps } from './useInertiaForm'
 export { default as useInertiaInput } from './useInertiaInput'
 export {
-	 default as Form,
+	 Form,
 	 useForm,
 	 useFormMeta,
 	 type HTTPVerb,
@@ -10,5 +10,5 @@ export {
 	 type FormMetaValue,
 } from './Form'
 export { default as NestedFields, type NestedFieldsProps } from './NestedFields'
-export { default as Submit } from './Submit'
+export { Input, Submit } from './Inputs'
 export { default as DynamicInputs } from './DynamicInputs'

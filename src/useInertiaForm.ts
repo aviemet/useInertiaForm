@@ -1,9 +1,10 @@
-import { unsetCompact, fillEmptyValues } from './utils'
+import { useCallback, useRef } from 'react'
 import { useForm } from '@inertiajs/react'
 import { set, get } from 'lodash'
-import { useCallback, useRef } from 'react'
+import { unsetCompact, fillEmptyValues, renameWithAttributes } from './utils'
 import type { InertiaFormProps } from '@inertiajs/react/types/useForm'
 import { type NestedObject } from './types'
+import { useFormMeta } from './Form'
 
 type setDataByObject<TForm> = (data: TForm) => void;
 type setDataByMethod<TForm> = (data: (previousData: TForm) => TForm) => void;
@@ -11,11 +12,11 @@ type setDataByKeyValuePair = (key: string, value: unknown) => void;
 
 type setData<TForm> = (key: string | TForm | ((data: TForm) => TForm), value?: unknown) => void
 
-export interface UseInertiaFormProps<TForm = NestedObject> extends
-	Omit<InertiaFormProps<Record<keyof TForm, unknown>>, 'data'|'errors'|'setDefaults'|'reset'|'clearErrors'|'setError'|'setData'>
-{
+type ExtendedInertiaFormProps<TForm> = Omit<InertiaFormProps<Record<keyof TForm, unknown>>, 'data'|'errors'|'setDefaults'|'reset'|'clearErrors'|'setError'|'setData'>
+
+export interface UseInertiaFormProps<TForm = NestedObject> extends ExtendedInertiaFormProps<TForm>{
 	data: TForm
-	errors
+	errors: Record<string, string|string[]>
 	setDefaults(field: string, value: string): void
 	setDefaults(fields: Record<string, string>): void
 	reset: (...fields: (string)[]) => void
@@ -27,7 +28,7 @@ export interface UseInertiaFormProps<TForm = NestedObject> extends
 	setData: setDataByObject<TForm> & setDataByMethod<TForm> & setDataByKeyValuePair
 	getData: (key: string) => unknown
 	unsetData: (key: string) => void
-	getError: (data: string) => string|undefined
+	getError: (data: string) => string|string[]|undefined
 }
 
 function useInertiaForm<TForm extends NestedObject>(initialValues?: TForm): UseInertiaFormProps<TForm>
@@ -37,7 +38,7 @@ function useInertiaForm<TForm extends NestedObject>(
 	rememberKeyOrInitialValues?: string | TForm,
 	maybeInitialValues?: TForm,
 ): UseInertiaFormProps<TForm> {
-	const transformCallbackRef = useRef<(data: TForm) => TForm>()
+	const transformCallbackRef = useRef<(data: TForm) => TForm>(data => data)
 	const rememberKey = typeof rememberKeyOrInitialValues === 'string' ? rememberKeyOrInitialValues : null
 
 	let form: InertiaFormProps<TForm>
@@ -48,13 +49,22 @@ function useInertiaForm<TForm extends NestedObject>(
 		form = useForm<TForm>(fillEmptyValues(rememberKeyOrInitialValues))
 	}
 
+	// Check if this was called in the context of a Form component and store `railsAttributes`
+	let railsAttributes = false
+	try {
+		const meta = useFormMeta()
+		railsAttributes = meta.railsAttributes
+	} catch(e) {}
+
 	/**
 	 * Override Inertia's setData method to allow setting nested values
 	 */
 	const setData: setData<TForm> = (key, value?) => {
 		if(typeof key === 'string'){
+			const processedKey = railsAttributes ? renameWithAttributes(key) : key
+			// console.log({ processedKey })
 			form.setData((formData: TForm) => {
-				return set(structuredClone(formData), key, value)
+				return set(structuredClone(formData), processedKey, value)
 			})
 		} else {
 			/*
@@ -74,22 +84,24 @@ function useInertiaForm<TForm extends NestedObject>(
 	 * Getter for nested values of form data
 	 */
 	const getData = (key: string): unknown => {
-		return get(form.data, key)
+		const processedKey = railsAttributes ? renameWithAttributes(key) : key
+		return get(form.data, processedKey)
 	}
 
 	/**
 	 * Getter for nested error values of form errors
 	 */
-	const getError = (key: string) => {
-		return form.errors[key]
+	const getError = (key: string): string|string[] => {
+		return get(form.errors, key)
 	}
 
 	/**
 	 * Remove key/value pair by dot-notated key
 	 */
 	const unsetData = (key: string) => {
+		const processedKey = railsAttributes ? renameWithAttributes(key) : key
 		const clone = structuredClone(form.data)
-		unsetCompact(clone, key)
+		unsetCompact(clone, processedKey)
 
 		return setData(clone)
 	}

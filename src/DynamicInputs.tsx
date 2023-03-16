@@ -2,6 +2,7 @@ import React from 'react'
 import { useForm, useFormMeta } from './Form'
 import { get, set } from 'lodash'
 import NestedFields, { useNestedAttribute } from './NestedFields'
+import { NestedObject } from './types'
 
 interface IDynamicInputsProps {
 	children: React.ReactNode
@@ -10,6 +11,11 @@ interface IDynamicInputsProps {
 	removeInputButton?: JSX.Element
 }
 
+/**
+ * Provides the basis for dynamic inputs.
+ * Uses dot notation for storing results in an array on the nested
+ *   data object. Buttons are configurable.
+ */
 const DynamicInputs = ({
 	children,
 	emptyData,
@@ -28,7 +34,7 @@ const DynamicInputs = ({
 	const handleAddInputs = () => {
 		if(!formModel) return
 
-		setData((formData: Record<string, unknown>) => {
+		setData((formData: NestedObject) => {
 			const clone = structuredClone(formData)
 			let node: unknown[] = get(clone, inputModel) as unknown[]
 
