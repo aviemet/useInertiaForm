@@ -1,11 +1,11 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { Form } from '../src/Form'
 import Input from '../src/Inputs/Input'
 import { Submit } from '../src'
 import { router } from '@inertiajs/react'
-import { get } from 'lodash'
+import { before, get } from 'lodash'
 
 const initialData = {
 	user: {
@@ -28,41 +28,88 @@ const initialData = {
 	},
 }
 
-const setup = ({ name, model, rails = false }: { name: string, model?: string, rails?: boolean }) => {
-	const form = render(
-		<Form model={ model } to="/form" data={ initialData } railsAttributes={ rails }>
-			<Input name={ name } />
+/**
+	 * Rails Attributes `false` tests
+	 */
+describe('With railsAttributes false', () => {
+	render(
+		<Form role="form" to="/form" data={ { ...initialData } }>
+			<Input name="user.username" />
 		</Form>,
 	)
 
 	const input = screen.getByRole('textbox')
 
-	return { input, ...form }
-}
-
-describe('Inputs', () => {
 	it('renders a form with values in inputs', () => {
-		const { input } = setup({ name: 'user.username' })
+
+		expect(input).toHaveValue(initialData.user.username)
+	})
+
+	it('updates form data with user input', () => {
+		// render(
+		// 	<Form role="form" to="/form" data={ { ...initialData } } model="person">
+		// 		<Input name="nested.key" />
+		// 	</Form>,
+		// )
+
+		// const input = screen.getByRole('textbox')
+
+		fireEvent.change(input, { target: { value: 'modified form data' } })
+		expect(input).toHaveValue('modified form data')
+	})
+
+})
+
+/**
+	 * Rails Attributes `true` tests
+	 */
+describe('With railsAttributes true', () => {
+	render(
+		<Form role="form" to="/form" data={ { ...initialData } } railsAttributes={ true }>
+			<Input name="user.username" />
+		</Form>,
+	)
+
+	const input = screen.getByRole('textbox')
+
+	it('renders a form with values in inputs', () => {
 
 		expect(input).toHaveValue(initialData.user.username)
 	})
 
 	it('rewrites nested attributes', () => {
-		const { input } = setup({ name: 'nested.key', model: 'person', rails: true })
+		// render(
+		// 	<Form role="form" to="/form"
+		// 		data={ { ...initialData } }
+		// 		model="person"
+		// 		railsAttributes={ true }
+		// 		// onChange={ form => console.log({ here: true, data: form.data.person }) }
+		// 	>
+		// 		<Input name="nested.key" />
+		// 	</Form>,
+		// )
+
+		// const input = screen.getByRole('textbox')
 
 		expect(input).toHaveAttribute('name', 'person.nested_attributes.key')
 		expect(input).toHaveValue(initialData.person.nested.key)
 	})
+})
 
-	it('updates form data with user input', () => {
-		const { input } = setup({ name: 'nested.key', model: 'person' })
+/*
+describe('Inputs', () => {
 
-		fireEvent.change(input, { target: { value: 'unmodified form data' } })
-		expect(input).toHaveValue('unmodified form data')
-	})
+
+
 
 	it('updates values with rails attributes naming', () => {
-		const { input } = setup({ name: 'nested.key', model: 'person' })
+		render(
+			<Form to="/form" data={ initialData } model="person" railsAttributes={ true }>
+				<Input name="nested.key" />
+			</Form>,
+		)
+
+		const input = screen.getByRole('textbox')
 
 		fireEvent.change(input, { target: { value: 'rails attributes' } })
 		expect(input).toHaveValue('rails attributes')

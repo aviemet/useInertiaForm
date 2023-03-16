@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { forwardRef, useEffect } from 'react'
 import { createContext, renameObjectWithAttributes } from '../utils'
 import axios from 'axios'
 import useInertiaForm from '../useInertiaForm'
@@ -56,14 +56,11 @@ const Form = <T extends Record<keyof T, NestedObject>>(
 	ref: React.ForwardedRef<HTMLFormElement>,
 ) => {
 	const defaultData = railsAttributes ? renameObjectWithAttributes(data) : data
+	// console.log({ railsAttributes, defaultData })
 	const form = remember ? useInertiaForm(`${method}/${model}`, defaultData) : useInertiaForm(defaultData)
 
 	// Expand Inertia's form object to include other useful data
 	const contextValueObject: () => UseFormProps = () => ({ ...form, model, method, to, submit })
-
-	if(!railsAttributes) {
-		console.log({ data, formData: form.data })
-	}
 
 	/**
 	 * Submits the form. If async prop is true, submits using axios,
@@ -124,4 +121,4 @@ const Form = <T extends Record<keyof T, NestedObject>>(
 	)
 }
 
-export default React.forwardRef(Form)
+export default forwardRef(Form)

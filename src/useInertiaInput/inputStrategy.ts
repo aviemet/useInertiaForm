@@ -25,7 +25,7 @@ const inputStrategy: InputStrategy = (name, model) => {
 	}
 
 	return {
-		inputId: `${model.replace('.', '_')}_${name}`.replace(/\[(\d)\]/, '_$1'),
+		inputId: `${model}_${name}`.replace('.', '_').replace(/\[(\d)\]/, '_$1'),
 		inputName: inputName,
 	}
 }

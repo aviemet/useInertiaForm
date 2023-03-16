@@ -94,12 +94,9 @@ const recursiveRename = (data: NestedObject, str) => {
 	})
 }
 
-const renameKey = (obj, old_key, new_key) => {
-	if(old_key !== new_key) {
-		Object.defineProperty(
-			obj, new_key,
-			Object.getOwnPropertyDescriptor(obj, old_key),
-		)
-		delete obj[old_key]
+const renameKey = (obj, oldKey, newKey) => {
+	if(oldKey !== newKey) {
+		obj[newKey] = obj[oldKey]
+		delete obj[oldKey]
 	}
 }

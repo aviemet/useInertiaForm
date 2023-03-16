@@ -3,8 +3,8 @@ module.exports = {
 		'browser': true,
 		'es2021': true,
 	},
-	'extends': ['plugin:react/recommended', 'plugin:import/typescript'],
-	'plugins': ['react', '@typescript-eslint', 'import'],
+	'plugins': ['react', '@typescript-eslint', 'import', 'testing-library'],
+	'extends': ['plugin:react/recommended', 'plugin:import/typescript', 'plugin:testing-library/react'],
 	'settings': {
 		'react': {
 			'version': 'detect',

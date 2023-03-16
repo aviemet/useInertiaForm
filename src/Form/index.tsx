@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import FormComponent, {
 	useForm,
 	type HTTPVerb,
@@ -8,16 +8,16 @@ import FormComponent, {
 import FormMetaWrapper, { useFormMeta, type FormMetaValue } from './FormMetaWrapper'
 import { NestedObject } from '../types'
 
-const Form = <T extends Record<keyof T, NestedObject>>(
+const Form = forwardRef(<T extends Record<keyof T, NestedObject>>(
 	{ model, railsAttributes = false, ...props }: FormComponentProps<T>,
 	ref: React.ForwardedRef<HTMLFormElement>,
 ) => {
 	return (
 		<FormMetaWrapper model={ model } railsAttributes={ railsAttributes }>
-			<FormComponent model={ model } railsAttributes={ railsAttributes } { ...props }/>
+			<FormComponent model={ model } railsAttributes={ railsAttributes } ref={ ref } { ...props }/>
 		</FormMetaWrapper>
 	)
-}
+})
 
 export {
 	Form,

@@ -33,17 +33,15 @@ const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = i
 
 	const processedInputName = railsAttributes ? renameWithAttributes(inputName) : inputName
 
-	if(name === 'nested.key' && railsAttributes) {
-		// console.log({ railsAttributes, inputName, processedInputName, data: form.data })
-	}
+	// console.log({ inputName, processedInputName, inputId, data: form.data.person, value: form.getData(inputName) })
 
 	return {
 		form,
 		inputName: processedInputName,
 		inputId,
-		value: form.getData(processedInputName) as T,
+		value: form.getData(inputName) as T,
 		setValue: (value: T) => {
-			return form.setData(processedInputName, value)
+			return form.setData(inputName, value)
 		},
 		error: form.getError(inputName),
 	}
