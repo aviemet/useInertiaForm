@@ -56,7 +56,6 @@ const Form = <T extends Record<keyof T, NestedObject>>(
 	ref: React.ForwardedRef<HTMLFormElement>,
 ) => {
 	const defaultData = railsAttributes ? renameObjectWithAttributes(data) : data
-	// console.log({ railsAttributes, defaultData })
 	const form = remember ? useInertiaForm(`${method}/${model}`, defaultData) : useInertiaForm(defaultData)
 
 	// Expand Inertia's form object to include other useful data
@@ -64,8 +63,7 @@ const Form = <T extends Record<keyof T, NestedObject>>(
 
 	/**
 	 * Submits the form. If async prop is true, submits using axios,
-	 * otherwise submits using Inertia's form methods
-	 * @returns Promise
+	 * otherwise submits using Inertia's `useForm.submit` method
 	 */
 	const submit = async (options?: Partial<Visit>) => {
 		let shouldSubmit = to && onSubmit && onSubmit(contextValueObject()) === false ? false : true
@@ -86,11 +84,6 @@ const Form = <T extends Record<keyof T, NestedObject>>(
 		submit()
 	}
 
-	// Reset form after successful submit
-	useEffect(() => {
-		form.reset()
-	}, [form.wasSuccessful])
-
 	// Set values from url search params. Allows for prefilling form data from a link
 	useEffect(() => {
 		const url = new URL(window.location.href)
@@ -109,7 +102,10 @@ const Form = <T extends Record<keyof T, NestedObject>>(
 	}, [form.errors])
 
 	useEffect(() => {
-		if(onSuccess && form.wasSuccessful) onSuccess(contextValueObject())
+		if(!form.wasSuccessful) return
+
+		form.reset()
+		if(onSuccess) onSuccess(contextValueObject())
 	}, [form.wasSuccessful])
 
 	return (

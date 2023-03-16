@@ -10,5 +10,5 @@ export {
 	 type FormMetaValue,
 } from './Form'
 export { default as NestedFields, type NestedFieldsProps } from './NestedFields'
-export { default as Submit } from './Inputs/Submit'
+export { Input, Submit } from './Inputs'
 export { default as DynamicInputs } from './DynamicInputs'

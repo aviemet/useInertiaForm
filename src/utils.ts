@@ -77,7 +77,7 @@ export const renameObjectWithAttributes = (data: NestedObject, str = '_attribute
 	// Start at one level deep
 	Object.values(clone).forEach(value => {
 		if(isPlainObject(value)){
-		// @ts-ignore
+		// @ts-ignore - Can't figure out how to type arbitrarily deep nested objects
 			recursiveRename(value, str)
 		}
 	})
@@ -88,7 +88,7 @@ const recursiveRename = (data: NestedObject, str) => {
 	Object.entries(data).forEach(([key, value]) => {
 		if(isPlainObject(value)) {
 			renameKey(data, key, `${key}${str}`)
-			// @ts-ignore
+			// @ts-ignore - Can't figure out how to type arbitrarily deep nested objects
 			recursiveRename(value, str)
 		}
 	})

@@ -33,8 +33,6 @@ const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = i
 
 	const processedInputName = railsAttributes ? renameWithAttributes(inputName) : inputName
 
-	// console.log({ inputName, processedInputName, inputId, data: form.data.person, value: form.getData(inputName) })
-
 	return {
 		form,
 		inputName: processedInputName,
