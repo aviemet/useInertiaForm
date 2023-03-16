@@ -33,6 +33,10 @@ const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = i
 
 	const processedInputName = railsAttributes ? renameWithAttributes(inputName) : inputName
 
+	if(name === 'nested.key' && railsAttributes) {
+		// console.log({ railsAttributes, inputName, processedInputName, data: form.data })
+	}
+
 	return {
 		form,
 		inputName: processedInputName,
@@ -46,4 +50,3 @@ const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = i
 }
 
 export default useInertiaInput
-

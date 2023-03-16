@@ -61,6 +61,10 @@ const Form = <T extends Record<keyof T, NestedObject>>(
 	// Expand Inertia's form object to include other useful data
 	const contextValueObject: () => UseFormProps = () => ({ ...form, model, method, to, submit })
 
+	if(!railsAttributes) {
+		console.log({ data, formData: form.data })
+	}
+
 	/**
 	 * Submits the form. If async prop is true, submits using axios,
 	 * otherwise submits using Inertia's form methods
@@ -113,11 +117,7 @@ const Form = <T extends Record<keyof T, NestedObject>>(
 
 	return (
 		<FormProvider value={ contextValueObject() }>
-			<form
-				onSubmit={ handleSubmit }
-				ref={ ref }
-				{ ...props }
-			>
+			<form onSubmit={ handleSubmit } ref={ ref } { ...props }>
 				{ children }
 			</form>
 		</FormProvider>

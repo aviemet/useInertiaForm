@@ -1,6 +1,9 @@
 import React, { useReducer } from 'react'
 import { createContext } from '../utils'
 
+/**
+ * Form Meta Context
+ */
 export type FormMetaValue = {
 	nestedAttributes: Set<string>
 	addAttribute: (attribute: string) => void
@@ -17,6 +20,9 @@ const attributesReducer = (state: Set<string>, attribute: string) => {
 	return newState
 }
 
+/**
+ * Form Meta Wrapper Component
+ */
 interface FormMetaWrapperProps {
 	children: React.ReactNode
 	model?: string
@@ -31,6 +37,7 @@ const FormMetaWrapper = ({ children, model, railsAttributes }: FormMetaWrapperPr
 		model,
 		railsAttributes,
 	}
+
 	return (
 		<FormMetaProvider value={ metaValues }>
 			{ children }

@@ -22,9 +22,9 @@ const Form = <T extends Record<keyof T, NestedObject>>(
 export {
 	Form,
 	useForm,
+	useFormMeta,
 	type HTTPVerb,
 	type UseFormProps,
 	type FormComponentProps,
-	useFormMeta,
 	type FormMetaValue,
 }

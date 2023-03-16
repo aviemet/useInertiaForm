@@ -12,9 +12,9 @@ type setDataByKeyValuePair = (key: string, value: unknown) => void;
 
 type setData<TForm> = (key: string | TForm | ((data: TForm) => TForm), value?: unknown) => void
 
-export interface UseInertiaFormProps<TForm = NestedObject> extends
-	Omit<InertiaFormProps<Record<keyof TForm, unknown>>, 'data'|'errors'|'setDefaults'|'reset'|'clearErrors'|'setError'|'setData'>
-{
+type ExtendedInertiaFormProps<TForm> = Omit<InertiaFormProps<Record<keyof TForm, unknown>>, 'data'|'errors'|'setDefaults'|'reset'|'clearErrors'|'setError'|'setData'>
+
+export interface UseInertiaFormProps<TForm = NestedObject> extends ExtendedInertiaFormProps<TForm>{
 	data: TForm
 	errors: Record<string, string|string[]>
 	setDefaults(field: string, value: string): void
