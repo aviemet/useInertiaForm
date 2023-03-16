@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/aviemet/useInertiaForm/compare/v1.0.7...v2.0.0) (2023-03-16)
+
+
+### Features
+
+* 🎸 Fixes rails attributes implementation ([19e61d8](https://github.com/aviemet/useInertiaForm/commit/19e61d8e7e54010e7c94402d0e746ef08b6384e2))
+
+
+### BREAKING CHANGES
+
+* 🧨 <Form />
+
 ## [1.0.7](https://github.com/aviemet/useInertiaForm/compare/v1.0.6...v1.0.7) (2023-03-14)
 
 
