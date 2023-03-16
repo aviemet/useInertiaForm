@@ -28,7 +28,6 @@ export interface FormComponentProps<T> extends Omit<React.FormHTMLAttributes<HTM
 	method?: HTTPVerb
 	to?: string
 	async?: boolean
-	grid?: boolean
 	remember?: boolean
 	railsAttributes?: boolean
 	onSubmit?: (form: UseFormProps) => boolean|void
@@ -56,7 +55,7 @@ const Form = <T extends Record<keyof T, NestedObject>>(
 	ref: React.ForwardedRef<HTMLFormElement>,
 ) => {
 	const defaultData = railsAttributes ? renameObjectWithAttributes(data) : data
-	const form = remember ? useInertiaForm(`${method}/${model}`, defaultData) : useInertiaForm(defaultData)
+	const form = remember && (model || to) ? useInertiaForm(`${method}/${model || to}`, defaultData) : useInertiaForm(defaultData)
 
 	// Expand Inertia's form object to include other useful data
 	const contextValueObject: () => UseFormProps = () => ({ ...form, model, method, to, submit })
