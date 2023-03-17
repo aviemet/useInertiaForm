@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/aviemet/useInertiaForm/compare/v2.0.0...v2.0.1) (2023-03-17)
+
+
+### Bug Fixes
+
+* 🐛 Allows `transform` method to work ([b31c5ce](https://github.com/aviemet/useInertiaForm/commit/b31c5ce8bfda40dc07e8375b87d67ef23accfdbf))
+
 # [2.0.0](https://github.com/aviemet/useInertiaForm/compare/v1.0.7...v2.0.0) (2023-03-16)
 
 
