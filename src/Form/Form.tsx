@@ -10,8 +10,6 @@ import { useCallback } from 'react'
 
 export type HTTPVerb = 'post' | 'put' | 'get' | 'patch' | 'delete'
 
-
-
 /**
  * useForm declaration
  */
@@ -64,12 +62,13 @@ const Form = <TForm extends NestedObject>(
 	}: FormComponentProps<TForm>,
 	ref: React.ForwardedRef<HTMLFormElement>,
 ) => {
-	const defaultData = railsAttributes ? renameObjectWithAttributes(data) : data
+	const defaultData = railsAttributes ? renameObjectWithAttributes<TForm>(data) : data
 	const form = remember && (model || to) ? useInertiaForm(`${method}/${model || to}`, defaultData) : useInertiaForm(defaultData)
 
 	const contextValueObject = useCallback(() => {
-		return { ...form, model, method, to, submit }
-	}, [])
+		const obj = { ...form, model, method, to, submit }
+		return obj
+	}, [form.data])
 
 	// Expand Inertia's form object to include other useful data
 	// const contextValueObject: () => UseFormProps = () => ({ ...form, model, method, to, submit })

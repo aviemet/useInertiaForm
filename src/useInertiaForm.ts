@@ -3,12 +3,12 @@ import { get, isEqual, set } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRemember } from '@inertiajs/react'
 import { fillEmptyValues, renameWithAttributes, unsetCompact } from './utils'
-import { useFormMeta } from './Form'
+import { useFormMeta } from './Form/FormMetaWrapper'
 import { type NestedObject } from './types'
 
 type setDataByObject<TForm> = (data: TForm) => void
 type setDataByMethod<TForm> = (data: (previousData: TForm) => TForm) => void
-type setDataByKeyValuePair<TForm> = <K extends keyof TForm>(key: K, value: TForm[K]) => void
+type setDataByKeyValuePair = (key: string, value: unknown) => void;
 
 export interface UseInertiaFormProps<TForm extends NestedObject> {
 	data: TForm
@@ -19,7 +19,7 @@ export interface UseInertiaFormProps<TForm extends NestedObject> {
 	progress: Progress | null
 	wasSuccessful: boolean
 	recentlySuccessful: boolean
-	setData: setDataByObject<TForm> & setDataByMethod<TForm> & setDataByKeyValuePair<TForm>
+	setData: setDataByObject<TForm> & setDataByMethod<TForm> & setDataByKeyValuePair
 	getData: (key: string) => unknown
 	unsetData: (key: string) => void
 	transform: (callback: (data: TForm) => TForm) => void
@@ -28,8 +28,8 @@ export interface UseInertiaFormProps<TForm extends NestedObject> {
 	setDefaults(fields: Record<keyof TForm, string>): void
 	reset: (...fields: (keyof TForm)[]) => void
 	clearErrors: (...fields: (keyof TForm)[]) => void
-	setError(field: keyof TForm, value: string): void
-	setError(errors: Record<keyof TForm, string>): void
+	setError(field: string, value: string): void
+	setError(errors: Record<string, string|string[]>): void
 	getError: (key: string) => string|string[]
 	submit: (method: Method, url: string, options?: VisitOptions) => void
 	get: (url: string, options?: VisitOptions) => void
@@ -187,7 +187,7 @@ export default function useInertiaForm<TForm extends NestedObject>(
 
 	return {
 		data,
-		setData: (keyOrData: keyof TForm | Function | TForm, maybeValue?: TForm[keyof TForm]) => {
+		setData: useCallback((keyOrData: string | Function | TForm, maybeValue?: TForm[keyof TForm]) => {
 			if(typeof keyOrData === 'string') {
 				const processedKey = railsAttributes ? renameWithAttributes(keyOrData) : keyOrData
 				setData((data) => {
@@ -198,18 +198,18 @@ export default function useInertiaForm<TForm extends NestedObject>(
 			} else {
 				setData(keyOrData as TForm)
 			}
-		},
-		getData: (key: string): unknown => {
+		}, [railsAttributes]),
+		getData: useCallback((key: string): unknown => {
 			const processedKey = railsAttributes ? renameWithAttributes(key) : key
 			return get(data, processedKey)
-		},
-		unsetData: (key: string) => {
+		}, [data, railsAttributes]),
+		unsetData: useCallback((key: string) => {
 			const processedKey = railsAttributes ? renameWithAttributes(key) : key
 			const clone = structuredClone(data)
 			unsetCompact(clone, processedKey)
 
 			return setData(clone)
-		},
+		}, [data, railsAttributes]),
 		isDirty: !isEqual(data, defaults),
 		errors,
 		hasErrors,
@@ -217,10 +217,10 @@ export default function useInertiaForm<TForm extends NestedObject>(
 		progress,
 		wasSuccessful,
 		recentlySuccessful,
-		transform(callback) {
+		transform: useCallback((callback) => {
 			transformRef.current = callback
-		},
-		setDefaults: (fieldOrFields?: keyof TForm | Record<keyof TForm, string>, maybeValue?: string) => {
+		}, []),
+		setDefaults: useCallback((fieldOrFields?: keyof TForm | Record<keyof TForm, string>, maybeValue?: string) => {
 			if(typeof fieldOrFields === 'undefined') {
 				setDefaults(() => data)
 			} else {
@@ -229,8 +229,8 @@ export default function useInertiaForm<TForm extends NestedObject>(
 					...(typeof fieldOrFields === 'string' ? { [fieldOrFields]: maybeValue } : (fieldOrFields as TForm)),
 				}))
 			}
-		},
-		reset(...fields) {
+		}, [data]),
+		reset: useCallback((...fields) => {
 			if(fields.length === 0) {
 				setData(defaults)
 			} else {
@@ -246,8 +246,8 @@ export default function useInertiaForm<TForm extends NestedObject>(
 						),
 				)
 			}
-		},
-		setError(fieldOrFields: keyof TForm | Record<keyof TForm, string>, maybeValue?: string) {
+		}, [defaults, data]),
+		setError: useCallback((fieldOrFields: string | Record<string, string|string[]>, maybeValue?: string) => {
 			setErrors((errors) => {
 				const newErrors = {
 					...errors,
@@ -258,11 +258,11 @@ export default function useInertiaForm<TForm extends NestedObject>(
 				setHasErrors(Object.keys(newErrors).length > 0)
 				return newErrors
 			})
-		},
-		getError: (key: string): string|string[] => {
+		}, [errors]),
+		getError: useCallback((key: string): string|string[] => {
 			return get(errors, key)
-		},
-		clearErrors(...fields) {
+		}, [errors]),
+		clearErrors: useCallback((...fields) => {
 			setErrors((errors) => {
 				const newErrors = (Object.keys(errors) as Array<keyof TForm>).reduce(
 					(carry, field) => ({
@@ -274,27 +274,27 @@ export default function useInertiaForm<TForm extends NestedObject>(
 				setHasErrors(Object.keys(newErrors).length > 0)
 				return newErrors
 			})
-		},
+		}, [errors]),
 		submit,
-		get(url, options) {
+		get: useCallback((url, options) => {
 			submit('get', url, options)
-		},
-		post(url, options) {
+		}, []),
+		post: useCallback((url, options) => {
 			submit('post', url, options)
-		},
-		put(url, options) {
+		}, []),
+		put: useCallback((url, options) => {
 			submit('put', url, options)
-		},
-		patch(url, options) {
+		}, []),
+		patch: useCallback((url, options) => {
 			submit('patch', url, options)
-		},
-		delete(url, options) {
+		}, []),
+		delete: useCallback((url, options) => {
 			submit('delete', url, options)
-		},
-		cancel() {
+		}, []),
+		cancel: useCallback(() => {
 			if(cancelToken.current) {
 				cancelToken.current.cancel()
 			}
-		},
+		}, [cancelToken.current]),
 	}
 }

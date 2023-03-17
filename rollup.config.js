@@ -6,6 +6,8 @@ import terser from '@rollup/plugin-terser'
 import filesize from 'rollup-plugin-filesize'
 import pkg from './package.json'
 
+const externalDeps = ['@inertiajs/core', 'lodash', 'axios']
+
 export default [
 	{
 		input: 'src/index.ts',
@@ -26,6 +28,7 @@ export default [
 			terser(),
 			filesize(),
 		],
+		external: externalDeps,
 	},
 	{
 		input: 'src/index.ts',
@@ -49,5 +52,6 @@ export default [
 			terser(),
 			filesize(),
 		],
+		external: externalDeps,
 	},
 ]

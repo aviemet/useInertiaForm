@@ -1,5 +1,3 @@
-
-
 type Primitive = string|number|symbol
 // type Empty = null|undefined
 
@@ -11,7 +9,7 @@ type Primitive = string|number|symbol
 // Credit to: https://javascript.plainenglish.io/advanced-typescript-type-level-nested-object-paths-7f3d8901f29a
 
 export type NestedObject = {
-	[key: string]: NestedObject|Primitive
+	[key: string]: NestedObject|NestedObject[]|Primitive|Primitive[]|undefined|null
 };
 
 type GenericObject = Record<Primitive, unknown>
