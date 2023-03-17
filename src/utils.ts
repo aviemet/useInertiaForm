@@ -101,3 +101,9 @@ const renameKey = (obj, oldKey, newKey) => {
 		delete obj[oldKey]
 	}
 }
+
+
+export const coerceArray = (arg: string | string[]) => {
+	if(Array.isArray(arg)) return arg
+	return [arg]
+}

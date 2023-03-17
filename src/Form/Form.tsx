@@ -13,7 +13,7 @@ export type HTTPVerb = 'post' | 'put' | 'get' | 'patch' | 'delete'
 /**
  * useForm declaration
  */
-export interface UseFormProps<TForm extends NestedObject> extends UseInertiaFormProps<TForm> {
+export interface UseFormProps<TForm extends NestedObject = {}> extends UseInertiaFormProps<TForm> {
 	model?: string
 	method: HTTPVerb
 	to?: string
