@@ -23,6 +23,7 @@ export const unsetCompact = (data: NestedObject, path: string) => {
 	let position = path.indexOf('[')
 	while(position >= 0) {
 		const arrPath = path.slice(0, position)
+		// @ts-ignore - No way to tell TS that this will be an array
 		const arr = get(data, arrPath) as TArrType[]
 		set(data, arrPath, arr.filter(a => a))
 
@@ -71,7 +72,7 @@ export const stripAttributes = (str: string, attribute = '_attributes') => {
 	return str.replace(new RegExp(`${attribute}\\.`), '.')
 }
 
-export const renameObjectWithAttributes = (data: NestedObject, str = '_attributes') => {
+export const renameObjectWithAttributes = <T extends NestedObject>(data: T, str = '_attributes') => {
 	const clone = structuredClone(data)
 
 	// Start at one level deep

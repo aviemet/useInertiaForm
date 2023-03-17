@@ -130,10 +130,29 @@ This will produce the following HTML:
 
 Since most projects will define their own set of reusable components, a `<Form>` component has been provided which uses React's Context API to manage form state. In order to use `useInertiaInput`, it must be within the context of this component.
 
+| Prop            | Default   | Description |
+| --------------- | --------- | -- |
+| `data`            | `n/a`   | Default data assigned to form.data. Creates a copy which is automatically used for form data in a `useInertiaInput` hook |
+| `model`           | `undefined` | The root model for the form. If provided, all get and set operations in nested `useInertiaInput` elements will append the model to the dot notation string |
+| `method`          | `'post`   | HTTP method to use for the form |
+| `to`              | `undefined` | Path to send the request to when the form is submitted. If this is omitted, submitting the form will do nothing except call `onSubmit` |
+| `async`           | `false`     | If true, uses `axios` methods to send form data. If false, uses Inertia's `useForm.submit` method. |
+| `remember`        | `true`      | If true, stores form data in local storage using the key `${method}/${model || to}`. If one of `model` or `to` are not defined, data is not persisted |
+| `railsAttributes` | `false`     | If true, rewrites nested attributes by appending `'_attributes'` to the key. Getters and setters handle the rewrites for you, which means you don't need to add the `'_attributes'` when dealing with form data |
+| `onSubmit`        | `undefined` | Called when the form is submitted, fired just before sending the request. If the method returns `false`, submit is canceled |
+| `onChange`        | `undefined` | Called every time the form data changes |
+| `onSuccess`       | `undefined` | Called when the form has been successfully submitted |
+| `onError`         | `undefined` | Called when an error is set, either manually or by a server response |
+
+Basic example:
+
 ```javascript
 const user = {
   user: {
     firstName: "Jake",
+  }
+  userRole: {
+    role: 'dog',
   }
 }
 
@@ -147,11 +166,7 @@ const PageWithFormOnIt = ({ user }) => {
     >
       <TextInput name="firstName" label="First Name" />
 
-      <TextInput name="role" model="person_role" />
-
-      <NestedFields model="ticket">
-        <TextInput name="name" label="Ticket Name" />
-      </NestedFields>
+      <TextInput name="userRole" label="Role" />
     </Form>
   )
 }
@@ -165,11 +180,8 @@ The above component produces the following HTML (assuming the TextInput componen
   <label for="user_firstName">
   <input id="user_firstName" type="text" name="user.firstName" value="Jake" />
 
-  <label for="person_role_role">
-  <input id="person_role_role" type="text" name="person_role.role" value="" />
-
-  <label for="user_ticket_name">
-  <input id="user_ticket_name" type="text" name="user.ticket.name" value="" />
+  <label for="userRole_role">
+  <input id="userRole_role" type="text" name="userRole.role" value="admin" />
 </form>
 ```
 
@@ -212,6 +224,7 @@ const PageWithFormOnIt = ({ user }) => {
 
       <NestedFields model="ticket">
         <TextInput name="name" label="Ticket Name" />
+        <TextInput name="number" label="Ticket Number" />
       </NestedFields>
     </Form>
   )

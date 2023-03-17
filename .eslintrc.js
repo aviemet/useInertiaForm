@@ -23,6 +23,8 @@ module.exports = {
 		'requireConfigFile': false,
 	},
 	'rules': {
+		'eqeqeq': 'off',
+
 		'indent': 'off',
 		'@typescript-eslint/indent': ['error', 'tab', {
 			'SwitchCase': 1,
