@@ -65,13 +65,7 @@ const Form = <TForm extends NestedObject>(
 	const defaultData = railsAttributes ? renameObjectWithAttributes<TForm>(data) : data
 	const form = remember && (model || to) ? useInertiaForm(`${method}/${model || to}`, defaultData) : useInertiaForm(defaultData)
 
-	const contextValueObject = useCallback(() => {
-		const obj = { ...form, model, method, to, submit }
-		return obj
-	}, [form.data])
-
-	// Expand Inertia's form object to include other useful data
-	// const contextValueObject: () => UseFormProps = () => ({ ...form, model, method, to, submit })
+	const contextValueObject = useCallback(() => ({ ...form, model, method, to, submit }), [form.data])
 
 	/**
 	 * Submits the form. If async prop is true, submits using axios,
