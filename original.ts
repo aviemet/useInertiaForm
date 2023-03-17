@@ -1,27 +1,22 @@
 import { Method, Progress, router, VisitOptions } from '@inertiajs/core'
-import { get, isEqual, set } from 'lodash'
+import { isEqual } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRemember } from '@inertiajs/react'
-import { fillEmptyValues, renameWithAttributes, unsetCompact } from './utils'
-import { useFormMeta } from './Form'
-import { type NestedObject } from './types'
 
 type setDataByObject<TForm> = (data: TForm) => void
 type setDataByMethod<TForm> = (data: (previousData: TForm) => TForm) => void
 type setDataByKeyValuePair<TForm> = <K extends keyof TForm>(key: K, value: TForm[K]) => void
 
-export interface UseInertiaFormProps<TForm extends NestedObject> {
+export interface InertiaFormProps<TForm extends Record<string, unknown>> {
 	data: TForm
 	isDirty: boolean
-	errors: Partial<Record<keyof TForm, string|string[]>>
+	errors: Partial<Record<keyof TForm, string>>
 	hasErrors: boolean
 	processing: boolean
 	progress: Progress | null
 	wasSuccessful: boolean
 	recentlySuccessful: boolean
 	setData: setDataByObject<TForm> & setDataByMethod<TForm> & setDataByKeyValuePair<TForm>
-	getData: (key: string) => unknown
-	unsetData: (key: string) => void
 	transform: (callback: (data: TForm) => TForm) => void
 	setDefaults(): void
 	setDefaults(field: keyof TForm, value: string): void
@@ -30,7 +25,6 @@ export interface UseInertiaFormProps<TForm extends NestedObject> {
 	clearErrors: (...fields: (keyof TForm)[]) => void
 	setError(field: keyof TForm, value: string): void
 	setError(errors: Record<keyof TForm, string>): void
-	getError: (key: string) => string|string[]
 	submit: (method: Method, url: string, options?: VisitOptions) => void
 	get: (url: string, options?: VisitOptions) => void
 	patch: (url: string, options?: VisitOptions) => void
@@ -39,37 +33,31 @@ export interface UseInertiaFormProps<TForm extends NestedObject> {
 	delete: (url: string, options?: VisitOptions) => void
 	cancel: () => void
 }
-export default function useInertiaForm<TForm extends NestedObject>(initialValues?: TForm): UseInertiaFormProps<TForm>
-export default function useInertiaForm<TForm extends NestedObject>(
+export default function useForm<TForm extends Record<string, unknown>>(initialValues?: TForm): InertiaFormProps<TForm>
+export default function useForm<TForm extends Record<string, unknown>>(
 	rememberKey: string,
 	initialValues?: TForm,
-): UseInertiaFormProps<TForm>
-export default function useInertiaForm<TForm extends NestedObject>(
+): InertiaFormProps<TForm>
+export default function useForm<TForm extends Record<string, unknown>>(
 	rememberKeyOrInitialValues?: string | TForm,
 	maybeInitialValues?: TForm,
-): UseInertiaFormProps<TForm> {
+): InertiaFormProps<TForm> {
 	const isMounted = useRef<boolean>()
-
-	// Data
 	const rememberKey = typeof rememberKeyOrInitialValues === 'string' ? rememberKeyOrInitialValues : null
-	const transformedData = fillEmptyValues((typeof rememberKeyOrInitialValues === 'string' ? maybeInitialValues : rememberKeyOrInitialValues) || ({} as TForm))
-	const [defaults, setDefaults] = useState(transformedData)
+	const [defaults, setDefaults] = useState(
+		(typeof rememberKeyOrInitialValues === 'string' ? maybeInitialValues : rememberKeyOrInitialValues) || ({} as TForm),
+	)
+	const cancelToken = useRef<any>(null)
+	const recentlySuccessfulTimeoutId = useRef<NodeJS.Timeout>()
 	const [data, setData] = rememberKey ? useRemember(defaults, `${rememberKey}:data`) : useState(defaults)
-
-	// Errors
 	const [errors, setErrors] = rememberKey
 		? useRemember({} as Partial<Record<keyof TForm, string>>, `${rememberKey}:errors`)
 		: useState({} as Partial<Record<keyof TForm, string>>)
 	const [hasErrors, setHasErrors] = useState(false)
-
-	// Submit request processes
 	const [processing, setProcessing] = useState(false)
 	const [progress, setProgress] = useState(null)
 	const [wasSuccessful, setWasSuccessful] = useState(false)
 	const [recentlySuccessful, setRecentlySuccessful] = useState(false)
-	const cancelToken = useRef<any>(null)
-	const recentlySuccessfulTimeoutId = useRef<NodeJS.Timeout>()
-
 	let transformRef = useRef((data) => data)
 
 	useEffect(() => {
@@ -78,13 +66,6 @@ export default function useInertiaForm<TForm extends NestedObject>(
 			isMounted.current = false
 		}
 	}, [])
-
-	// Check if this was called in the context of a Form component and store `railsAttributes`
-	let railsAttributes = false
-	try {
-		const meta = useFormMeta()
-		railsAttributes = meta.railsAttributes
-	} catch(e) {}
 
 	const submit = useCallback(
 		(method: Method, url: string, options: VisitOptions = {}) => {
@@ -187,28 +168,14 @@ export default function useInertiaForm<TForm extends NestedObject>(
 
 	return {
 		data,
-		setData: (keyOrData: keyof TForm | Function | TForm, maybeValue?: TForm[keyof TForm]) => {
+		setData(keyOrData: keyof TForm | Function | TForm, maybeValue?: TForm[keyof TForm]) {
 			if(typeof keyOrData === 'string') {
-				const processedKey = railsAttributes ? renameWithAttributes(keyOrData) : keyOrData
-				setData((data) => {
-					return set(structuredClone(data), processedKey, maybeValue)
-				})
+				setData({ ...data, [keyOrData]: maybeValue })
 			} else if(typeof keyOrData === 'function') {
 				setData((data) => keyOrData(data))
 			} else {
 				setData(keyOrData as TForm)
 			}
-		},
-		getData: (key: string): unknown => {
-			const processedKey = railsAttributes ? renameWithAttributes(key) : key
-			return get(data, processedKey)
-		},
-		unsetData: (key: string) => {
-			const processedKey = railsAttributes ? renameWithAttributes(key) : key
-			const clone = structuredClone(data)
-			unsetCompact(clone, processedKey)
-
-			return setData(clone)
 		},
 		isDirty: !isEqual(data, defaults),
 		errors,
@@ -220,7 +187,7 @@ export default function useInertiaForm<TForm extends NestedObject>(
 		transform(callback) {
 			transformRef.current = callback
 		},
-		setDefaults: (fieldOrFields?: keyof TForm | Record<keyof TForm, string>, maybeValue?: string) => {
+		setDefaults(fieldOrFields?: keyof TForm | Record<keyof TForm, string>, maybeValue?: string) {
 			if(typeof fieldOrFields === 'undefined') {
 				setDefaults(() => data)
 			} else {
@@ -258,9 +225,6 @@ export default function useInertiaForm<TForm extends NestedObject>(
 				setHasErrors(Object.keys(newErrors).length > 0)
 				return newErrors
 			})
-		},
-		getError: (key: string): string|string[] => {
-			return get(errors, key)
 		},
 		clearErrors(...fields) {
 			setErrors((errors) => {

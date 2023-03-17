@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "ESNext",
     "module": "esnext",
     "lib": ["dom", "esnext"],
     "jsx": "react",
@@ -23,5 +23,5 @@
       "./src/types",
     ],
   },
-  "include": ["src"]
+  "include": ["src", "useInertiaForm.ts.bak"]
 }
