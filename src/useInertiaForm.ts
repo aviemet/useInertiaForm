@@ -24,8 +24,8 @@ export interface UseInertiaFormProps<TForm extends NestedObject> {
 	unsetData: (key: string) => void
 	transform: (callback: (data: TForm) => TForm) => void
 	setDefaults(): void
-	setDefaults(field: keyof TForm, value: string): void
-	setDefaults(fields: Record<keyof TForm, string>): void
+	setDefaults(field: string, value: string): void
+	setDefaults(fields: Record<string, NestedObject>): void
 	reset: (fields?: string|string[]) => void
 	clearErrors: (fields?: string|string[]) => void
 	setError(field: string, value: string): void
@@ -205,11 +205,15 @@ export default function useInertiaForm<TForm extends NestedObject>(
 				setData((data) => {
 					return set(structuredClone(data), processedKey, maybeValue)
 				})
-			} else if(typeof keyOrData === 'function') {
-				setData((data) => keyOrData(data))
-			} else {
-				setData(keyOrData as TForm)
+				return
 			}
+
+			if(typeof keyOrData === 'function') {
+				setData((data) => keyOrData(data))
+				return
+			}
+
+			setData(keyOrData as TForm)
 		}, [railsAttributes]),
 
 		getData: useCallback((key: string): unknown => {
@@ -225,15 +229,17 @@ export default function useInertiaForm<TForm extends NestedObject>(
 			return setData(clone)
 		}, [data, railsAttributes]),
 
-		setDefaults: useCallback((fieldOrFields?: keyof TForm | Record<keyof TForm, string>, maybeValue?: string) => {
-			if(typeof fieldOrFields === 'undefined') {
+		setDefaults: useCallback((fieldOrFields?: string | Record<string, NestedObject>, maybeValue?: string) => {
+			if(fieldOrFields === undefined) {
 				setDefaults(() => data)
-			} else {
-				setDefaults((defaults) => ({
-					...defaults,
-					...(typeof fieldOrFields === 'string' ? { [fieldOrFields]: maybeValue } : (fieldOrFields as TForm)),
-				}))
+				return
 			}
+
+			setDefaults((defaults) => ({
+				...defaults,
+				...(typeof fieldOrFields === 'string' ? { [fieldOrFields]: maybeValue } : (fieldOrFields as TForm)),
+			}))
+
 		}, [data]),
 
 		reset: useCallback((fields) => {
@@ -269,7 +275,10 @@ export default function useInertiaForm<TForm extends NestedObject>(
 		}, [errors]),
 
 		clearErrors: useCallback((fields) => {
-			if(!fields) setErrors(undefined)
+			if(!fields) {
+				setErrors({})
+				return
+			}
 
 			const arrFields = coerceArray(fields)
 

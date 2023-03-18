@@ -129,12 +129,27 @@ describe('Form Component', () => {
 		it('sends the correct data to the server upon form submit', async () => {
 			const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
 				const data = request?.data
-				expect(get(data, 'person.nested_attributes.key')).toBe('value')
+
+				expect(get(data, 'user.username')).toBe(initialData.user.username)
+				expect(get(data, 'person.nested_attributes.key')).toBe(initialData.person.nested.key)
+				expect(get(data, 'extra.value')).toBe('exists')
+
 				return Promise.resolve({ data: request?.data })
 			})
 
+			const handleSubmit = (form) => {
+				form.transform(data => ({ ...data, extra: { value: 'exists' } }))
+			}
+
 			render(
-				<Form model="person" to="/form" data={ initialData } railsAttributes remember={ false }>
+				<Form
+					model="person"
+					to="/form"
+					data={ initialData }
+					railsAttributes
+					remember={ false }
+					onSubmit={ handleSubmit }
+				>
 					<Input name="first_name" />
 					<Input name="nested.key" />
 					<Submit>Submit</Submit>

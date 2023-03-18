@@ -102,7 +102,6 @@ const renameKey = (obj, oldKey, newKey) => {
 	}
 }
 
-
 export const coerceArray = (arg: string | string[]) => {
 	if(Array.isArray(arg)) return arg
 	return [arg]
