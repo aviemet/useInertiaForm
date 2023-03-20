@@ -1,3 +1,10 @@
+## [2.0.3](https://github.com/aviemet/useInertiaForm/compare/v2.0.2...v2.0.3) (2023-03-18)
+
+
+### Bug Fixes
+
+* 🐛 Fixes useInertiaForm callbacks and adds tests ([6b408b7](https://github.com/aviemet/useInertiaForm/commit/6b408b750056df878a77508866757bcb3bcda741))
+
 ## [2.0.2](https://github.com/aviemet/useInertiaForm/compare/v2.0.1...v2.0.2) (2023-03-17)
 
 
