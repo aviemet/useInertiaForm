@@ -2,7 +2,7 @@ import React from 'react'
 import { useForm, useFormMeta } from './Form'
 import { get, set } from 'lodash'
 import NestedFields, { useNestedAttribute } from './NestedFields'
-import { NestedObject } from './types'
+import { NestedObject } from './useInertiaForm'
 
 interface IDynamicInputsProps {
 	children: React.ReactNode

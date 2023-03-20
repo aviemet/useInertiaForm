@@ -1,71 +1,33 @@
-import React, { forwardRef, useEffect } from 'react'
-import { createContext, renameObjectWithAttributes } from '../utils'
+import React, { useEffect, useCallback } from 'react'
 import axios from 'axios'
 import useInertiaForm from '../useInertiaForm'
-import { type UseInertiaFormProps } from '../useInertiaForm'
-import { type AxiosResponse } from 'axios'
 import { type Visit } from '@inertiajs/core'
-import { NestedObject } from '../types'
-import { useCallback } from 'react'
+import { NestedObject } from '../useInertiaForm'
+import { FormProps, type UseFormProps } from '.'
+import { FormProvider } from './FormProvider'
 
-export type HTTPVerb = 'post' | 'put' | 'get' | 'patch' | 'delete'
+interface FormComponentProps<TForm> extends Omit<FormProps<TForm>, 'railsAttributes'>{}
 
-/**
- * useForm declaration
- */
-export interface UseFormProps<TForm extends NestedObject = {}> extends UseInertiaFormProps<TForm> {
-	model?: string
-	method: HTTPVerb
-	to?: string
-	getData: (key: string) => unknown
-	getError: (key: string) => string|string[]|undefined
-	unsetData: (key: string) => void
-	submit: () => Promise<AxiosResponse<any> | UseInertiaFormProps<TForm> | void>
-}
+const Form = <TForm extends NestedObject>({
+	children,
+	model,
+	data,
+	method = 'post',
+	to,
+	async = false,
+	remember = true,
+	onSubmit,
+	onChange,
+	onSuccess,
+	onError,
+	...props
+}: FormComponentProps<TForm>) => {
 
-const [useForm, FormProvider] = createContext<UseFormProps<NestedObject>>()
-export { useForm }
+	const form = remember && (model || to) ? useInertiaForm<TForm>(`${method}/${model || to}`, data) : useInertiaForm<TForm>(data)
 
-/**
- * Form component declaration
- */
-type PartialTMLForm = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange'|'onSubmit'|'onError'>
-export interface FormComponentProps<TForm extends NestedObject> extends PartialTMLForm {
-	data: TForm
-	model?: string
-	method?: HTTPVerb
-	to?: string
-	async?: boolean
-	remember?: boolean
-	railsAttributes?: boolean
-	onSubmit?: (form: UseFormProps<TForm>) => boolean|void
-	onChange?: (form: UseFormProps<TForm>) => void
-	onSuccess?: (form: UseFormProps<TForm>) => void
-	onError?: (form: UseFormProps<TForm>) => void
-}
-
-const Form = <TForm extends NestedObject>(
-	{
-		children,
-		model,
-		data,
-		method = 'post',
-		to,
-		async = false,
-		remember = true,
-		railsAttributes = false,
-		onSubmit,
-		onChange,
-		onSuccess,
-		onError,
-		...props
-	}: FormComponentProps<TForm>,
-	ref: React.ForwardedRef<HTMLFormElement>,
-) => {
-	const defaultData = railsAttributes ? renameObjectWithAttributes<TForm>(data) : data
-	const form = remember && (model || to) ? useInertiaForm(`${method}/${model || to}`, defaultData) : useInertiaForm(defaultData)
-
-	const contextValueObject = useCallback(() => ({ ...form, model, method, to, submit }), [form.data])
+	const contextValueObject = useCallback((): UseFormProps<TForm> => (
+		{ ...form, model, method, to, submit }
+	), [form.data])
 
 	/**
 	 * Submits the form. If async prop is true, submits using axios,
@@ -116,11 +78,11 @@ const Form = <TForm extends NestedObject>(
 
 	return (
 		<FormProvider value={ contextValueObject() }>
-			<form onSubmit={ handleSubmit } ref={ ref } { ...props }>
+			<form onSubmit={ handleSubmit } { ...props }>
 				{ children }
 			</form>
 		</FormProvider>
 	)
 }
 
-export default forwardRef(Form)
+export default Form

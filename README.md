@@ -138,7 +138,7 @@ Since most projects will define their own set of reusable components, a `<Form>`
 | `to`              | `undefined` | Path to send the request to when the form is submitted. If this is omitted, submitting the form will do nothing except call `onSubmit` |
 | `async`           | `false`     | If true, uses `axios` methods to send form data. If false, uses Inertia's `useForm.submit` method. |
 | `remember`        | `true`      | If true, stores form data in local storage using the key `${method}/${model || to}`. If one of `model` or `to` are not defined, data is not persisted |
-| `railsAttributes` | `false`     | If true, rewrites nested attributes by appending `'_attributes'` to the key. Getters and setters handle the rewrites for you, which means you don't need to add the `'_attributes'` when dealing with form data |
+| `railsAttributes` | `false`     | If true, appends '_attributes' to nested data keys before submitting. |
 | `onSubmit`        | `undefined` | Called when the form is submitted, fired just before sending the request. If the method returns `false`, submit is canceled |
 | `onChange`        | `undefined` | Called every time the form data changes |
 | `onSuccess`       | `undefined` | Called when the form has been successfully submitted |
@@ -246,3 +246,34 @@ With the default Rails behavior of transforming nested attribute names, the serv
   }
 }
 ```
+
+In order to wrap the `Form` component in your own component, for styling or any other purpose, you'll need to extend the `NestedObject` type.
+
+```typescript
+import React from 'react'
+import { Form as InertiaForm, type FormProps, type NestedObject } from 'use-inertia-form'
+import cx from 'clsx'
+
+interface IFormProps<TForm> extends FormProps<TForm> {
+  wrapperClassName: string
+}
+
+const MyForm = <TForm extends NestedObject>(
+  { children, model, wrapperClassName, railsAttributes = true, ...props }: IFormProps<TForm>,
+) => {
+  return (
+    <div className={ cx(`${model}-form`, wrapperClassName) }>
+      <InertiaForm
+        railsAttributes={ railsAttributes }
+        { ...props }
+      >
+        { children }
+      </InertiaForm>
+    </div>
+  )
+}
+
+export default MyForm
+```
+
+Due to how generic types are transferred in typescript, you won't be able to memoize or forward refs without some workarounds.

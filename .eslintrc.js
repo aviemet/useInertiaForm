@@ -22,6 +22,7 @@ module.exports = {
 		'sourceType': 'module',
 		'requireConfigFile': false,
 	},
+	'ignorePatterns': ['dist/*'],
 	'rules': {
 		'eqeqeq': 'off',
 

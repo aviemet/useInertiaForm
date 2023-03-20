@@ -1,6 +1,5 @@
-import { useForm, useFormMeta } from '../Form'
+import { useForm } from '../Form'
 import { useNestedAttribute } from '../NestedFields'
-import { renameWithAttributes } from '../utils'
 import inputStrategy, { type InputStrategy } from './inputStrategy'
 
 interface UseInertiaInputProps {
@@ -12,7 +11,7 @@ interface UseInertiaInputProps {
 /**
  * Returns form data and input specific methods to use with an input.
  */
-const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = inputStrategy }: UseInertiaInputProps) => {
+const useInertiaInput = <T = number|string>({ name, model, strategy = inputStrategy }: UseInertiaInputProps) => {
 	const form = useForm()
 
 	let usedModel = model ?? form.model
@@ -22,20 +21,11 @@ const useInertiaInput = <T = number|string|string[]>({ name, model, strategy = i
 		usedModel += `.${nested}`
 	} catch(e) {}
 
-	let railsAttributes = false
-
-	try {
-		const meta = useFormMeta()
-		railsAttributes = meta.railsAttributes
-	} catch(e) {}
-
 	const { inputName, inputId } = strategy(name, usedModel)
-
-	const processedInputName = railsAttributes ? renameWithAttributes(inputName) : inputName
 
 	return {
 		form,
-		inputName: processedInputName,
+		inputName: inputName,
 		inputId,
 		value: form.getData(inputName) as T,
 		setValue: (value: T) => {

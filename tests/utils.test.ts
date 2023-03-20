@@ -1,4 +1,4 @@
-import { NestedObject } from '../src/types'
+import { NestedObject } from '../src/useInertiaForm'
 import { coerceArray, fillEmptyValues, renameObjectWithAttributes, renameWithAttributes, stripAttributes, unsetCompact } from '../src/utils'
 
 const nestedData: NestedObject = {

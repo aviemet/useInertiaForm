@@ -1,6 +1,6 @@
 import React from 'react'
 import { isPlainObject, unset, get, set } from 'lodash'
-import { type NestedObject } from './types'
+import { type NestedObject } from './useInertiaForm'
 
 export const createContext = <T extends {} | null>() => {
 	const ctx = React.createContext<T | undefined>(undefined)
@@ -31,7 +31,7 @@ export const unsetCompact = (data: NestedObject, path: string) => {
 	}
 }
 
-export const fillEmptyValues = <TForm extends NestedObject>(data: TForm) => {
+export const fillEmptyValues = <TForm>(data: TForm) => {
 	const sanitizedDefaultData = structuredClone(data)
 
 	for(const key in sanitizedDefaultData) {
@@ -72,13 +72,12 @@ export const stripAttributes = (str: string, attribute = '_attributes') => {
 	return str.replace(new RegExp(`${attribute}\\.`), '.')
 }
 
-export const renameObjectWithAttributes = <T extends NestedObject>(data: T, str = '_attributes') => {
+export const renameObjectWithAttributes = <T>(data: T, str = '_attributes') => {
 	const clone = structuredClone(data)
 
 	// Start at one level deep
 	Object.values(clone).forEach(value => {
 		if(isPlainObject(value)){
-		// @ts-ignore - Can't figure out how to type arbitrarily deep nested objects
 			recursiveRename(value, str)
 		}
 	})

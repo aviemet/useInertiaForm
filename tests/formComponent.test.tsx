@@ -95,25 +95,7 @@ describe('Form Component', () => {
 			expect(input).toHaveValue(initialData.user.username)
 		})
 
-		it('rewrites nested attributes', () => {
-			render(
-				<Form role="form" to="/form"
-					data={ { ...initialData } }
-					model="person"
-					railsAttributes={ true }
-					remember={ false }
-				>
-					<Input name="nested.key" />
-				</Form>,
-			)
-
-			const input = screen.getByRole('textbox')
-
-			expect(input).toHaveAttribute('name', 'person.nested_attributes.key')
-			expect(input).toHaveValue(initialData.person.nested.key)
-		})
-
-		it('updates values with rails attributes naming', () => {
+		it('updates values as normal', () => {
 			render(
 				<Form to="/form" data={ initialData } model="person" railsAttributes={ true } remember={ false }>
 					<Input name="nested.key" />

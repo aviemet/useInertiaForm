@@ -20,7 +20,6 @@
     "skipLibCheck": true,
     "typeRoots": [
       "./node_modules/@types",
-      "./src/types",
     ],
   },
   "include": ["src", "useInertiaForm.ts.bak"]
