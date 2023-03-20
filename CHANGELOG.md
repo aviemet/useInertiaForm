@@ -1,3 +1,10 @@
+## [2.0.4](https://github.com/aviemet/useInertiaForm/compare/v2.0.3...v2.0.4) (2023-03-20)
+
+
+### Bug Fixes
+
+* 🐛 Improves typing, memoizes useForm return values ([05a3237](https://github.com/aviemet/useInertiaForm/commit/05a3237272d325f015a320192d1374127cfcb11b))
+
 ## [2.0.3](https://github.com/aviemet/useInertiaForm/compare/v2.0.2...v2.0.3) (2023-03-18)
 
 
