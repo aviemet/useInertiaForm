@@ -1,3 +1,10 @@
+## [2.0.5](https://github.com/aviemet/useInertiaForm/compare/v2.0.4...v2.0.5) (2023-03-21)
+
+
+### Bug Fixes
+
+* 🐛 Fixes incorrect inertia router import and setData memo ([b2b48d9](https://github.com/aviemet/useInertiaForm/commit/b2b48d9457eb6cb89026ce20b4e323c49fe37891))
+
 ## [2.0.4](https://github.com/aviemet/useInertiaForm/compare/v2.0.3...v2.0.4) (2023-03-20)
 
 
