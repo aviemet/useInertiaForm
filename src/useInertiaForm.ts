@@ -1,6 +1,7 @@
-import { Method, Progress, router, VisitOptions, type RequestPayload } from '@inertiajs/core'
-import { get, isEqual, set } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Method, Progress, VisitOptions, type RequestPayload } from '@inertiajs/core'
+import { router } from '@inertiajs/react'
+import { get, isEqual, set } from 'lodash'
 import { useRemember } from '@inertiajs/react'
 import { coerceArray, fillEmptyValues, renameObjectWithAttributes, unsetCompact } from './utils'
 import { useFormMeta } from './Form/FormMetaWrapper'
@@ -210,7 +211,7 @@ export default function useInertiaForm<TForm>(
 			transformRef.current = callback
 		}, []),
 
-		setData: useCallback((keyOrData: string|TForm|((previousData: TForm) => TForm), maybeValue?: string|number|undefined) => {
+		setData: (keyOrData: string|TForm|((previousData: TForm) => TForm), maybeValue?: string|number|undefined) => {
 			if(typeof keyOrData === 'string') {
 				return setData(data => {
 					const clone = structuredClone(data)
@@ -225,7 +226,7 @@ export default function useInertiaForm<TForm>(
 			}
 
 			setData(keyOrData)
-		}, []),
+		},
 
 		getData: useCallback((key: string): unknown => {
 			return get(data, key)
