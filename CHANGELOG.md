@@ -1,3 +1,10 @@
+## [2.0.7](https://github.com/aviemet/useInertiaForm/compare/v2.0.6...v2.0.7) (2023-03-22)
+
+
+### Bug Fixes
+
+* 🐛 Fixes fillEmptyValues to include nested arrays ([4089f82](https://github.com/aviemet/useInertiaForm/commit/4089f828cb87e8a03fe09487b5a7d0fcc7a5662b))
+
 ## [2.0.6](https://github.com/aviemet/useInertiaForm/compare/v2.0.5...v2.0.6) (2023-03-22)
 
 
