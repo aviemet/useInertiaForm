@@ -1,3 +1,10 @@
+## [2.0.6](https://github.com/aviemet/useInertiaForm/compare/v2.0.5...v2.0.6) (2023-03-22)
+
+
+### Bug Fixes
+
+* 🐛 Fixes unsetData ([21749d9](https://github.com/aviemet/useInertiaForm/commit/21749d93cf6004ab640f1ce865149bd8fdeb9ce9))
+
 ## [2.0.5](https://github.com/aviemet/useInertiaForm/compare/v2.0.4...v2.0.5) (2023-03-21)
 
 
