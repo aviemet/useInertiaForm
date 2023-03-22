@@ -234,8 +234,9 @@ export default function useInertiaForm<TForm>(
 
 		unsetData: useCallback((key: string) => {
 			setData(data => {
-				unsetCompact(data as NestedObject, key)
-				return data
+				const clone = structuredClone(data)
+				unsetCompact(clone as NestedObject, key)
+				return clone
 			})
 		}, [data]),
 
