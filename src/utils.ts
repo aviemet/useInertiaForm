@@ -32,19 +32,22 @@ export const unsetCompact = (data: NestedObject, path: string) => {
 }
 
 export const fillEmptyValues = <TForm>(data: TForm) => {
-	const sanitizedDefaultData = structuredClone(data)
+	const clone = structuredClone(data)
 
-	for(const key in sanitizedDefaultData) {
-		if(isPlainObject(sanitizedDefaultData[key])) {
+	for(const key in clone) {
+		if(isPlainObject(clone[key])) {
 			// @ts-ignore
-			sanitizedDefaultData[key] = fillEmptyValues(sanitizedDefaultData[key])
-		} else if(sanitizedDefaultData[key] === undefined || sanitizedDefaultData[key] === null) {
+			clone[key] = fillEmptyValues(clone[key])
+		} else if(Array.isArray(clone[key])) {
 			// @ts-ignore
-			sanitizedDefaultData[key] = ''
+			clone[key] = clone[key].map(el => fillEmptyValues(el))
+		} else if(clone[key] === undefined || clone[key] === null) {
+			// @ts-ignore
+			clone[key] = ''
 		}
 	}
 
-	return sanitizedDefaultData
+	return clone
 }
 
 /**
