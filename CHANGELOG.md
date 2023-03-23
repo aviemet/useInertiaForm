@@ -1,3 +1,10 @@
+## [2.0.8](https://github.com/aviemet/useInertiaForm/compare/v2.0.7...v2.0.8) (2023-03-23)
+
+
+### Bug Fixes
+
+* 🐛 Includes array access notation in attributes rewrite ([d7dbb59](https://github.com/aviemet/useInertiaForm/commit/d7dbb59e5716b6e6a8acd5d070a7dd4b6a1b0f87))
+
 ## [2.0.7](https://github.com/aviemet/useInertiaForm/compare/v2.0.6...v2.0.7) (2023-03-22)
 
 
