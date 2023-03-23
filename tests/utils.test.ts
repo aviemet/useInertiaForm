@@ -106,34 +106,35 @@ describe('stripAttributes', () => {
 })
 
 const mockFormData = {
-	user: {
-		id: 1,
-		username: 'something',
-		person: {
-			id: 1,
-			first_name: 'first',
+	person: {
+		first_name: 'Something',
+		user: {
+			username: 'something',
+		},
+		contact: {
+			emails: [
+				{ email: 'something@email.com' },
+			],
 		},
 	},
-	roles: [
-		{ id: 1, name: 'admin' },
-	],
 }
 
 describe('renameObjectWithAttributes', () => {
 	it('should append attributes to keys deeper than the first level which contain another object', () => {
 		const data = renameObjectWithAttributes(mockFormData)
+
 		expect(data).toMatchObject({
-			user: {
-				id: 1,
-				username: 'something',
-				person_attributes: {
-					id: 1,
-					first_name: 'first',
+			person: {
+				first_name: 'Something',
+				user_attributes: {
+					username: 'something',
+				},
+				contact_attributes: {
+					emails_attributes: [
+						{ email: 'something@email.com' },
+					],
 				},
 			},
-			roles: [
-				{ id: 1, name: 'admin' },
-			],
 		})
 	})
 })

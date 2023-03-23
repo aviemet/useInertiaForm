@@ -31,7 +31,7 @@ const useInertiaInput = <T = number|string>({ name, model, strategy = inputStrat
 		setValue: (value: T) => {
 			return form.setData(inputName, value)
 		},
-		error: form.getError(inputName),
+		error: form.getError(name),
 	}
 }
 

@@ -186,8 +186,10 @@ export default function useInertiaForm<TForm>(
 				},
 			}
 
-			const transformedData = railsAttributes ?
-				renameObjectWithAttributes(transformRef.current(data)) : transformRef.current(data)
+			let transformedData = transformRef.current(structuredClone(data))
+			if(railsAttributes) {
+				transformedData = renameObjectWithAttributes(transformedData)
+			}
 
 			if(method === 'delete') {
 				router.delete(url, { ..._options, data: transformedData as RequestPayload })
