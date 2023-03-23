@@ -62,6 +62,8 @@ export const renameWithAttributes = (str: string, append = '_attributes') => {
 	for(let i = parts.length - 2; i > 0; i--) {
 		if(parts[i].charAt(parts[i].length - 1) !== ']') {
 			parts[i] = `${parts[i]}${append}`
+		} else {
+			parts[i].replace('[', '_attributes[')
 		}
 	}
 
@@ -89,7 +91,7 @@ export const renameObjectWithAttributes = <T>(data: T, str = '_attributes') => {
 
 const recursiveRename = (data: NestedObject, str) => {
 	Object.entries(data).forEach(([key, value]) => {
-		if(isPlainObject(value)) {
+		if(isPlainObject(value) || Array.isArray(value)) {
 			renameKey(data, key, `${key}${str}`)
 			// @ts-ignore - Can't figure out how to type arbitrarily deep nested objects
 			recursiveRename(value, str)
