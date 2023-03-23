@@ -1,3 +1,10 @@
+## [2.0.9](https://github.com/aviemet/useInertiaForm/compare/v2.0.8...v2.0.9) (2023-03-23)
+
+
+### Bug Fixes
+
+* 🐛 Nested arrays properly renamed, errors properly set ([e2629d9](https://github.com/aviemet/useInertiaForm/commit/e2629d90a315260161ea55efa712d72375d001a6))
+
 ## [2.0.8](https://github.com/aviemet/useInertiaForm/compare/v2.0.7...v2.0.8) (2023-03-23)
 
 
