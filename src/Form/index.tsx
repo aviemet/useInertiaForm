@@ -40,7 +40,7 @@ const Form = <TForm extends NestedObject>({
 
 	const contextValueObject = useCallback((): UseFormProps<TForm> => (
 		{ ...form, model, method, to, submit }
-	), [form.data])
+	), [form.data, form.errors])
 
 	/**
 	 * Submits the form. If async prop is true, submits using axios,
