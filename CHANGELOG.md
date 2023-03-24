@@ -1,3 +1,10 @@
+## [2.0.11](https://github.com/aviemet/useInertiaForm/compare/v2.0.10...v2.0.11) (2023-03-24)
+
+
+### Bug Fixes
+
+* 🐛 Adds errors to dependency array in Form component ([f342147](https://github.com/aviemet/useInertiaForm/commit/f342147b10a29ab1ee1e0e7067d5ed0c33d21b02))
+
 ## [2.0.10](https://github.com/aviemet/useInertiaForm/compare/v2.0.9...v2.0.10) (2023-03-24)
 
 
