@@ -1,3 +1,10 @@
+## [2.0.12](https://github.com/aviemet/useInertiaForm/compare/v2.0.11...v2.0.12) (2023-03-24)
+
+
+### Bug Fixes
+
+* 🐛 Only resets form data after success if async ([3f970c7](https://github.com/aviemet/useInertiaForm/commit/3f970c704d4e0b438e5836b4a550c551e4ffd85a))
+
 ## [2.0.11](https://github.com/aviemet/useInertiaForm/compare/v2.0.10...v2.0.11) (2023-03-24)
 
 
