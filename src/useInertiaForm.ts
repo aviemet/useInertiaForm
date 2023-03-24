@@ -57,15 +57,20 @@ export default function useInertiaForm<TForm>(
 	const isMounted = useRef<boolean>()
 
 	// Data
-	let rememberKey = null
-	let transformedData = rememberKeyOrInitialValues
-	if(typeof rememberKeyOrInitialValues === 'string') {
-		rememberKey = rememberKeyOrInitialValues
-		transformedData = maybeInitialValues
-	}
+	const getFormArguments = useCallback((): [string, TForm] => {
+		let rememberKey: string = null
+		let transformedData = rememberKeyOrInitialValues
+		if(typeof rememberKeyOrInitialValues === 'string') {
+			rememberKey = rememberKeyOrInitialValues
+			transformedData = maybeInitialValues
+		}
+		return [rememberKey, fillEmptyValues(transformedData as TForm)]
+	}, [rememberKeyOrInitialValues, maybeInitialValues])
 
-	const [defaults, setDefaults] = useState((fillEmptyValues(transformedData) || {}) as TForm)
-	const [data, setData] = rememberKey ? useRemember<TForm>(defaults, `${rememberKey}:data`) : useState<TForm>(defaults)
+	const [rememberKey, transformedData] = getFormArguments()
+
+	const [defaults, setDefaults] = useState(transformedData || {} as TForm)
+	const [data, setData] = rememberKey ? useRemember<TForm>(transformedData, `${rememberKey}:data`) : useState<TForm>(transformedData)
 
 	// Errors
 	const [errors, setErrors] = rememberKey

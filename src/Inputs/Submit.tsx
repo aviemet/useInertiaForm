@@ -9,9 +9,9 @@ const Submit = React.forwardRef<HTMLButtonElement, ButtonProps>((
 	{ children, type = 'submit', disabled, component = 'button', ...props },
 	ref,
 ) => {
-	const { processing } = useForm()
+	const { processing, isDirty } = useForm()
 
-	const finalProps = { children, type, disabled: disabled || processing, ref, ...props }
+	const finalProps = { children, type, disabled: disabled || processing || !isDirty, ref, ...props }
 
 	if(typeof component === 'string') {
 		return React.createElement(component, finalProps)
