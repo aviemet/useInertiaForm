@@ -1,3 +1,10 @@
+## [2.0.13](https://github.com/aviemet/useInertiaForm/compare/v2.0.12...v2.0.13) (2023-03-24)
+
+
+### Bug Fixes
+
+* 🐛 Removes disabled conditions from Submit button ([403270a](https://github.com/aviemet/useInertiaForm/commit/403270a3e6ee48e74c9703722df2d396762b5bb8))
+
 ## [2.0.12](https://github.com/aviemet/useInertiaForm/compare/v2.0.11...v2.0.12) (2023-03-24)
 
 
