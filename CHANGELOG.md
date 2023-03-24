@@ -1,3 +1,10 @@
+## [2.0.10](https://github.com/aviemet/useInertiaForm/compare/v2.0.9...v2.0.10) (2023-03-24)
+
+
+### Bug Fixes
+
+* 🐛 Refactors Form component to eliminate a file ([89e370f](https://github.com/aviemet/useInertiaForm/commit/89e370f2081ce85d214151592c0ae215a0980075))
+
 ## [2.0.9](https://github.com/aviemet/useInertiaForm/compare/v2.0.8...v2.0.9) (2023-03-23)
 
 
