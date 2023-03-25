@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { Form } from '../src/Form'
 import Input from '../src/Inputs/Input'
-import { Submit } from '../src'
+import { DynamicInputs, Submit } from '../src'
 import { router } from '@inertiajs/react'
 import { get } from 'lodash'
 
@@ -144,5 +144,21 @@ describe('Form Component', () => {
 			expect(mockRequest).toHaveBeenCalled()
 		})
 
+	})
+
+	describe('DynamicInputs', () => {
+		it('renders dynamic input fields', () => {
+			render(
+				<Form to="/form" data={ initialData } model="contact" remember={ false }>
+					<DynamicInputs model="phones" emptyData={ { number: '' } }>
+						<Input name="number" />
+					</DynamicInputs>
+				</Form>,
+			)
+
+			const buttons = screen.getAllByRole('button')
+
+			expect(buttons.length).toBe(4)
+		})
 	})
 })

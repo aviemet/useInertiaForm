@@ -4,8 +4,9 @@ import { get, set } from 'lodash'
 import NestedFields, { useNestedAttribute } from './NestedFields'
 import { NestedObject } from './useInertiaForm'
 
-interface IDynamicInputsProps {
+interface DynamicInputsProps {
 	children: React.ReactNode
+	model?: string
 	emptyData: Record<string, unknown>
 	addInputButton?: JSX.Element
 	removeInputButton?: JSX.Element
@@ -18,10 +19,11 @@ interface IDynamicInputsProps {
  */
 const DynamicInputs = ({
 	children,
+	model,
 	emptyData,
 	addInputButton = <button>+</button>,
 	removeInputButton = <button>-</button>,
-}: IDynamicInputsProps) => {
+}: DynamicInputsProps) => {
 	const { setData, unsetData, getData } = useForm()
 	const { model: formModel } = useFormMeta()
 	let inputModel = formModel ?? ''
@@ -31,9 +33,9 @@ const DynamicInputs = ({
 		inputModel = formModel ? `${inputModel}.${nestedModel}` : nestedModel
 	} catch(e) {}
 
-	const handleAddInputs = () => {
-		if(!formModel) return
+	inputModel = `${inputModel}.${model || ''}`
 
+	const handleAddInputs = () => {
 		setData((formData: NestedObject) => {
 			const clone = structuredClone(formData)
 			let node: unknown[] = get(clone, inputModel) as unknown[]
@@ -60,7 +62,7 @@ const DynamicInputs = ({
 		<>
 			{ React.cloneElement(addInputButton, { onClick: handleAddInputs, type: 'button' }) }
 			{ Array.isArray(data) && data.map((_: unknown, i: number) => (
-				<NestedFields key={ i } model={ `[${i}]` }>
+				<NestedFields key={ i } model={ `${model || ''}[${i}]` }>
 					<div>{ children }</div>
 					{ React.cloneElement(removeInputButton, { onClick: () => handleRemoveInputs(i), type: 'button' }) }
 				</NestedFields>

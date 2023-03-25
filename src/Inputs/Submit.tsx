@@ -2,7 +2,7 @@ import React from 'react'
 import { useForm } from '../Form'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-	component?: string | JSX.Element
+	component?: string | React.ComponentType
 }
 
 const Submit = React.forwardRef<HTMLButtonElement, ButtonProps>((
@@ -11,13 +11,11 @@ const Submit = React.forwardRef<HTMLButtonElement, ButtonProps>((
 ) => {
 	const { processing } = useForm()
 
-	const finalProps = { children, type, disabled: disabled || processing, ref, ...props }
+	const Element = component
 
-	if(typeof component === 'string') {
-		return React.createElement(component, finalProps)
-	}
-
-	return React.cloneElement(component, finalProps)
+	return (
+		<Element { ...{ children, type, disabled: disabled || processing, ref, ...props } } />
+	)
 })
 
 export default Submit

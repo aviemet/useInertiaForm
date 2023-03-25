@@ -1,8 +1,8 @@
 # Introduction
 
-A hook for using Inertia.js forms, meant to be used as a direct replacement of Inertia's `useForm` hook.
+A hook for using forms with Inertia.js, meant to be used as a direct replacement of Inertia's `useForm` hook.
 
-It address two issues with the original; [the bug preventing the `transform` method from running on submit](https://github.com/inertiajs/inertia/issues/1131), and the lack of support for nested form data.
+It address two issues with the original; [the bug preventing the `transform` method from running on submit](https://github.com/inertiajs/inertia/issues/1131), and [the lack of support for nested form data](https://github.com/inertiajs/inertia/discussions/1174).
 
 This was developed alongside a Rails project, so the form handling ethos follows Rails conventions, however, effort was taken to make it as agnostic as possible and it should be useable in a Laravel application as well.
 
@@ -12,7 +12,7 @@ This package provides three main exports; `useInertiaForm`, `useInertiaInput`, a
 
 This hook returns a superset of the original return values of `useForm`, meaning it can be swapped in without breaking anything. It overrides the signature of `setData`, allowing the use of dot-notation when supplying a string as its first argument. It also overrides `setErrors`, `getError` and `setDefaults`, and provides the new methods `getData` and `unsetData` to allow easily setting and getting nested form data and errors. All of the nested data handlers use the lodash methods `set`, `unset` and `get`.
 
-Initial data values are run through a sanitizing method which replaces any `null` or `undefined` values with empty strings. React cannot register that an input is controlled if its initial value is `null` or `undefined`, so doing this allows you to directly pass returned json from the server which may have undefined values into the hook without having React complain.
+Initial data values are run through a sanitizing method which replaces any `null` or `undefined` values with empty strings. React cannot register that an input is controlled if its initial value is `null` or `undefined`, so doing this allows you to directly pass returned json from the server which may have undefined values into the hook without React complaining.
 
 Instantiate it the same way you would with Inertia's `useForm`:
 
@@ -37,7 +37,7 @@ console.log(data)
 You can now use dot-notation to set nested data on the form data object.
 
 ```javascript
-setData('user.lastNameName', 'Human')
+setData('user.lastName', 'Human')
 setData('user.brothers[0]', 'Jake')
 /* { 
   user: { 
@@ -48,11 +48,9 @@ setData('user.brothers[0]', 'Jake')
 } */
 ```
 
-If the first argument is not a string, falls back to using the Inertia implementation of `setData` which is a flat object assignment.
-
 ### `getData`
 
-Allows looking up nested data using dot-notation.
+Retrieve nested data using dot-notation.
 
 ```javascript
 getData('user.firstName')
@@ -73,17 +71,9 @@ unsetData('user.brothers')
 } */
 ```
 
-### `setError`
-
-Allows setting a nested error from the form errors object using dot notation.
-
-```javascript
-setError('user.firstName', 'Must not be blank')
-```
-
 ### `getError`
 
-Allows getting a nested error from the form errors object using dot notation.
+Retrieve errors using dot notation.
 
 ```javascript
 getError('user.firstName')
@@ -109,7 +99,7 @@ const TextInput = ({ name, model, label }) => {
       value={ value }
       onChange={ setValue(e => e.target.value) }
     >
-    { error ?? <SomeErrorComponent>{ error }</SomeErrorComponent> }
+    { error ?? <div className="error">{ error }</div> }
   )
 }
 
@@ -128,7 +118,7 @@ This will produce the following HTML:
 
 ## &lt;Form&gt;
 
-Since most projects will define their own set of reusable components, a `<Form>` component has been provided which uses React's Context API to manage form state. In order to use `useInertiaInput`, it must be within the context of this component.
+Provides context for using form data and `useInertiaInput`. For rails backends, setting the prop `railsAttributes` to true will rewrite nested form data keys, appending the string "_attributes". This makes it possible to use `accepts_nested_attributes_for` in an ActiveRecord model.
 
 | Prop            | Default   | Description |
 | --------------- | --------- | -- |
@@ -144,15 +134,13 @@ Since most projects will define their own set of reusable components, a `<Form>`
 | `onSuccess`       | `undefined` | Called when the form has been successfully submitted |
 | `onError`         | `undefined` | Called when an error is set, either manually or by a server response |
 
-Basic example:
+Basic example (using the `TextInput` component defined in the example above):
 
 ```javascript
 const user = {
   user: {
     firstName: "Jake",
-  }
-  userRole: {
-    role: 'dog',
+    email: "jake@thetreehouse.ooo"
   }
 }
 
@@ -161,98 +149,22 @@ const PageWithFormOnIt = ({ user }) => {
     <Form
       model="user"
       data={ { user } }
-      to={ `user/${user.id}` }
+      to={ `users/${user.id}` }
       method="patch"
     >
       <TextInput name="firstName" label="First Name" />
 
-      <TextInput name="userRole" label="Role" />
-    </Form>
-  )
-}
-
-```
-
-The above component produces the following HTML (assuming the TextInput component is the same as the example from the previous section):
-
-```html
-<form>
-  <label for="user_firstName">
-  <input id="user_firstName" type="text" name="user.firstName" value="Jake" />
-
-  <label for="userRole_role">
-  <input id="userRole_role" type="text" name="userRole.role" value="admin" />
-</form>
-```
-
-The form data object would look as such:
-
-```javascript
-{
-  user: {
-    firstName: "Jake",
-    ticket: {
-      name: ""
-    }
-  },
-  person_role: {
-    role: ""
-  }
-}
-```
-
-When using the `Form` component, the `NestedFields` component becomes available as well. This makes it easy to add nested data which can then optionally be transformed before being submitted to the server. By default, Rails controllers want nested data to have '_attributes' appended to the key, which is also the default for `NestedFields` input data. This can be changed through the `renameNestedAttributes` prop which either accepts `false` to disable attribute renaming, or a function in the form `(attribute: string) => string`.
-
-```javascript
-const user = {
-  user: {
-    firstName: "Jake"
-  }
-}
-
-const PageWithFormOnIt = ({ user }) => {
-  return (
-    <Form
-      model="user"
-      data={ { user } }
-      to={ `user/${user.id}` }
-      method="patch"
-    >
-      <TextInput name="firstName" label="First Name" />
-
-      <TextInput name="role" model="person_role" />
-
-      <NestedFields model="ticket">
-        <TextInput name="name" label="Ticket Name" />
-        <TextInput name="number" label="Ticket Number" />
-      </NestedFields>
+      <TextInput name="email" label="Email" />
     </Form>
   )
 }
 ```
 
-With the default Rails behavior of transforming nested attribute names, the server would receive this data in the following form:
-
-```javascript
-{
-  user: {
-    firstName: "Jake",
-    ticket_attributes: {
-      name: ""
-    }
-  },
-  person_role: {
-    role: ""
-  }
-}
-```
-
-In order to wrap the `Form` component in your own component, for styling or any other purpose, you'll need to extend the `NestedObject` type.
+In order to wrap the `Form` component in your own component, for styling or any other purpose, you'll need to extend the `NestedObject` type when using typescript.
 
 ```typescript
 import React from 'react'
 import { Form as InertiaForm, type FormProps, type NestedObject } from 'use-inertia-form'
-import cx from 'clsx'
 
 interface IFormProps<TForm> extends FormProps<TForm> {
   wrapperClassName: string
@@ -262,7 +174,7 @@ const MyForm = <TForm extends NestedObject>(
   { children, model, wrapperClassName, railsAttributes = true, ...props }: IFormProps<TForm>,
 ) => {
   return (
-    <div className={ cx(`${model}-form`, wrapperClassName) }>
+    <div className={ `${model}-form wrapperClassName` }>
       <InertiaForm
         railsAttributes={ railsAttributes }
         { ...props }
@@ -276,4 +188,74 @@ const MyForm = <TForm extends NestedObject>(
 export default MyForm
 ```
 
-Due to how generic types are transferred in typescript, you won't be able to memoize or forward refs without some workarounds.
+### &lt;NestedFields&gt;
+
+Provides context for nesting inputs.
+
+```javascript
+const user = {
+  firstName: 'Finn',
+  preferences: {
+    princess: 'Bubblegum',
+    sword: 'Scarlet'
+  }
+}
+
+const PageWithFormOnIt = ({ user }) => {
+  return (
+    <Form
+      model="user"
+      data={ { user } }
+      to={ `users/${user.id}` }
+      method="patch"
+    >
+      <TextInput name="firstName" label="First Name" />
+
+      <NestedFields model="preferences">
+        <TextInput name="princess" label="Favorite Princess" />
+        <TextInput name="sword" label="Favorite Sword" />
+      </NestedFields>
+    </Form>
+  )
+}
+```
+
+### &lt;DynamicInputs&gt;
+
+Provides an interface for array data.
+
+```javascript
+const user = {
+  firstName: 'Finn',
+  emails: [
+    { email: 'finn@treehouse.ooo', type: 'personal' },
+    { email: 'professional@human.ooo', type: 'work' }
+  ]
+}
+
+const emptyEmail = { email: '', type: '' }
+
+const PageWithFormOnIt = ({ user }) => {
+  return (
+    <Form
+      model="user"
+      data={ { user } }
+      to={ `users/${user.id}` }
+      method="patch"
+    >
+      <TextInput name="firstName" label="First Name" />
+
+      <DynamicInputs emptyData={ emptyEmail }>
+        <TextInput name="email" label="Email" />
+        <TextInput name="type" label="Email Type" />
+      </DynamicInputs>
+    </Form>
+  )
+}
+```
+
+This will render two sets of inputs, one for each email object in the initial data passed to the form. It also renders buttons for adding and removing sets of inputs which can be customized using the `addInputButton` and `removeInputButton` props.
+
+### &lt;Submit&gt;
+
+Renders a button which will submit the form. Passes the `disabled` prop to the enclosed button if the form is processing. Accepts a component as a prop for use with component libraries.

@@ -3,16 +3,20 @@ import useInertiaInput from '../useInertiaInput'
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 	name: string
+	model?: string
+	component?: React.ElementType
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>((
-	{ name, ...props },
+	{ name, component = 'input', model, ...props },
 	ref,
 ) => {
-	const { inputName, inputId, value, setValue } = useInertiaInput({ name })
+	const { inputName, inputId, value, setValue } = useInertiaInput({ name, model })
+
+	const Element = component
 
 	return (
-		<input
+		<Element
 			name={ inputName }
 			id={ inputId }
 			value={ value }
