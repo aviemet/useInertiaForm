@@ -1,5 +1,5 @@
 import React from 'react'
-import { useForm } from '../Form'
+import useInertiaForm from '../useInertiaForm'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	component?: string | React.ComponentType
@@ -9,7 +9,7 @@ const Submit = React.forwardRef<HTMLButtonElement, ButtonProps>((
 	{ children, type = 'submit', disabled, component = 'button', ...props },
 	ref,
 ) => {
-	const { processing } = useForm()
+	const { processing } = useInertiaForm()
 
 	const Element = component
 

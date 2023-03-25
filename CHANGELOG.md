@@ -1,3 +1,24 @@
+## [2.0.13](https://github.com/aviemet/useInertiaForm/compare/v2.0.12...v2.0.13) (2023-03-24)
+
+
+### Bug Fixes
+
+* 🐛 Removes disabled conditions from Submit button ([403270a](https://github.com/aviemet/useInertiaForm/commit/403270a3e6ee48e74c9703722df2d396762b5bb8))
+
+## [2.0.12](https://github.com/aviemet/useInertiaForm/compare/v2.0.11...v2.0.12) (2023-03-24)
+
+
+### Bug Fixes
+
+* 🐛 Only resets form data after success if async ([3f970c7](https://github.com/aviemet/useInertiaForm/commit/3f970c704d4e0b438e5836b4a550c551e4ffd85a))
+
+## [2.0.11](https://github.com/aviemet/useInertiaForm/compare/v2.0.10...v2.0.11) (2023-03-24)
+
+
+### Bug Fixes
+
+* 🐛 Adds errors to dependency array in Form component ([f342147](https://github.com/aviemet/useInertiaForm/commit/f342147b10a29ab1ee1e0e7067d5ed0c33d21b02))
+
 ## [2.0.10](https://github.com/aviemet/useInertiaForm/compare/v2.0.9...v2.0.10) (2023-03-24)
 
 

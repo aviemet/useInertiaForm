@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 import axios from 'axios'
-import { type Visit } from '@inertiajs/core'
+import { type VisitOptions } from '@inertiajs/core'
 import useInertiaForm, { NestedObject } from '../useInertiaForm'
 import { useForm, type UseFormProps, type HTTPVerb, FormProvider } from './FormProvider'
 import FormMetaWrapper, { useFormMeta, type FormMetaValue } from './FormMetaWrapper'
@@ -13,6 +13,7 @@ export interface FormProps<TForm> extends PartialHTMLForm {
 	method?: HTTPVerb
 	to?: string
 	async?: boolean
+	resetAfterSubmit?: boolean
 	remember?: boolean
 	railsAttributes?: boolean
 	onSubmit?: (form: UseFormProps<TForm>) => boolean|void
@@ -28,6 +29,7 @@ const Form = <TForm extends NestedObject>({
 	method = 'post',
 	to,
 	async = false,
+	resetAfterSubmit,
 	remember = true,
 	onSubmit,
 	onChange,
@@ -35,18 +37,17 @@ const Form = <TForm extends NestedObject>({
 	onError,
 	...props
 }: Omit<FormProps<TForm>, 'railsAttributes'>) => {
-
 	const form = remember && (model || to) ? useInertiaForm<TForm>(`${method}/${model || to}`, data) : useInertiaForm<TForm>(data)
 
 	const contextValueObject = useCallback((): UseFormProps<TForm> => (
 		{ ...form, model, method, to, submit }
-	), [form.data, form.errors])
+	), [data, form.data, form.errors])
 
 	/**
 	 * Submits the form. If async prop is true, submits using axios,
 	 * otherwise submits using Inertia's `useForm.submit` method
 	 */
-	const submit = async (options?: Partial<Visit>) => {
+	const submit = async (options?: Partial<VisitOptions>) => {
 		let shouldSubmit = to && onSubmit && onSubmit(contextValueObject()) === false ? false : true
 
 		if(shouldSubmit) {
@@ -62,7 +63,14 @@ const Form = <TForm extends NestedObject>({
 		e.preventDefault()
 		e.stopPropagation()
 
-		submit()
+		submit({
+			onSuccess: () => {
+				if(resetAfterSubmit || (resetAfterSubmit !== false && async === true)) {
+					form.reset()
+				}
+				if(onSuccess) onSuccess(contextValueObject())
+			},
+		})
 	}
 
 	// Set values from url search params. Allows for prefilling form data from a link
@@ -81,13 +89,6 @@ const Form = <TForm extends NestedObject>({
 	useEffect(() => {
 		if(onError) onError(contextValueObject())
 	}, [form.errors])
-
-	useEffect(() => {
-		if(!form.wasSuccessful) return
-
-		form.reset()
-		if(onSuccess) onSuccess(contextValueObject())
-	}, [form.wasSuccessful])
 
 	return (
 		<FormProvider value={ contextValueObject() }>
