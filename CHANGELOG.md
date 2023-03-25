@@ -1,3 +1,10 @@
+## [2.0.15](https://github.com/aviemet/useInertiaForm/compare/v2.0.14...v2.0.15) (2023-03-25)
+
+
+### Bug Fixes
+
+* 🐛 Exports DynamicInputsProps ([07c669d](https://github.com/aviemet/useInertiaForm/commit/07c669d1677626b549f2fab1c99086cce8b6767a))
+
 ## [2.0.14](https://github.com/aviemet/useInertiaForm/compare/v2.0.13...v2.0.14) (2023-03-25)
 
 
