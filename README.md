@@ -127,7 +127,7 @@ Provides context for using form data and `useInertiaInput`. For rails backends, 
 | `method`          | `'post`   | HTTP method to use for the form |
 | `to`              | `undefined` | Path to send the request to when the form is submitted. If this is omitted, submitting the form will do nothing except call `onSubmit` |
 | `async`           | `false`     | If true, uses `axios` methods to send form data. If false, uses Inertia's `useForm.submit` method. |
-| `remember`        | `true`      | If true, stores form data in local storage using the key `${method}/${model || to}`. If one of `model` or `to` are not defined, data is not persisted |
+| `remember`        | `true`      | If true, stores form data in local storage using the key `${method}/${model \|\| to}`. If one of `model` or `to` are not defined, data is not persisted |
 | `railsAttributes` | `false`     | If true, appends '_attributes' to nested data keys before submitting. |
 | `onSubmit`        | `undefined` | Called when the form is submitted, fired just before sending the request. If the method returns `false`, submit is canceled |
 | `onChange`        | `undefined` | Called every time the form data changes |
