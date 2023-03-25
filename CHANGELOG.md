@@ -1,3 +1,10 @@
+## [2.0.14](https://github.com/aviemet/useInertiaForm/compare/v2.0.13...v2.0.14) (2023-03-25)
+
+
+### Bug Fixes
+
+* 🐛 Properly scopes model attribute in DynamicInputs ([35fb5ff](https://github.com/aviemet/useInertiaForm/commit/35fb5ffcfddad83e24d2c338195249777d7736a9))
+
 ## [2.0.13](https://github.com/aviemet/useInertiaForm/compare/v2.0.12...v2.0.13) (2023-03-24)
 
 
