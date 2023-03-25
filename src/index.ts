@@ -9,4 +9,4 @@ export {
 } from './Form'
 export { default as NestedFields, type NestedFieldsProps } from './NestedFields'
 export { Input, Submit } from './Inputs'
-export { default as DynamicInputs } from './DynamicInputs'
+export { default as DynamicInputs, type DynamicInputsProps } from './DynamicInputs'

@@ -4,7 +4,7 @@ import { get, set } from 'lodash'
 import NestedFields, { useNestedAttribute } from './NestedFields'
 import { NestedObject } from './useInertiaForm'
 
-interface DynamicInputsProps {
+export interface DynamicInputsProps {
 	children: React.ReactNode
 	model?: string
 	emptyData: Record<string, unknown>
