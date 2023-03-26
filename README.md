@@ -6,8 +6,6 @@ It address two issues with the original; [the bug preventing the `transform` met
 
 This was developed alongside a Rails project, so the form handling ethos follows Rails conventions, however, effort was taken to make it as agnostic as possible and it should be useable in a Laravel application as well.
 
-This package provides three main exports; `useInertiaForm`, `useInertiaInput`, and `Form`.
-
 ## useInertiaForm
 
 This hook returns a superset of the original return values of `useForm`, meaning it can be swapped in without breaking anything. It overrides the signature of `setData`, allowing the use of dot-notation when supplying a string as its first argument. It also overrides `setErrors`, `getError` and `setDefaults`, and provides the new methods `getData` and `unsetData` to allow easily setting and getting nested form data and errors. All of the nested data handlers use the lodash methods `set`, `unset` and `get`.
@@ -80,42 +78,6 @@ getError('user.firstName')
 // 'Must not be blank'
 ```
 
-## useInertiaInput
-
-This hook must be consumed within the context of the provided `<Form>` component.
-
-While it's possible to use this in a component to define each input for a form, it's intended to be used to define custom input components.
-
-```javascript
-const TextInput = ({ name, model, label }) => {
-  const { inputName, inputId, value, setValue, error } = useInertiaInput({ name, model })
-
-  return (
-    <label for={ inputId }>{ label }</label>
-    <input
-      id={ inputId }
-      type='text'
-      name={ inputName }
-      value={ value }
-      onChange={ setValue(e => e.target.value) }
-    >
-    { error ?? <div className="error">{ error }</div> }
-  )
-}
-
-/* Rendering this somewhere ... */
-
-<TextInput name="firstName" model="user" label="First Name" />
-
-```
-
-This will produce the following HTML:
-
-```html
-<label for="user_firstName">First Name</label>
-<input id="user_firstName" type="text" name="user.firstName" value="">
-```
-
 ## &lt;Form&gt;
 
 Provides context for using form data and `useInertiaInput`. For rails backends, setting the prop `railsAttributes` to true will rewrite nested form data keys, appending the string "_attributes". This makes it possible to use `accepts_nested_attributes_for` in an ActiveRecord model.
@@ -146,12 +108,7 @@ const user = {
 
 const PageWithFormOnIt = ({ user }) => {
   return (
-    <Form
-      model="user"
-      data={ { user } }
-      to={ `users/${user.id}` }
-      method="patch"
-    >
+    <Form model="user" data={ { user } } to={ `users/${user.id}` } method="patch">
       <TextInput name="firstName" label="First Name" />
 
       <TextInput name="email" label="Email" />
@@ -188,6 +145,33 @@ const MyForm = <TForm extends NestedObject>(
 export default MyForm
 ```
 
+## useInertiaInput
+
+Provides methods for binding an input to a data value. Use it to create a reusable input component:
+
+```javascript
+const TextInput = ({ name, model, label }) => {
+  const { inputName, inputId, value, setValue, error } = useInertiaInput({ name, model })
+
+  return (
+    <label for={ inputId }>{ label }</label>
+    <input
+      id={ inputId }
+      type='text'
+      name={ inputName }
+      value={ value }
+      onChange={ setValue(e => e.target.value) }
+    >
+    { error && <div className="error">{ error }</div> }
+  )
+}
+
+/* Rendering this somewhere ... */
+
+<TextInput name="firstName" model="user" label="First Name" />
+
+```
+
 ### &lt;NestedFields&gt;
 
 Provides context for nesting inputs.
@@ -203,12 +187,7 @@ const user = {
 
 const PageWithFormOnIt = ({ user }) => {
   return (
-    <Form
-      model="user"
-      data={ { user } }
-      to={ `users/${user.id}` }
-      method="patch"
-    >
+    <Form model="user" data={ { user } } to={ `users/${user.id}` } method="patch">
       <TextInput name="firstName" label="First Name" />
 
       <NestedFields model="preferences">
@@ -220,41 +199,61 @@ const PageWithFormOnIt = ({ user }) => {
 }
 ```
 
-### &lt;DynamicInputs&gt;
+## useDynamicInputs
 
-Provides an interface for array data.
+Provides methods for adding and removing arrays in form data. Use it to make a reusable component with your own buttons and styles:
+
+```javascript
+const DynamicInputs = ({ children, model, label, emptyData }) => {
+  const { addInput, removeInput, paths } = useDynamicInputs({ model, emptyData })
+
+  return (
+    <>
+      <div style={ { display: 'flex' } }>
+        <label style={ { flex: 1 } }>{ label }</label>
+        <button onClick={ addInput }>+</button>
+      </div>
+
+      { paths.map((path, i) => (
+        <NestedFields key={ i } model={ path }>
+          <div style={ { display: 'flex' } }>
+            <div>{ children }</div>
+            <button onClick={ onClick: () => removeInput(i) }>-</button>
+          </div>
+        </NestedFields>
+      )) }
+    </>
+  )
+}
+```
+
+This can then be used inside of a Form component:
 
 ```javascript
 const user = {
-  firstName: 'Finn',
-  emails: [
-    { email: 'finn@treehouse.ooo', type: 'personal' },
-    { email: 'professional@human.ooo', type: 'work' }
-  ]
+  user: {
+    username: "bmo",
+    emails: [
+      { email: "bmo@treehouse.ooo", type: "personal" }
+    ]
+  }
 }
-
-const emptyEmail = { email: '', type: '' }
 
 const PageWithFormOnIt = ({ user }) => {
   return (
-    <Form
-      model="user"
-      data={ { user } }
-      to={ `users/${user.id}` }
-      method="patch"
-    >
+    <Form model="user" data={ { user } } to={ `users/${user.id}` } method="patch">
       <TextInput name="firstName" label="First Name" />
 
-      <DynamicInputs emptyData={ emptyEmail }>
+      <DynamicInputs model="emails" emptyData={ { email: '', type: ''} } label="Emails">
         <TextInput name="email" label="Email" />
-        <TextInput name="type" label="Email Type" />
+        <TextInput name="type" label="Type" />
       </DynamicInputs>
     </Form>
   )
 }
 ```
 
-This will render two sets of inputs, one for each email object in the initial data passed to the form. It also renders buttons for adding and removing sets of inputs which can be customized using the `addInputButton` and `removeInputButton` props.
+A component called `DynamicInputs` is exported which implements this if you don't need to customize how the HTML is generated.
 
 ### &lt;Submit&gt;
 
