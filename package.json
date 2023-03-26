@@ -1,6 +1,6 @@
 {
   "name": "use-inertia-form",
-  "version": "2.0.15",
+  "version": "2.1.0",
   "description": "Extra functionality for Inertia.js useForm hook",
   "main": "dist/useInertiaForm.js",
   "module": "dist/useInertiaForm.esm.js",

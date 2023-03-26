@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/aviemet/useInertiaForm/compare/v2.0.15...v2.1.0) (2023-03-26)
+
+
+### Features
+
+* 🎸 Adds useDynamicInputs hook ([0c81eb1](https://github.com/aviemet/useInertiaForm/commit/0c81eb1320b21f7cb04948bfe1ffec6fed16752a))
+
 ## [2.0.15](https://github.com/aviemet/useInertiaForm/compare/v2.0.14...v2.0.15) (2023-03-25)
 
 
