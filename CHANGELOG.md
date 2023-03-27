@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/aviemet/useInertiaForm/compare/v2.1.0...v2.2.0) (2023-03-27)
+
+
+### Features
+
+* 🎸 Adds onChange ([5f1f54f](https://github.com/aviemet/useInertiaForm/commit/5f1f54f7c1ce0bbf1d1bcc349f794e9bc65e84a4))
+
 # [2.1.0](https://github.com/aviemet/useInertiaForm/compare/v2.0.15...v2.1.0) (2023-03-26)
 
 
