@@ -6,6 +6,8 @@ import { useRemember } from '@inertiajs/react'
 import { coerceArray, fillEmptyValues, renameObjectWithAttributes, unsetCompact } from './utils'
 import { useFormMeta } from './Form/FormMetaWrapper'
 
+type OnChangeCallback = (key: string|undefined, value: unknown, prev: unknown) => void
+
 export type Primitive = string|number|symbol|null|undefined
 
 export type NestedObject = {
@@ -29,6 +31,7 @@ export interface UseInertiaFormProps<TForm> {
 	getData: (key: string) => unknown|undefined
 	unsetData: (key: string) => void
 	transform: (callback: (data: TForm) => TForm) => void
+	onChange: (callback: OnChangeCallback) => void
 	setDefaults(): void
 	setDefaults(field: string, value: string): void
 	setDefaults(fields: TForm): void
@@ -87,6 +90,7 @@ export default function useInertiaForm<TForm>(
 	const recentlySuccessfulTimeoutId = useRef<NodeJS.Timeout>()
 
 	let transformRef = useRef((data: TForm) => data)
+	let onChangeRef = useRef<OnChangeCallback>()
 
 	useEffect(() => {
 		isMounted.current = true
@@ -219,19 +223,33 @@ export default function useInertiaForm<TForm>(
 			transformRef.current = callback
 		}, []),
 
+		onChange: (callback) => {
+			onChangeRef.current = callback
+		},
+
 		setData: (keyOrData: string|TForm|((previousData: TForm) => TForm), maybeValue?: string|number|undefined) => {
 			if(typeof keyOrData === 'string') {
 				return setData(data => {
 					const clone = structuredClone(data)
+					if(onChangeRef.current) {
+						onChangeRef.current(keyOrData, maybeValue, get(data, keyOrData))
+					}
+
 					set(clone as NestedObject, keyOrData, maybeValue)
 					return clone
 				})
 			}
 
 			if(keyOrData instanceof Function) {
-				setData((data) => keyOrData(structuredClone(data)))
+				setData((data) => {
+					const clone = keyOrData(structuredClone(data))
+					if(onChangeRef.current) onChangeRef.current(undefined, clone, data)
+					return clone
+				})
 				return
 			}
+
+			if(onChangeRef.current) onChangeRef.current(undefined, data, keyOrData)
 
 			setData(keyOrData)
 		},
@@ -243,6 +261,9 @@ export default function useInertiaForm<TForm>(
 		unsetData: useCallback((key: string) => {
 			setData(data => {
 				const clone = structuredClone(data)
+				if(onChangeRef.current) {
+					onChangeRef.current(key, get(data, key), undefined)
+				}
 				unsetCompact(clone as NestedObject, key)
 				return clone
 			})
@@ -262,6 +283,7 @@ export default function useInertiaForm<TForm>(
 
 		reset: useCallback((fields) => {
 			if(!fields) {
+				if(onChangeRef.current) onChangeRef.current(undefined, defaults, data)
 				setData(defaults)
 				return
 			}
@@ -272,6 +294,7 @@ export default function useInertiaForm<TForm>(
 			arrFields.forEach(field => {
 				set(clone as NestedObject, field, get(defaults, field))
 			})
+			if(onChangeRef.current) onChangeRef.current(undefined, clone, data)
 			setData(clone)
 		}, [defaults, data]),
 
