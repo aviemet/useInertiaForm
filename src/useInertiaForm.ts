@@ -31,7 +31,7 @@ export interface UseInertiaFormProps<TForm> {
 	getData: (key: string) => unknown|undefined
 	unsetData: (key: string) => void
 	transform: (callback: (data: TForm) => TForm) => void
-	onChange: (callback: OnChangeCallback) => void
+	onBeforeChange: (callback: OnChangeCallback) => void
 	setDefaults(): void
 	setDefaults(field: string, value: string): void
 	setDefaults(fields: TForm): void
@@ -223,7 +223,7 @@ export default function useInertiaForm<TForm>(
 			transformRef.current = callback
 		}, []),
 
-		onChange: (callback) => {
+		onBeforeChange: (callback) => {
 			onChangeRef.current = callback
 		},
 

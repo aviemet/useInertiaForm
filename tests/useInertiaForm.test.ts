@@ -251,6 +251,23 @@ describe('setDefaults and reset', () => {
 	})
 })
 
+describe('onChange', () => {
+	it('should be called whenever data is changed', () => {
+		const { result } = renderHook(() => useInertiaForm(initialData))
+
+		const changeKey = 'user.username'
+		const changeValue = 'something'
+
+		act(() => result.current.onBeforeChange((key, value, prev) => {
+			expect(key).toEqual(changeKey)
+			expect(value).toEqual(changeValue)
+			expect(prev).toEqual(get(initialData, changeKey))
+		}))
+
+		act(() => result.current.setData(changeKey, 'something'))
+	})
+})
+
 describe('submit', () => {
 	it('should submit the correct data to the server', () => {
 
