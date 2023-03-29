@@ -26,7 +26,7 @@ type setDataByString = (key: string, value: unknown) => void;
 type setDataByObject<TForm> = (data: TForm) => void
 type setDataByMethod<TForm> = (data: (previousData: TForm) => TForm) => void
 
-type getDataByPath<TForm> = <P extends Path<Required<TForm>>>(key: P) => PathValue<Required<TForm>, P>
+type getDataByPath<TForm> = <P extends Path<TForm>>(key: P) => PathValue<TForm, P>
 type getDataByString = (key: string) => unknown
 
 type unsetDataByPath<TForm> = (key: Path<TForm>) => void
@@ -36,8 +36,8 @@ type resetAll = () => void
 type resetByPath<TForm> = (field: Path<TForm>|Path<TForm>[]) => void
 type resetByString = (field: string|string[]) => void
 
-type setErrorByPath<TForm> = (field: Path<TForm>, value: string) => void
-type setErrorByString = (field: string, value: string) => void
+type setErrorByPath<TForm> = (field: Path<TForm>, value: string|string[]) => void
+type setErrorByString = (field: string, value: string|string[]) => void
 type setErrorByObject = (errors: Record<string, string|string[]>) => void
 
 export interface UseInertiaFormProps<TForm> {

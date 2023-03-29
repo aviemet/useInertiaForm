@@ -1,5 +1,4 @@
 import React from 'react'
-// import { createContext } from '../utils'
 import { type UseInertiaFormProps } from '../useInertiaForm'
 import { type AxiosResponse } from 'axios'
 import { NestedObject } from '../useInertiaForm'
@@ -10,15 +9,15 @@ export interface UseFormProps<TForm = NestedObject> extends UseInertiaFormProps<
 	model?: string
 	method: HTTPVerb
 	to?: string
-	submit: () => Promise<AxiosResponse<any> | UseInertiaFormProps<TForm> | void>
+	submit: () => Promise<AxiosResponse<any> | UseInertiaFormProps<Required<TForm>> | void>
 }
 
 export const createContext = <CT extends unknown | null>() => {
 	const context = React.createContext<CT | undefined>(null)
 
 	const useContext = <T extends CT = CT>() => {
-		const c = React.useContext<UseFormProps<T>>(
-			(context as unknown) as React.Context<UseFormProps<T>>,
+		const c = React.useContext<UseFormProps<Required<T>>>(
+			(context as unknown) as React.Context<UseFormProps<Required<T>>>,
 		)
 		if(c === null) {
 			throw new Error('useContext must be inside a Provider with a value')
