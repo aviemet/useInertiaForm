@@ -256,15 +256,17 @@ describe('onChange', () => {
 		const { result } = renderHook(() => useInertiaForm(initialData))
 
 		const changeKey = 'user.username'
-		const changeValue = 'something'
+		const changeValue1 = 'something'
 
-		act(() => result.current.onBeforeChange((key, value, prev) => {
-			expect(key).toEqual(changeKey)
-			expect(value).toEqual(changeValue)
-			expect(prev).toEqual(get(initialData, changeKey))
-		}))
+		act(() => {
+			result.current.onChange((key, value, prev) => {
+				expect(key).toEqual(changeKey)
+				expect(value).toEqual(changeValue1)
+				expect(prev).toEqual(get(initialData, changeKey))
+			})
+		})
 
-		act(() => result.current.setData(changeKey, 'something'))
+		act(() => result.current.setData(changeKey, changeValue1))
 	})
 })
 

@@ -53,7 +53,7 @@ export interface UseInertiaFormProps<TForm> {
 	getData: getDataByPath<TForm> & getDataByString
 	unsetData: unsetDataByPath<TForm> & unsetDataByString
 	transform: (callback: (data: TForm) => TForm) => void
-	onBeforeChange: (callback: OnChangeCallback) => void
+	onChange: (callback: OnChangeCallback) => void
 	setDefaults(): void
 	setDefaults(field: string, value: string): void
 	setDefaults(fields: TForm): void
@@ -78,8 +78,6 @@ export default function useInertiaForm<TForm>(
 	rememberKeyOrInitialValues?: string|TForm,
 	maybeInitialValues?: TForm,
 ): UseInertiaFormProps<TForm> {
-	const isMounted = useRef<boolean>()
-
 	// Data
 	const getFormArguments = useCallback((): [string, TForm] => {
 		let rememberKey: string = null
@@ -111,7 +109,7 @@ export default function useInertiaForm<TForm>(
 	const recentlySuccessfulTimeoutId = useRef<NodeJS.Timeout>()
 
 	let transformRef = useRef((data: TForm) => data)
-	let onChangeRef = useRef<OnChangeCallback>()
+	const isMounted = useRef<boolean>()
 
 	useEffect(() => {
 		isMounted.current = true
@@ -119,6 +117,16 @@ export default function useInertiaForm<TForm>(
 			isMounted.current = false
 		}
 	}, [])
+
+	// OnChange function processes
+	let onChangeRef = useRef<OnChangeCallback>()
+	let onChangeArgsRef = useRef<Parameters<OnChangeCallback>>()
+
+	useEffect(() => {
+		if(onChangeRef.current && onChangeArgsRef.current) {
+			onChangeRef.current(...onChangeArgsRef.current)
+		}
+	}, [data])
 
 	// Check if this was called in the context of a Form component and store `railsAttributes`
 	let railsAttributes = false
@@ -244,7 +252,7 @@ export default function useInertiaForm<TForm>(
 			transformRef.current = callback
 		}, []),
 
-		onBeforeChange: (callback) => {
+		onChange: (callback) => {
 			onChangeRef.current = callback
 		},
 
@@ -253,7 +261,8 @@ export default function useInertiaForm<TForm>(
 				return setData(data => {
 					const clone = structuredClone(data)
 					if(onChangeRef.current) {
-						onChangeRef.current(keyOrData, maybeValue, get(data, keyOrData))
+						onChangeArgsRef.current = [keyOrData, maybeValue, get(data, keyOrData)]
+						// onChangeRef.current(keyOrData, maybeValue, get(data, keyOrData))
 					}
 
 					set(clone as NestedObject, keyOrData, maybeValue)
@@ -264,13 +273,19 @@ export default function useInertiaForm<TForm>(
 			if(keyOrData instanceof Function) {
 				setData((data) => {
 					const clone = keyOrData(structuredClone(data))
-					if(onChangeRef.current) onChangeRef.current(undefined, clone, data)
+					if(onChangeRef.current) {
+						onChangeArgsRef.current = [undefined, clone, data]
+						// onChangeRef.current(undefined, clone, data)
+					}
 					return clone
 				})
 				return
 			}
 
-			if(onChangeRef.current) onChangeRef.current(undefined, data, keyOrData)
+			if(onChangeRef.current) {
+				onChangeArgsRef.current = [undefined, data, keyOrData]
+				// onChangeRef.current(undefined, data, keyOrData)
+			}
 
 			setData(keyOrData)
 		},
@@ -283,7 +298,8 @@ export default function useInertiaForm<TForm>(
 			setData(data => {
 				const clone = structuredClone(data)
 				if(onChangeRef.current) {
-					onChangeRef.current(key, get(data, key), undefined)
+					onChangeArgsRef.current = [key, get(data, key), undefined]
+					// onChangeRef.current(key, get(data, key), undefined)
 				}
 				unsetCompact(clone as NestedObject, key)
 				return clone
@@ -304,7 +320,10 @@ export default function useInertiaForm<TForm>(
 
 		reset: useCallback((fields?: string|string[]) => {
 			if(!fields) {
-				if(onChangeRef.current) onChangeRef.current(undefined, defaults, data)
+				if(onChangeRef.current) {
+					onChangeArgsRef.current = [undefined, defaults, data]
+					// onChangeRef.current(undefined, defaults, data)
+				}
 				setData(defaults)
 				return
 			}
@@ -315,7 +334,10 @@ export default function useInertiaForm<TForm>(
 			arrFields.forEach(field => {
 				set(clone as NestedObject, field, get(defaults, field))
 			})
-			if(onChangeRef.current) onChangeRef.current(undefined, clone, data)
+			if(onChangeRef.current) {
+				onChangeArgsRef.current = [undefined, clone, data]
+				// onChangeRef.current(undefined, clone, data)
+			}
 			setData(clone)
 		}, [defaults, data]),
 
