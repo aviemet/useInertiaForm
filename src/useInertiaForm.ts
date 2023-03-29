@@ -3,8 +3,15 @@ import { Method, Progress, VisitOptions, type RequestPayload } from '@inertiajs/
 import { router } from '@inertiajs/react'
 import { get, isEqual, set } from 'lodash'
 import { useRemember } from '@inertiajs/react'
-import { coerceArray, fillEmptyValues, renameObjectWithAttributes, unsetCompact } from './utils'
 import { useFormMeta } from './Form/FormMetaWrapper'
+import {
+	coerceArray,
+	fillEmptyValues,
+	renameObjectWithAttributes,
+	unsetCompact,
+	type Path,
+	type PathValue,
+} from './utils'
 
 type OnChangeCallback = (key: string|undefined, value: unknown, prev: unknown) => void
 
@@ -14,9 +21,24 @@ export type NestedObject = {
 	[key: string]: unknown|NestedObject|NestedObject[]
 };
 
+type setDataByPath<TForm> = <P extends Path<TForm>>(key: P, value: PathValue<TForm, P>) => void;
+type setDataByString = (key: string, value: unknown) => void;
 type setDataByObject<TForm> = (data: TForm) => void
 type setDataByMethod<TForm> = (data: (previousData: TForm) => TForm) => void
-type setDataByKeyValuePair = (key: string, value: unknown) => void;
+
+type getDataByPath<TForm> = <P extends Path<Required<TForm>>>(key: P) => PathValue<Required<TForm>, P>
+type getDataByString = (key: string) => unknown
+
+type unsetDataByPath<TForm> = (key: Path<TForm>) => void
+type unsetDataByString = (key: string) => void
+
+type resetAll = () => void
+type resetByPath<TForm> = (field: Path<TForm>|Path<TForm>[]) => void
+type resetByString = (field: string|string[]) => void
+
+type setErrorByPath<TForm> = (field: Path<TForm>, value: string) => void
+type setErrorByString = (field: string, value: string) => void
+type setErrorByObject = (errors: Record<string, string|string[]>) => void
 
 export interface UseInertiaFormProps<TForm> {
 	data: TForm
@@ -27,18 +49,17 @@ export interface UseInertiaFormProps<TForm> {
 	progress: Progress|null
 	wasSuccessful: boolean
 	recentlySuccessful: boolean
-	setData: setDataByObject<TForm> & setDataByMethod<TForm> & setDataByKeyValuePair
-	getData: (key: string) => unknown|undefined
-	unsetData: (key: string) => void
+	setData: setDataByObject<TForm> & setDataByMethod<TForm> & setDataByPath<TForm> & setDataByString
+	getData: getDataByPath<TForm> & getDataByString
+	unsetData: unsetDataByPath<TForm> & unsetDataByString
 	transform: (callback: (data: TForm) => TForm) => void
 	onBeforeChange: (callback: OnChangeCallback) => void
 	setDefaults(): void
 	setDefaults(field: string, value: string): void
 	setDefaults(fields: TForm): void
-	reset: (fields?: string|string[]) => void
+	reset: resetAll & resetByPath<TForm> & resetByString
 	clearErrors: (fields?: string|string[]) => void
-	setError(field: string, value: string): void
-	setError(errors: Record<string, string|string[]>): void
+	setError: setErrorByPath<TForm> & setErrorByString & setErrorByObject
 	getError: (key: string) => string|string[]|undefined
 	submit: (method: Method, url: string, options?: VisitOptions) => void
 	get: (url: string, options?: VisitOptions) => void
@@ -227,7 +248,7 @@ export default function useInertiaForm<TForm>(
 			onChangeRef.current = callback
 		},
 
-		setData: (keyOrData: string|TForm|((previousData: TForm) => TForm), maybeValue?: string|number|undefined) => {
+		setData: (keyOrData: string|TForm|((previousData: TForm) => TForm), maybeValue?: any) => {
 			if(typeof keyOrData === 'string') {
 				return setData(data => {
 					const clone = structuredClone(data)
@@ -254,9 +275,9 @@ export default function useInertiaForm<TForm>(
 			setData(keyOrData)
 		},
 
-		getData: useCallback((key: string): unknown => {
+		getData: (key: string): any => {
 			return get(data, key)
-		}, [data]),
+		},
 
 		unsetData: useCallback((key: string) => {
 			setData(data => {
@@ -281,7 +302,7 @@ export default function useInertiaForm<TForm>(
 			}))
 		}, [data]),
 
-		reset: useCallback((fields) => {
+		reset: useCallback((fields?: string|string[]) => {
 			if(!fields) {
 				if(onChangeRef.current) onChangeRef.current(undefined, defaults, data)
 				setData(defaults)

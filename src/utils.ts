@@ -114,3 +114,27 @@ export const coerceArray = (arg: string | string[]) => {
 	if(Array.isArray(arg)) return arg
 	return [arg]
 }
+
+// Copied from https://gist.github.com/balthild/1f23725059aef8b9231d6c346494b918
+// which was copied from https://twitter.com/diegohaz/status/1309489079378219009
+type PathImpl<T, K extends keyof T> =
+K extends string
+	? T[K] extends Record<string, any>
+		? T[K] extends ArrayLike<any>
+			? K | `${K}.${PathImpl<T[K], Exclude<keyof T[K], keyof any[]>>}`
+			: K | `${K}.${PathImpl<T[K], keyof T[K]>}`
+		: K
+	: never;
+
+export type Path<T> = PathImpl<T, keyof T> | Extract<keyof T, string>;
+
+export type PathValue<T, P extends Path<T>> =
+P extends `${infer K}.${infer Rest}`
+	? K extends keyof T
+		? Rest extends Path<T[K]>
+			? PathValue<T[K], Rest>
+			: never
+		: never
+	: P extends keyof T
+		? T[P]
+		: never;
