@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/aviemet/useInertiaForm/compare/v2.3.0...v3.0.0) (2023-03-29)
+
+
+### Features
+
+* 🎸 Renames onBeforeChange to onChange ([91152b2](https://github.com/aviemet/useInertiaForm/commit/91152b2c71672ef4611353de22a133a4aa1a7607))
+
+
+### BREAKING CHANGES
+
+* 🧨 onChange
+
 # [2.3.0](https://github.com/aviemet/useInertiaForm/compare/v2.2.0...v2.3.0) (2023-03-29)
 
 
