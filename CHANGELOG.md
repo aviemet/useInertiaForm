@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/aviemet/useInertiaForm/compare/v2.2.0...v2.3.0) (2023-03-29)
+
+
+### Features
+
+* 🎸 Adds type inference to getters and setters ([c6b4c35](https://github.com/aviemet/useInertiaForm/commit/c6b4c3532b9b4a793d6412b3d4c0d2c322ef2c81))
+
 # [2.2.0](https://github.com/aviemet/useInertiaForm/compare/v2.1.0...v2.2.0) (2023-03-27)
 
 
