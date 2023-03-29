@@ -5,7 +5,7 @@ import { NestedObject } from '../useInertiaForm'
 
 export type HTTPVerb = 'post' | 'put' | 'get' | 'patch' | 'delete'
 
-export interface UseFormProps<TForm> extends UseInertiaFormProps<TForm> {
+export interface UseFormProps<TForm = NestedObject> extends UseInertiaFormProps<TForm> {
 	model?: string
 	method: HTTPVerb
 	to?: string
@@ -15,5 +15,5 @@ export interface UseFormProps<TForm> extends UseInertiaFormProps<TForm> {
 	submit: () => Promise<AxiosResponse<any> | UseInertiaFormProps<TForm> | void>
 }
 
-const [useForm, FormProvider] = createContext<UseFormProps<NestedObject>>()
+const [useForm, FormProvider] = createContext<UseFormProps>()
 export { FormProvider, useForm }

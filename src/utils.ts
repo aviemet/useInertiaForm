@@ -2,18 +2,20 @@ import React from 'react'
 import { isPlainObject, unset, get, set } from 'lodash'
 import { type NestedObject } from './useInertiaForm'
 
-export const createContext = <T extends {} | null>() => {
-	const ctx = React.createContext<T | undefined>(undefined)
+export const createContext = <CT extends unknown | null>() => {
+	const context = React.createContext<CT | undefined>(null)
 
-	const useCtx = () => {
-		const c = React.useContext(ctx)
-		if(c === undefined) {
-			throw new Error('useCtx must be inside a Provider with a value')
+	const useContext = <T extends CT = CT>() => {
+		const c = React.useContext<T>(
+			(context as unknown) as React.Context<T>,
+		)
+		if(c === null) {
+			throw new Error('useContext must be inside a Provider with a value')
 		}
 		return c
 	}
 
-	return [useCtx, ctx.Provider] as const
+	return [useContext, context.Provider] as const
 }
 
 type TArrType = string|number|NestedObject
