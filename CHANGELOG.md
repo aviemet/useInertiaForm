@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/aviemet/useInertiaForm/compare/v3.0.0...v3.0.1) (2023-03-30)
+
+
+### Bug Fixes
+
+* 🐛 Rewrites error keys from server responses ([2a719e9](https://github.com/aviemet/useInertiaForm/commit/2a719e902e437f528ad6ae0c0802465e4b493e55))
+
 # [3.0.0](https://github.com/aviemet/useInertiaForm/compare/v2.3.0...v3.0.0) (2023-03-29)
 
 
