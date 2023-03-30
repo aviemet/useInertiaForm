@@ -44,7 +44,7 @@ type getErrorByPath<TForm> = (field: Path<TForm>) => string|string[]|undefined
 type getErrorByString = (field: string) => string|string[]|undefined
 
 export interface UseInertiaFormProps<TForm> {
-	data: TForm
+	data: TForm|undefined
 	isDirty: boolean
 	errors: Partial<Record<keyof TForm, string|string[]>>
 	hasErrors: boolean
@@ -97,11 +97,31 @@ export default function useInertiaForm<TForm>(
 	const [defaults, setDefaults] = useState(transformedData || {} as TForm)
 	const [data, setData] = rememberKey ? useRemember<TForm>(transformedData, `${rememberKey}:data`) : useState<TForm>(transformedData)
 
+	// Detect root model name
+	const rootModelRef = useRef<string>()
+	useEffect(() => {
+		const keys = data ? Object.keys(data) : []
+		if(keys.length === 1) {
+			rootModelRef.current = keys[0]
+		}
+	}, [])
+
 	// Errors
 	const [errors, setErrors] = rememberKey
 		? useRemember({} as Partial<Record<keyof TForm, string>>, `${rememberKey}:errors`)
 		: useState({} as Partial<Record<keyof TForm, string>>)
 	const [hasErrors, setHasErrors] = useState(false)
+
+	// Use to prepend root model name to errors returned by the server
+	const rewriteErrorKeys = (errors: Partial<Record<keyof TForm, string>>) => {
+		if(!errors || !rootModelRef.current) return errors
+
+		const newErrors = {}
+		Object.keys(errors).forEach(key => {
+			newErrors[`${rootModelRef.current}.${key}`] = errors[key]
+		})
+		return newErrors
+	}
 
 	// Submit request processes
 	const [processing, setProcessing] = useState(false)
@@ -195,7 +215,7 @@ export default function useInertiaForm<TForm>(
 					if(isMounted.current) {
 						setProcessing(false)
 						setProgress(null)
-						setErrors(errors)
+						setErrors(rewriteErrorKeys(errors))
 						setHasErrors(true)
 					}
 
@@ -265,7 +285,6 @@ export default function useInertiaForm<TForm>(
 					const clone = structuredClone(data)
 					if(onChangeRef.current) {
 						onChangeArgsRef.current = [keyOrData, maybeValue, get(data, keyOrData)]
-						// onChangeRef.current(keyOrData, maybeValue, get(data, keyOrData))
 					}
 
 					set(clone as NestedObject, keyOrData, maybeValue)
@@ -278,7 +297,6 @@ export default function useInertiaForm<TForm>(
 					const clone = keyOrData(structuredClone(data))
 					if(onChangeRef.current) {
 						onChangeArgsRef.current = [undefined, clone, data]
-						// onChangeRef.current(undefined, clone, data)
 					}
 					return clone
 				})
@@ -287,7 +305,6 @@ export default function useInertiaForm<TForm>(
 
 			if(onChangeRef.current) {
 				onChangeArgsRef.current = [undefined, data, keyOrData]
-				// onChangeRef.current(undefined, data, keyOrData)
 			}
 
 			setData(keyOrData)
@@ -302,7 +319,6 @@ export default function useInertiaForm<TForm>(
 				const clone = structuredClone(data)
 				if(onChangeRef.current) {
 					onChangeArgsRef.current = [key, get(data, key), undefined]
-					// onChangeRef.current(key, get(data, key), undefined)
 				}
 				unsetCompact(clone as NestedObject, key)
 				return clone
@@ -325,7 +341,6 @@ export default function useInertiaForm<TForm>(
 			if(!fields) {
 				if(onChangeRef.current) {
 					onChangeArgsRef.current = [undefined, defaults, data]
-					// onChangeRef.current(undefined, defaults, data)
 				}
 				setData(defaults)
 				return
@@ -339,7 +354,6 @@ export default function useInertiaForm<TForm>(
 			})
 			if(onChangeRef.current) {
 				onChangeArgsRef.current = [undefined, clone, data]
-				// onChangeRef.current(undefined, clone, data)
 			}
 			setData(clone)
 		}, [defaults, data]),

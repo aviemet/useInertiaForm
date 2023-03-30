@@ -56,9 +56,9 @@ describe('setData', () => {
 			result.current.setData('contact.phones[3].number', 'new number')
 		})
 
-		expect(result.current.data.user.username).toStrictEqual('changed')
-		expect(result.current.data.contact.phones[0].number).toStrictEqual('234567')
-		expect(result.current.data.contact.phones[3].number).toStrictEqual('new number')
+		expect(result.current.data?.user.username).toStrictEqual('changed')
+		expect(result.current.data?.contact.phones[0].number).toStrictEqual('234567')
+		expect(result.current.data?.contact.phones[3].number).toStrictEqual('new number')
 	})
 })
 
@@ -79,7 +79,7 @@ describe('unsetData', () => {
 
 		act(() => result.current.unsetData('user.username'))
 
-		act(() => expect(result.current.data.user).toMatchObject({}))
+		act(() => expect(result.current.data?.user).toMatchObject({}))
 	})
 
 
@@ -89,8 +89,8 @@ describe('unsetData', () => {
 		act(() => result.current.unsetData('contact.phones[1]'))
 
 		act(() => {
-			expect(result.current.data.contact.phones[0].number).toStrictEqual('1234567890')
-			expect(result.current.data.contact.phones[1].number).toStrictEqual('3234567890')
+			expect(result.current.data?.contact.phones[0].number).toStrictEqual('1234567890')
+			expect(result.current.data?.contact.phones[1].number).toStrictEqual('3234567890')
 		})
 	})
 })

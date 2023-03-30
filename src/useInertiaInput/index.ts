@@ -5,13 +5,14 @@ import inputStrategy, { type InputStrategy } from './inputStrategy'
 interface UseInertiaInputProps {
 	name: string
 	model?: string
+	errorKey?: string
 	strategy?: InputStrategy
 }
 
 /**
  * Returns form data and input specific methods to use with an input.
  */
-const useInertiaInput = <T = number|string>({ name, model, strategy = inputStrategy }: UseInertiaInputProps) => {
+const useInertiaInput = <T = number|string>({ name, model, errorKey, strategy = inputStrategy }: UseInertiaInputProps) => {
 	const form = useForm()
 
 	let usedModel = model ?? form.model
@@ -31,7 +32,7 @@ const useInertiaInput = <T = number|string>({ name, model, strategy = inputStrat
 		setValue: (value: T) => {
 			return form.setData(inputName, value)
 		},
-		error: form.getError(name),
+		error: form.getError(errorKey ?? inputName),
 	}
 }
 
