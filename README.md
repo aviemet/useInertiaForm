@@ -77,7 +77,43 @@ Retrieve errors using dot notation as keys. Errors are not stored as nested data
 
 ```javascript
 getError('user.firstName')
-// 'Must not be blank'
+// 'Must exist'
+```
+
+In order to make error retrieval match the keys used for data setting and getting, errors returned by the server are prepended with a model name. However, this is only done if the original data passed to `useInertiaForm` has a single parent key. For instance, if the form data is a user object as such:
+
+```javascript
+const form = useInertiaForm({
+  user: {
+    username: 'somebody'
+  }
+})
+```
+
+In the example above, data and error setters and getters will work with the following values:
+
+```javascript
+form.getData('user.username')
+form.setData('user.username', 'other')
+
+form.getError('user.username')
+form.setError('user.username', 'An Error!')
+```
+
+If form data is a flat object, or has two root models, the keys won't be rewritten:
+
+```javascript
+const form = useInertiaForm({
+  username: 'somebody',
+  firstName: 'Some',
+  lastName: 'Body',
+})
+
+form.getData('username')
+form.setData('username', 'other')
+
+form.getError('username')
+form.setError('username', 'An Error!')
 ```
 
 ## &lt;Form&gt;
@@ -187,7 +223,7 @@ const user = {
   }
 }
 
-const PageWithFormOnIt = ({ user }) => {
+const PageWithFormOnIt = () => {
   return (
     <Form model="user" data={ { user } } to={ `users/${user.id}` } method="patch">
       <TextInput name="firstName" label="First Name" />
@@ -203,7 +239,7 @@ const PageWithFormOnIt = ({ user }) => {
 
 ## useDynamicInputs
 
-Provides methods for adding and removing arrays in form data. Use it to make a reusable component with your own buttons and styles:
+Provides methods for managing arrays in form data. Use it to make a reusable component with your own buttons and styles:
 
 ```javascript
 const DynamicInputs = ({ children, model, label, emptyData }) => {
@@ -241,7 +277,7 @@ const user = {
   }
 }
 
-const PageWithFormOnIt = ({ user }) => {
+const PageWithFormOnIt = () => {
   return (
     <Form model="user" data={ { user } } to={ `users/${user.id}` } method="patch">
       <TextInput name="firstName" label="First Name" />
