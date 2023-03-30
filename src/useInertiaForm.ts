@@ -40,6 +40,9 @@ type setErrorByPath<TForm> = (field: Path<TForm>, value: string|string[]) => voi
 type setErrorByString = (field: string, value: string|string[]) => void
 type setErrorByObject = (errors: Record<string, string|string[]>) => void
 
+type getErrorByPath<TForm> = (field: Path<TForm>) => string|string[]|undefined
+type getErrorByString = (field: string) => string|string[]|undefined
+
 export interface UseInertiaFormProps<TForm> {
 	data: TForm
 	isDirty: boolean
@@ -60,7 +63,7 @@ export interface UseInertiaFormProps<TForm> {
 	reset: resetAll & resetByPath<TForm> & resetByString
 	clearErrors: (fields?: string|string[]) => void
 	setError: setErrorByPath<TForm> & setErrorByString & setErrorByObject
-	getError: (key: string) => string|string[]|undefined
+	getError: getErrorByPath<TForm> & getErrorByString
 	submit: (method: Method, url: string, options?: VisitOptions) => void
 	get: (url: string, options?: VisitOptions) => void
 	patch: (url: string, options?: VisitOptions) => void

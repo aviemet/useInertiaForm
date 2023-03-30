@@ -12,7 +12,7 @@ This was developed alongside a Rails project, so the form handling ethos follows
 
 This hook returns a superset of the original return values of `useForm`, meaning it can be swapped in without breaking anything. It overrides the signature of `setData`, allowing the use of dot-notation when supplying a string as its first argument. It also overrides `setErrors`, `getError` and `setDefaults`, and provides the new methods `getData` and `unsetData` to allow easily setting and getting nested form data and errors. All of the nested data handlers use the lodash methods `set`, `unset` and `get`.
 
-Initial data values are run through a sanitizing method which replaces any `null` or `undefined` values with empty strings. React cannot register that an input is controlled if its initial value is `null` or `undefined`, so doing this allows you to directly pass returned json from the server which may have undefined values into the hook without React complaining.
+Initial data values are run through a sanitizing method which replaces any `null` or `undefined` values with empty strings. React cannot register that an input is controlled if its initial value is `null` or `undefined`, so doing this allows you to directly pass returned json from the server, which may have undefined values, into the hook without React complaining.
 
 Instantiate it the same way you would with Inertia's `useForm`:
 
@@ -73,7 +73,7 @@ unsetData('user.brothers')
 
 ### `getError`
 
-Retrieve errors using dot notation.
+Retrieve errors using dot notation as keys. Errors are not stored as nested data, but rather with the nested data "address" as a key. This mimics the way errors are returned from the server, but still allows us to use the same lookup string for both the data and the errors.
 
 ```javascript
 getError('user.firstName')
