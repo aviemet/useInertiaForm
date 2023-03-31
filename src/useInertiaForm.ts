@@ -261,6 +261,27 @@ export default function useInertiaForm<TForm>(
 		[data, setErrors],
 	)
 
+	const clearErrors = useCallback((fields) => {
+		if(!fields) {
+			setErrors({})
+			return
+		}
+
+		const arrFields = coerceArray(fields)
+
+		setErrors((errors) => {
+			const newErrors = (Object.keys(errors) as Array<keyof TForm>).reduce(
+				(carry, field) => ({
+					...carry,
+					...(arrFields.length > 0 && !arrFields.includes(String(field)) ? { [field]: errors[field] } : {}),
+				}),
+				{},
+			)
+			setHasErrors(Object.keys(newErrors).length > 0)
+			return newErrors
+		})
+	}, [errors])
+
 	return {
 		data,
 		isDirty: !isEqual(data, defaults),
@@ -343,6 +364,7 @@ export default function useInertiaForm<TForm>(
 					onChangeArgsRef.current = [undefined, defaults, data]
 				}
 				setData(defaults)
+				setErrors({})
 				return
 			}
 
@@ -352,6 +374,7 @@ export default function useInertiaForm<TForm>(
 			arrFields.forEach(field => {
 				set(clone as NestedObject, field, get(defaults, field))
 			})
+			clearErrors(fields)
 			if(onChangeRef.current) {
 				onChangeArgsRef.current = [undefined, clone, data]
 			}
@@ -375,26 +398,7 @@ export default function useInertiaForm<TForm>(
 			return get(errors, key)
 		}, [errors]),
 
-		clearErrors: useCallback((fields) => {
-			if(!fields) {
-				setErrors({})
-				return
-			}
-
-			const arrFields = coerceArray(fields)
-
-			setErrors((errors) => {
-				const newErrors = (Object.keys(errors) as Array<keyof TForm>).reduce(
-					(carry, field) => ({
-						...carry,
-						...(arrFields.length > 0 && !arrFields.includes(String(field)) ? { [field]: errors[field] } : {}),
-					}),
-					{},
-				)
-				setHasErrors(Object.keys(newErrors).length > 0)
-				return newErrors
-			})
-		}, [errors]),
+		clearErrors,
 
 		submit,
 
