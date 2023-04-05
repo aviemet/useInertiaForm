@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/aviemet/useInertiaForm/compare/v3.0.2...v3.1.0) (2023-04-05)
+
+
+### Features
+
+* 🎸 Adds the filter prop ([5331b2b](https://github.com/aviemet/useInertiaForm/commit/5331b2bd189240450114fb588d2181e6ac30a525))
+
 ## [3.0.2](https://github.com/aviemet/useInertiaForm/compare/v3.0.1...v3.0.2) (2023-03-31)
 
 
