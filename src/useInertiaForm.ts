@@ -15,7 +15,7 @@ import {
 
 type OnChangeCallback = (key: string|undefined, value: unknown, prev: unknown) => void
 
-export type Primitive = string|number|symbol|null|undefined
+export type Primitive = string|number|null|undefined
 
 export type NestedObject = {
 	[key: string]: unknown|NestedObject|NestedObject[]

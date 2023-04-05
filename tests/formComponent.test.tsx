@@ -161,4 +161,27 @@ describe('Form Component', () => {
 			expect(buttons.length).toBe(4)
 		})
 	})
+
+	describe('Filter', () => {
+		it('unsets data at the given paths', () => {
+			const handleChange = (form) => {
+				expect(form.data.person.last_name).toBeUndefined()
+				expect(form.data.user.username).toBeUndefined()
+				expect(form.data.person.first_name).toBeDefined()
+			}
+
+			render(
+				<Form
+					model="person"
+					to="/form"
+					data={ initialData }
+					filter={ ['person.last_name', 'user.username'] }
+					onChange={ handleChange }
+				>
+					<Input name="first_name" />
+					<Submit>Submit</Submit>
+				</Form>,
+			)
+		})
+	})
 })

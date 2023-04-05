@@ -4,6 +4,7 @@ import { type VisitOptions } from '@inertiajs/core'
 import useInertiaForm, { NestedObject } from '../useInertiaForm'
 import { useForm, type UseFormProps, type HTTPVerb, FormProvider } from './FormProvider'
 import FormMetaWrapper, { useFormMeta, type FormMetaValue } from './FormMetaWrapper'
+import { unset } from 'lodash'
 
 type PartialHTMLForm = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange'|'onSubmit'|'onError'>
 
@@ -16,6 +17,7 @@ export interface FormProps<TForm> extends PartialHTMLForm {
 	resetAfterSubmit?: boolean
 	remember?: boolean
 	railsAttributes?: boolean
+	filter?: string[]
 	onSubmit?: (form: UseFormProps<TForm>) => boolean|void
 	onChange?: (form: UseFormProps<TForm>) => void
 	onSuccess?: (form: UseFormProps<TForm>) => void
@@ -31,13 +33,24 @@ const Form = <TForm extends NestedObject>({
 	async = false,
 	resetAfterSubmit,
 	remember = true,
+	filter,
 	onSubmit,
 	onChange,
 	onSuccess,
 	onError,
 	...props
 }: Omit<FormProps<TForm>, 'railsAttributes'>) => {
-	const form = remember && (model || to) ? useInertiaForm<TForm>(`${method}/${model || to}`, data) : useInertiaForm<TForm>(data)
+	const filteredData = useCallback((data: TForm) => {
+		if(!filter) return data
+
+		const clone = structuredClone(data)
+		filter.forEach(path => {
+			unset(clone, path)
+		})
+		return clone
+	}, [data, filter])
+
+	const form = remember && (model || to) ? useInertiaForm<TForm>(`${method}/${model || to}`, filteredData(data)) : useInertiaForm<TForm>(filteredData(data))
 
 	const contextValueObject = useCallback((): UseFormProps<TForm> => (
 		{ ...form, model, method, to, submit }
