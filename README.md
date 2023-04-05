@@ -120,15 +120,16 @@ form.setError('username', 'An Error!')
 
 Provides context for using form data and `useInertiaInput`. For rails backends, setting the prop `railsAttributes` to true will rewrite nested form data keys, appending the string "_attributes". This makes it possible to use `accepts_nested_attributes_for` in an ActiveRecord model.
 
-| Prop            | Default   | Description |
-| --------------- | --------- | -- |
-| `data`            | `n/a`   | Default data assigned to form.data. Creates a copy which is automatically used for form data in a `useInertiaInput` hook |
+| Prop              | Default     | Description |
+| ----------------- | ----------- | -- |
+| `data`            | `n/a`       | Default data assigned to form.data. Creates a copy which is automatically used for form data in a `useInertiaInput` hook |
 | `model`           | `undefined` | The root model for the form. If provided, all get and set operations in nested `useInertiaInput` elements will append the model to the dot notation string |
-| `method`          | `'post`   | HTTP method to use for the form |
+| `method`          | `'post`     | HTTP method to use for the form |
 | `to`              | `undefined` | Path to send the request to when the form is submitted. If this is omitted, submitting the form will do nothing except call `onSubmit` |
 | `async`           | `false`     | If true, uses `axios` methods to send form data. If false, uses Inertia's `useForm.submit` method. |
 | `remember`        | `true`      | If true, stores form data in local storage using the key `${method}/${model \|\| to}`. If one of `model` or `to` are not defined, data is not persisted |
 | `railsAttributes` | `false`     | If true, appends '_attributes' to nested data keys before submitting. |
+| `filter`          | `undefined` | An array of dot notation strings to call `unset` on before setting form data. This can be used to exclude data which you may need in your view, but do not want in your form data. For instance, an "edit" page may need the model `id` to pass the correct route to the `to` prop, while needing to exclude it from the form data. |
 | `onSubmit`        | `undefined` | Called when the form is submitted, fired just before sending the request. If the method returns `false`, submit is canceled |
 | `onChange`        | `undefined` | Called every time the form data changes |
 | `onSuccess`       | `undefined` | Called when the form has been successfully submitted |
