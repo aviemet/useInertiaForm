@@ -1,3 +1,10 @@
+## [3.1.1](https://github.com/aviemet/useInertiaForm/compare/v3.1.0...v3.1.1) (2023-04-08)
+
+
+### Bug Fixes
+
+* 🐛 Removes undefined option for data return value ([29a48e3](https://github.com/aviemet/useInertiaForm/commit/29a48e32279a40dc6fccdd35c84b11f135bafacf))
+
 # [3.1.0](https://github.com/aviemet/useInertiaForm/compare/v3.0.2...v3.1.0) (2023-04-05)
 
 
