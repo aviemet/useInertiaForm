@@ -20,7 +20,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((
 			name={ inputName }
 			id={ inputId }
 			value={ value }
-			onChange={ e => setValue(e.target.value) }
+			onChange={ (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value) }
 			ref={ ref }
 			{ ...props }
 		/>

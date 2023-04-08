@@ -44,7 +44,7 @@ type getErrorByPath<TForm> = (field: Path<TForm>) => string|string[]|undefined
 type getErrorByString = (field: string) => string|string[]|undefined
 
 export interface UseInertiaFormProps<TForm> {
-	data: TForm|undefined
+	data: TForm
 	isDirty: boolean
 	errors: Partial<Record<keyof TForm, string|string[]>>
 	hasErrors: boolean
