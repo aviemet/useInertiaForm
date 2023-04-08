@@ -1,3 +1,10 @@
+## [3.1.2](https://github.com/aviemet/useInertiaForm/compare/v3.1.1...v3.1.2) (2023-04-08)
+
+
+### Bug Fixes
+
+* 🐛 Adds path typings to clearErrors ([834d2d2](https://github.com/aviemet/useInertiaForm/commit/834d2d2127cb28b5859332751b499d427a7ca524))
+
 ## [3.1.1](https://github.com/aviemet/useInertiaForm/compare/v3.1.0...v3.1.1) (2023-04-08)
 
 
