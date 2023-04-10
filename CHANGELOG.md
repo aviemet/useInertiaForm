@@ -1,3 +1,10 @@
+## [3.1.3](https://github.com/aviemet/useInertiaForm/compare/v3.1.2...v3.1.3) (2023-04-10)
+
+
+### Bug Fixes
+
+* 🐛 Removes Required modifier from Form definitions ([3933d8d](https://github.com/aviemet/useInertiaForm/commit/3933d8d2f0e9cc22cf033bee447dc24f834df6a6))
+
 ## [3.1.2](https://github.com/aviemet/useInertiaForm/compare/v3.1.1...v3.1.2) (2023-04-08)
 
 
