@@ -1,3 +1,10 @@
+## [3.1.4](https://github.com/aviemet/useInertiaForm/compare/v3.1.3...v3.1.4) (2023-04-18)
+
+
+### Bug Fixes
+
+* 🐛 Fixes type for clearErrors ([7751649](https://github.com/aviemet/useInertiaForm/commit/775164926dbad769e067fdb9ea056ad7f40698c8))
+
 ## [3.1.3](https://github.com/aviemet/useInertiaForm/compare/v3.1.2...v3.1.3) (2023-04-10)
 
 
