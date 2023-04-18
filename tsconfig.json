@@ -1,26 +1,36 @@
 {
+  "include": ["src"],
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "esnext",
-    "lib": ["dom", "esnext"],
-    "jsx": "react",
+    "rootDir": "./src",
+    "noEmitOnError": true,
+
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "target": "ES2020",
+    "types": ["node"],
+
     "declaration": true,
+    "declarationDir": "types",
+    
+    "module": "ES2020",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "typeRoots": ["./node_modules/@types"],
+
+    "jsx": "react",
     "sourceMap": true,
-    "noEmit": true,
     "outDir": "dist",
     "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "rootDir": "./src",
     "skipLibCheck": true,
-    "typeRoots": [
-      "./node_modules/@types",
-    ],
   },
-  "include": ["src", "useInertiaForm.ts.bak"]
 }
