@@ -43,6 +43,7 @@ type setErrorByObject = (errors: Record<string, string|string[]>) => void
 type getErrorByPath<TForm> = (field: Path<TForm>) => string|string[]|undefined
 type getErrorByString = (field: string) => string|string[]|undefined
 
+type clearAllErrors = () => void
 type clearErrorsByPath<TForm> = (field: Path<TForm>|Path<TForm>[]) => void
 type clearErrorsByString = (field: string|string[]) => void
 
@@ -64,7 +65,7 @@ export interface UseInertiaFormProps<TForm> {
 	setDefaults(field: string, value: string): void
 	setDefaults(fields: TForm): void
 	reset: resetAll & resetByPath<TForm> & resetByString
-	clearErrors: clearErrorsByPath<TForm> & clearErrorsByString
+	clearErrors: clearAllErrors & clearErrorsByPath<TForm> & clearErrorsByString
 	setError: setErrorByPath<TForm> & setErrorByString & setErrorByObject
 	getError: getErrorByPath<TForm> & getErrorByString
 	submit: (method: Method, url: string, options?: VisitOptions) => void
@@ -264,7 +265,7 @@ export default function useInertiaForm<TForm>(
 		[data, setErrors],
 	)
 
-	const clearErrors = useCallback((fields) => {
+	const clearErrors = useCallback((fields?: string|string[]|Path<TForm>|Path<TForm>[]) => {
 		if(!fields) {
 			setErrors({})
 			return
