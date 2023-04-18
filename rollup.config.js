@@ -6,7 +6,7 @@ import terser from '@rollup/plugin-terser'
 import filesize from 'rollup-plugin-filesize'
 import pkg from './package.json'
 
-const externalDeps = ['@inertiajs/core', 'lodash', 'axios']
+const externalDeps = ['@inertiajs/core', '@inertiajs/react', 'react', 'lodash', 'axios']
 
 export default [
 	{
@@ -18,6 +18,10 @@ export default [
 			sourcemap: true,
 			globals: {
 				react: 'React',
+				'@inertiajs/core': '@inertiajs/core',
+				'@inertiajs/react': '@inertiajs/react',
+				'lodash': '_',
+				'axios': 'axios',
 			},
 		},
 		plugins: [
