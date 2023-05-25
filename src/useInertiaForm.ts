@@ -85,7 +85,14 @@ export default function useInertiaForm<TForm>(
 	rememberKeyOrInitialValues?: string|TForm,
 	maybeInitialValues?: TForm,
 ): UseInertiaFormProps<TForm> {
-	// Data
+	/********************
+	 * Set initial data *
+	 ********************/
+
+	/**
+	 * Extracts the "remember key" and the initial values from the arguments,
+	 * given the multiple signatures for the main function.
+	 */
 	const getFormArguments = useCallback((): [string, TForm] => {
 		let rememberKey: string = null
 		let transformedData = rememberKeyOrInitialValues
@@ -101,7 +108,10 @@ export default function useInertiaForm<TForm>(
 	const [defaults, setDefaults] = useState(transformedData || {} as TForm)
 	const [data, setData] = rememberKey ? useRemember<TForm>(transformedData, `${rememberKey}:data`) : useState<TForm>(transformedData)
 
-	// Detect root model name
+	/**
+	 * In order to handle nested errors returned from the server, we detect the root model name from the form data.
+	 * This is only set (and therefore only used) if there is a single root.
+	 */
 	const rootModelRef = useRef<string>()
 	useEffect(() => {
 		const keys = data ? Object.keys(data) : []
@@ -110,24 +120,71 @@ export default function useInertiaForm<TForm>(
 		}
 	}, [])
 
-	// Errors
+	/******************************
+	 * Create form error handlers *
+	 ******************************/
+
 	const [errors, setErrors] = rememberKey
 		? useRemember({} as Partial<Record<keyof TForm, string>>, `${rememberKey}:errors`)
 		: useState({} as Partial<Record<keyof TForm, string>>)
 	const [hasErrors, setHasErrors] = useState(false)
 
-	// Use to prepend root model name to errors returned by the server
+	/**
+	 * Prepends root model name to the keys of errors returned by the server if a root model was detected
+	 */
 	const rewriteErrorKeys = (errors: Partial<Record<keyof TForm, string>>) => {
 		if(!errors || !rootModelRef.current) return errors
 
-		const newErrors = {}
-		Object.keys(errors).forEach(key => {
-			newErrors[`${rootModelRef.current}.${key}`] = errors[key]
-		})
-		return newErrors
+		return Object.keys(errors).reduce((errorsObj, key) => {
+			errorsObj[`${rootModelRef.current}.${key}`] = errors[key]
+			return errorsObj
+		}, {})
 	}
 
-	// Submit request processes
+	const clearErrors = useCallback((fields?: string|string[]|Path<TForm>|Path<TForm>[]) => {
+		if(!fields) {
+			setErrors({})
+			return
+		}
+
+		const arrFields = coerceArray(fields)
+
+		setErrors((errors) => {
+			const newErrors = (Object.keys(errors) as Array<keyof TForm>).reduce(
+				(carry, field) => ({
+					...carry,
+					...(arrFields.length > 0 && !arrFields.includes(String(field)) ? { [field]: errors[field] } : {}),
+				}),
+				{},
+			)
+			setHasErrors(Object.keys(newErrors).length > 0)
+			return newErrors
+		})
+	}, [errors])
+
+	/*******************************
+	 * Create form change handlers *
+	 *******************************/
+
+	let onChangeRef = useRef<OnChangeCallback>()
+	let onChangeArgsRef = useRef<Parameters<OnChangeCallback>>()
+
+	const updateOnChangeArgs = (args: Parameters<OnChangeCallback>) => {
+		if(!onChangeRef.current) return
+
+		onChangeArgsRef.current = args
+	}
+
+	useEffect(() => {
+		if(onChangeRef.current && onChangeArgsRef.current) {
+			onChangeRef.current(...onChangeArgsRef.current)
+		}
+	}, [data])
+
+	/*******************************
+	 * Create form submit handlers *
+	 *******************************/
+
 	const [processing, setProcessing] = useState(false)
 	const [progress, setProgress] = useState<Progress>()
 	const [wasSuccessful, setWasSuccessful] = useState(false)
@@ -145,17 +202,14 @@ export default function useInertiaForm<TForm>(
 		}
 	}, [])
 
-	// OnChange function processes
-	let onChangeRef = useRef<OnChangeCallback>()
-	let onChangeArgsRef = useRef<Parameters<OnChangeCallback>>()
-
-	useEffect(() => {
-		if(onChangeRef.current && onChangeArgsRef.current) {
-			onChangeRef.current(...onChangeArgsRef.current)
-		}
-	}, [data])
-
-	// Check if this was called in the context of a Form component and store `railsAttributes`
+	/**
+	 * Check if this was called from within the context of a Form component and store `railsAttributes`.
+	 * Used on submit to rewrite nested attribute's keys for Rails models using `accepts_nested_attributes_for`
+	 *
+	 * This is the only part of `useInertiaForm` which explicitly knows about the other aspects of this package.
+	 * It is unfortunately the best solution I could find for rewriting attributes for Rails, though I would
+	 * have preferred for this process to live in the `Form` component.
+	 */
 	let railsAttributes = false
 	try {
 		const meta = useFormMeta()
@@ -265,26 +319,9 @@ export default function useInertiaForm<TForm>(
 		[data, setErrors],
 	)
 
-	const clearErrors = useCallback((fields?: string|string[]|Path<TForm>|Path<TForm>[]) => {
-		if(!fields) {
-			setErrors({})
-			return
-		}
-
-		const arrFields = coerceArray(fields)
-
-		setErrors((errors) => {
-			const newErrors = (Object.keys(errors) as Array<keyof TForm>).reduce(
-				(carry, field) => ({
-					...carry,
-					...(arrFields.length > 0 && !arrFields.includes(String(field)) ? { [field]: errors[field] } : {}),
-				}),
-				{},
-			)
-			setHasErrors(Object.keys(newErrors).length > 0)
-			return newErrors
-		})
-	}, [errors])
+	/***************************
+	 * Return public interface *
+	 ***************************/
 
 	return {
 		data,
@@ -300,38 +337,32 @@ export default function useInertiaForm<TForm>(
 			transformRef.current = callback
 		}, []),
 
-		onChange: (callback) => {
-			onChangeRef.current = callback
-		},
+		onChange: callback => onChangeRef.current = callback,
 
 		setData: (keyOrData: string|TForm|((previousData: TForm) => TForm), maybeValue?: any) => {
+			// When a string is passed as the key, process as though it's nested data.
+			// If it's not actually nested, the default behavior mimics setting by key value anyway
 			if(typeof keyOrData === 'string') {
 				return setData(data => {
 					const clone = structuredClone(data)
-					if(onChangeRef.current) {
-						onChangeArgsRef.current = [keyOrData, maybeValue, get(data, keyOrData)]
-					}
-
+					updateOnChangeArgs([keyOrData, maybeValue, get(data, keyOrData)])
 					set(clone as NestedObject, keyOrData, maybeValue)
 					return clone
 				})
 			}
 
+			// With a function as the first argument, simply call it
 			if(keyOrData instanceof Function) {
 				setData((data) => {
 					const clone = keyOrData(structuredClone(data))
-					if(onChangeRef.current) {
-						onChangeArgsRef.current = [undefined, clone, data]
-					}
+					updateOnChangeArgs([undefined, clone, data])
 					return clone
 				})
 				return
 			}
 
-			if(onChangeRef.current) {
-				onChangeArgsRef.current = [undefined, data, keyOrData]
-			}
-
+			// Any other types of data are simply passed directly to the state setter
+			updateOnChangeArgs([undefined, data, keyOrData])
 			setData(keyOrData)
 		},
 
@@ -342,9 +373,7 @@ export default function useInertiaForm<TForm>(
 		unsetData: useCallback((key: string) => {
 			setData(data => {
 				const clone = structuredClone(data)
-				if(onChangeRef.current) {
-					onChangeArgsRef.current = [key, get(data, key), undefined]
-				}
+				updateOnChangeArgs([key, get(data, key), undefined])
 				unsetCompact(clone as NestedObject, key)
 				return clone
 			})
@@ -364,9 +393,7 @@ export default function useInertiaForm<TForm>(
 
 		reset: useCallback((fields?: string|string[]) => {
 			if(!fields) {
-				if(onChangeRef.current) {
-					onChangeArgsRef.current = [undefined, defaults, data]
-				}
+				updateOnChangeArgs([undefined, defaults, data])
 				setData(defaults)
 				setErrors({})
 				return
@@ -379,9 +406,7 @@ export default function useInertiaForm<TForm>(
 				set(clone as NestedObject, field, get(defaults, field))
 			})
 			clearErrors(fields)
-			if(onChangeRef.current) {
-				onChangeArgsRef.current = [undefined, clone, data]
-			}
+			updateOnChangeArgs([undefined, clone, data])
 			setData(clone)
 		}, [defaults, data]),
 
