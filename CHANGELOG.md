@@ -1,3 +1,10 @@
+## [3.1.5](https://github.com/aviemet/useInertiaForm/compare/v3.1.4...v3.1.5) (2023-06-09)
+
+
+### Bug Fixes
+
+* 🐛 Makes `to` a required prop ([#7](https://github.com/aviemet/useInertiaForm/issues/7)) ([0822d5c](https://github.com/aviemet/useInertiaForm/commit/0822d5c7720a7b8d0d45b4325e017eaada424895))
+
 ## [3.1.4](https://github.com/aviemet/useInertiaForm/compare/v3.1.3...v3.1.4) (2023-04-18)
 
 
