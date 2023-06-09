@@ -10,7 +10,9 @@ This was developed alongside a Rails project, so the form handling ethos follows
 
 ## useInertiaForm
 
-This hook returns a superset of the original return values of `useForm`, meaning it can be swapped in without breaking anything. It overrides the signature of `setData`, allowing the use of dot-notation when supplying a string as its first argument. It also overrides `setErrors`, `getError` and `setDefaults`, and provides the new methods `getData` and `unsetData` to allow easily setting and getting nested form data and errors. All of the nested data handlers use the lodash methods `set`, `unset` and `get`.
+This hook returns a superset of the original return values of `useForm`, meaning it can be swapped in without breaking anything. While many of the methods have been modified to allow for managing nested form data, they all "fall back" to the original functionality when called with the original signatures.
+
+`useInertiaForm` overrides the signature of `setData`, allowing the use of dot-notation when supplying a string as its first argument. It also overrides `setErrors`, `getError` and `setDefaults`, and provides the new methods `getData` and `unsetData` to allow easily setting and getting nested form data and errors. All of the nested data handlers use the lodash methods `set`, `unset` and `get`.
 
 Initial data values are run through a sanitizing method which replaces any `null` or `undefined` values with empty strings. React cannot register that an input is controlled if its initial value is `null` or `undefined`, so doing this allows you to directly pass returned json from the server, which may have undefined values, into the hook without React complaining.
 
@@ -296,4 +298,31 @@ A component called `DynamicInputs` is exported which implements this if you don'
 
 ### &lt;Submit&gt;
 
-Renders a button which will submit the form. Passes the `disabled` prop to the enclosed button if the form is processing. Accepts a component as a prop for use with component libraries.
+Since the `Form` component submits data by intercepting the `submit` event, this button actually does very little. Mostly, it disables the submit button while the form is processing to avoid double submits. It does this by passing `disabled` as a prop to the button element, which itself can be customized using the `component` prop. It accepts either a string or a React component, so if you use anything other than a button, you'll need to manually trigger the form submit action somehow.
+
+An example of customizing the submit button using Mantine:
+
+```typescript
+import React, { forwardRef } from 'react'
+import { Button, ButtonProps } from '@mantine/core'
+import { Submit as SubmitButton, useForm } from 'use-inertia-form'
+
+const Submit = forwardRef<HTMLButtonElement, ButtonProps>((
+  { children, disabled, ...props },
+  ref,
+) => {
+  const { processing, isDirty } = useForm()
+  return (
+      <SubmitButton
+        component={ Button }
+        ref={ ref }
+        disabled={ disabled || processing || !isDirty }
+        { ...props }
+      >
+        { children }
+      </SubmitButton>
+  )
+})
+
+export default Submit
+```
