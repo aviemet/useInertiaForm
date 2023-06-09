@@ -12,7 +12,7 @@ export interface FormProps<TForm> extends PartialHTMLForm {
 	data: TForm
 	model?: string
 	method?: HTTPVerb
-	to?: string
+	to: string
 	async?: boolean
 	resetAfterSubmit?: boolean
 	remember?: boolean
@@ -50,7 +50,10 @@ const Form = <TForm extends NestedObject>({
 		return clone
 	}, [data, filter])
 
-	const form = remember && (model || to) ? useInertiaForm<TForm>(`${method}/${model || to}`, filteredData(data)) : useInertiaForm<TForm>(filteredData(data))
+	const form = remember ?
+		useInertiaForm<TForm>(`${method}/${model || to}`, filteredData(data))
+		:
+		useInertiaForm<TForm>(filteredData(data))
 
 	const contextValueObject = useCallback((): UseFormProps<TForm> => (
 		{ ...form, model, method, to, submit }
