@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/aviemet/useInertiaForm/compare/v3.1.5...v3.2.0) (2023-06-10)
+
+
+### Features
+
+* 🎸 Adds optional requiredFields prop to Submit button ([#8](https://github.com/aviemet/useInertiaForm/issues/8)) ([b064ef3](https://github.com/aviemet/useInertiaForm/commit/b064ef3420b1185f5787afb2eee821b706a83144))
+
 ## [3.1.5](https://github.com/aviemet/useInertiaForm/compare/v3.1.4...v3.1.5) (2023-06-09)
 
 
