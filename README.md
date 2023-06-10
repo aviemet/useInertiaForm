@@ -298,7 +298,11 @@ A component called `DynamicInputs` is exported which implements this if you don'
 
 ### &lt;Submit&gt;
 
-Since the `Form` component submits data by intercepting the `submit` event, this button actually does very little. Mostly, it disables the submit button while the form is processing to avoid double submits. It does this by passing `disabled` as a prop to the button element, which itself can be customized using the `component` prop. It accepts either a string or a React component, so if you use anything other than a button, you'll need to manually trigger the form submit action somehow.
+Since the `Form` component submits data by intercepting the `submit` event, using this submit button is not strictly necessary. It does, however, have a few features which might be useful.
+
+* Disabled while processing to avoid multiple submits
+* Pass a list of data paths to `requiredFields` prop to disable the button unless those fields are not empty
+* Customize the element using the `component` props. Accepts either a string or a React element.
 
 An example of customizing the submit button using Mantine:
 
@@ -316,7 +320,8 @@ const Submit = forwardRef<HTMLButtonElement, ButtonProps>((
       <SubmitButton
         component={ Button }
         ref={ ref }
-        disabled={ disabled || processing || !isDirty }
+        disabled={ disabled || !isDirty }
+        requiredFields={ ['user.firstName'] }
         { ...props }
       >
         { children }
