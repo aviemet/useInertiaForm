@@ -1,3 +1,10 @@
+## [3.2.1](https://github.com/aviemet/useInertiaForm/compare/v3.2.0...v3.2.1) (2023-06-12)
+
+
+### Bug Fixes
+
+* 🐛 Replaces isEmpty with isUnset for detecting empty inputs ([886b0de](https://github.com/aviemet/useInertiaForm/commit/886b0dec62022bdc9d87617418f19d66383bab21))
+
 # [3.2.0](https://github.com/aviemet/useInertiaForm/compare/v3.1.5...v3.2.0) (2023-06-10)
 
 
