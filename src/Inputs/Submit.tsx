@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import { useForm } from '../Form'
-import { isEmpty } from 'lodash'
+import { isUnset } from '../utils'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	component?: string | React.ComponentType
@@ -16,7 +16,7 @@ const Submit = React.forwardRef<HTMLButtonElement, ButtonProps>((
 	const hasEmptyRequiredFields = useCallback(() => {
 		if(!requiredFields || requiredFields.length === 0) return false
 
-		return requiredFields.some((field) => isEmpty(getData(field)))
+		return requiredFields.some((field) => isUnset(getData(field)))
 	}, [data])
 
 	return (

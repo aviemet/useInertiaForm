@@ -1,5 +1,5 @@
 import React from 'react'
-import { isPlainObject, unset, get, set } from 'lodash'
+import { isPlainObject, unset, get, set, isEmpty } from 'lodash'
 import { type NestedObject } from './useInertiaForm'
 
 export const createContext = <CT extends unknown | null>() => {
@@ -113,6 +113,21 @@ const renameKey = (obj, oldKey, newKey) => {
 export const coerceArray = (arg: string | string[]) => {
 	if(Array.isArray(arg)) return arg
 	return [arg]
+}
+
+/**
+ * Returns whether a value should be considered empty in the context of a form input
+ */
+export const isUnset = (v: any) => {
+	if(typeof v === 'string') {
+		return v === ''
+	}
+
+	if(typeof v === 'number') {
+		return v === 0 ? false : !Boolean(v)
+	}
+
+	return isEmpty(v)
 }
 
 // Copied from https://gist.github.com/balthild/1f23725059aef8b9231d6c346494b918
