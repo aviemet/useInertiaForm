@@ -3,7 +3,7 @@
   "version": "3.2.1",
   "description": "Extra functionality for Inertia.js useForm hook",
   "main": "dist/useInertiaForm.js",
-  "module": "dist/useInertiaForm.esm.js",
+  "cjs": "dist/useInertiaForm.cjs",
   "unpkg": "dist/useInertiaForm.umd.min.js",
   "homepage": "https://github.com/aviemet/useInertiaForm#readme",
   "sideEffects": false,
