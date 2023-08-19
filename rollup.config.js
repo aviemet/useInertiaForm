@@ -39,12 +39,12 @@ export default [
 		output: [
 			{
 				file: pkg.main,
-				format: 'cjs',
+				format: 'es',
 				sourcemap: true,
 			},
 			{
-				file: pkg.module,
-				format: 'es',
+				file: pkg.cjs,
+				format: 'cjs',
 				sourcemap: true,
 			},
 		],
