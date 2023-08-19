@@ -1,3 +1,10 @@
+# [3.3.0](https://github.com/aviemet/useInertiaForm/compare/v3.2.1...v3.3.0) (2023-08-19)
+
+
+### Features
+
+* 🎸 Force release for breaking change in rollup export ([e87c4cc](https://github.com/aviemet/useInertiaForm/commit/e87c4cc1692f1755295d37d8e44c88e273e69266))
+
 ## [3.2.1](https://github.com/aviemet/useInertiaForm/compare/v3.2.0...v3.2.1) (2023-06-12)
 
 
