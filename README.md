@@ -44,7 +44,7 @@ setData('user.brothers[0]', 'Jake')
 /* { 
   user: { 
     firstName: 'Finn',
-    lastNameName: 'Human'
+    lastName: 'Human'
     brothers: ['Jake']
   } 
 } */
@@ -68,7 +68,7 @@ unsetData('user.brothers')
 /* { 
   user: { 
     firstName: 'Finn'
-    lastNameName: 'Human'
+    lastName: 'Human'
   } 
 } */
 ```
