@@ -97,9 +97,9 @@
     "typescript": "^4.9.5"
   },
   "peerDependencies": {
-    "@inertiajs/react": "^1.0.2",
+    "@inertiajs/react": "^1.0.0",
     "lodash.isequal": "^4.5.0",
-    "react": "^18.2.0"
+    "react": "^16.9.0 || ^17.0.0 || ^18.0.0"
   },
   "husky": {
     "hooks": {
