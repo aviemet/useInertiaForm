@@ -1,3 +1,10 @@
+## [3.3.2](https://github.com/aviemet/useInertiaForm/compare/v3.3.1...v3.3.2) (2023-12-16)
+
+
+### Bug Fixes
+
+* 🐛 Changes default form data type to NestedObject ([c7690f9](https://github.com/aviemet/useInertiaForm/commit/c7690f91fb659f74407a0773f54b4c029c650d88))
+
 ## [3.3.1](https://github.com/aviemet/useInertiaForm/compare/v3.3.0...v3.3.1) (2023-12-16)
 
 
