@@ -1,3 +1,10 @@
+## [3.3.1](https://github.com/aviemet/useInertiaForm/compare/v3.3.0...v3.3.1) (2023-12-16)
+
+
+### Bug Fixes
+
+* 🐛 Adds second generic to useInertiaInput type definition ([bcf3d39](https://github.com/aviemet/useInertiaForm/commit/bcf3d39079c571b05aed6303c3670d80dfa63c9b))
+
 # [3.3.0](https://github.com/aviemet/useInertiaForm/compare/v3.2.1...v3.3.0) (2023-08-19)
 
 
