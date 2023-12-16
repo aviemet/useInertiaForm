@@ -12,8 +12,8 @@ interface UseInertiaInputProps {
 /**
  * Returns form data and input specific methods to use with an input.
  */
-const useInertiaInput = <T = number|string>({ name, model, errorKey, strategy = inputStrategy }: UseInertiaInputProps) => {
-	const form = useForm()
+const useInertiaInput = <T = number|string, TForm = unknown>({ name, model, errorKey, strategy = inputStrategy }: UseInertiaInputProps) => {
+	const form = useForm<TForm>()
 
 	let usedModel = model ?? form.model
 
