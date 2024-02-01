@@ -109,13 +109,6 @@ export default function useInertiaForm<TForm>(
 		}
 		return undefined
 	}, [])
-	// const rootModelRef = useRef<string>()
-	// useEffect(() => {
-	// 	const keys = data ? Object.keys(data) : []
-	// 	if(keys.length === 1) {
-	// 		rootModelRef.current = keys[0]
-	// 	}
-	// }, [])
 
 	// Errors
 	const [errors, setErrors] = rememberKey
@@ -265,7 +258,6 @@ export default function useInertiaForm<TForm>(
 		if(method === 'delete') {
 			router.delete(url, { ..._options, data: transformedData as RequestPayload })
 		} else {
-			console.log({ method, transformedData })
 			router[method](url, transformedData as RequestPayload, _options)
 		}
 	}
