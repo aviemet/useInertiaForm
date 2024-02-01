@@ -1,3 +1,10 @@
+## [3.3.3](https://github.com/aviemet/useInertiaForm/compare/v3.3.2...v3.3.3) (2024-02-01)
+
+
+### Bug Fixes
+
+* 🐛 Remove memoization of returned methods ([9198d6b](https://github.com/aviemet/useInertiaForm/commit/9198d6b32d023b37fea31a3ce042de75d745ede5))
+
 ## [3.3.2](https://github.com/aviemet/useInertiaForm/compare/v3.3.1...v3.3.2) (2023-12-16)
 
 
