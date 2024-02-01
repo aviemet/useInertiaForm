@@ -117,3 +117,6 @@ typings/
 # dotenv environment variables file
 .env
 .env.*
+
+# compiled files
+dist/
