@@ -265,6 +265,7 @@ export default function useInertiaForm<TForm>(
 		if(method === 'delete') {
 			router.delete(url, { ..._options, data: transformedData as RequestPayload })
 		} else {
+			console.log({ method, transformedData })
 			router[method](url, transformedData as RequestPayload, _options)
 		}
 	}
