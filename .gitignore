@@ -12,6 +12,7 @@ Icon
 # Thumbnails
 ._*
 
+
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
 .fseventsd
@@ -20,6 +21,7 @@ Icon
 .Trashes
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
+
 
 # Directories potentially created on remote AFP share
 .AppleDB
@@ -37,14 +39,18 @@ Thumbs.db:encryptable
 ehthumbs.db
 ehthumbs_vista.db
 
+
 # Dump file
 *.stackdump
+
 
 # Folder config file
 [Dd]esktop.ini
 
+
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
+
 
 # Windows Installer files
 *.cab
@@ -53,34 +59,32 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
+
 # Windows shortcuts
 *.lnk
 
 
 ### https://raw.github.com/github/gitignore/6c87d249af5f2b3f8ab65ae0a2648682ee4e8a2d/Global/Linux.gitignore
-
 *~
 
 # temporary files which can be created if a process still has a handle open of a deleted file
 .fuse_hidden*
 
+
 # KDE directory preferences
 .directory
 
+
 # Linux trash folder which might appear on any partition or disk
 .Trash-*
+
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
 
 
 ### https://raw.github.com/github/gitignore/6c87d249af5f2b3f8ab65ae0a2648682ee4e8a2d/Global/VisualStudioCode.gitignore
-
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode
 *.code-workspace
 
 
