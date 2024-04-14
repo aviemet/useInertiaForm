@@ -8,7 +8,6 @@
 # Thumbnails
 ._*
 
-
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
 .fseventsd
@@ -17,7 +16,6 @@
 .Trashes
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
-
 
 # Directories potentially created on remote AFP share
 .AppleDB
@@ -34,14 +32,11 @@ Thumbs.db:encryptable
 ehthumbs.db
 ehthumbs_vista.db
 
-
 # Dump file
 *.stackdump
 
-
 # Folder config file
 [Dd]esktop.ini
-
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
@@ -59,10 +54,8 @@ $RECYCLE.BIN/
 # KDE directory preferences
 .directory
 
-
 # Linux trash folder which might appear on any partition or disk
 .Trash-*
-
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
@@ -125,3 +118,5 @@ typings/
 
 # compiled files
 dist/
+
+reference
