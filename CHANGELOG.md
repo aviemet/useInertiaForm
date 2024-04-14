@@ -1,3 +1,10 @@
+# [3.4.0](https://github.com/aviemet/useInertiaForm/compare/v3.3.3...v3.4.0) (2024-04-14)
+
+
+### Features
+
+* removeInput returns the removed record ([#16](https://github.com/aviemet/useInertiaForm/issues/16)) ([b4ac146](https://github.com/aviemet/useInertiaForm/commit/b4ac146d8e543a4a631c541afda53c9ca65b97ef))
+
 ## [3.3.3](https://github.com/aviemet/useInertiaForm/compare/v3.3.2...v3.3.3) (2024-02-01)
 
 
