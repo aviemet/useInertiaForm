@@ -1,3 +1,24 @@
+## [3.3.3](https://github.com/aviemet/useInertiaForm/compare/v3.3.2...v3.3.3) (2024-02-01)
+
+
+### Bug Fixes
+
+* 🐛 Remove memoization of returned methods ([9198d6b](https://github.com/aviemet/useInertiaForm/commit/9198d6b32d023b37fea31a3ce042de75d745ede5))
+
+## [3.3.2](https://github.com/aviemet/useInertiaForm/compare/v3.3.1...v3.3.2) (2023-12-16)
+
+
+### Bug Fixes
+
+* 🐛 Changes default form data type to NestedObject ([c7690f9](https://github.com/aviemet/useInertiaForm/commit/c7690f91fb659f74407a0773f54b4c029c650d88))
+
+## [3.3.1](https://github.com/aviemet/useInertiaForm/compare/v3.3.0...v3.3.1) (2023-12-16)
+
+
+### Bug Fixes
+
+* 🐛 Adds second generic to useInertiaInput type definition ([bcf3d39](https://github.com/aviemet/useInertiaForm/commit/bcf3d39079c571b05aed6303c3670d80dfa63c9b))
+
 # [3.3.0](https://github.com/aviemet/useInertiaForm/compare/v3.2.1...v3.3.0) (2023-08-19)
 
 

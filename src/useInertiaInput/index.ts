@@ -1,6 +1,7 @@
 import { useForm } from '../Form'
 import { useNestedAttribute } from '../NestedFields'
 import inputStrategy, { type InputStrategy } from './inputStrategy'
+import { type NestedObject } from '../useInertiaForm'
 
 interface UseInertiaInputProps {
 	name: string
@@ -12,8 +13,8 @@ interface UseInertiaInputProps {
 /**
  * Returns form data and input specific methods to use with an input.
  */
-const useInertiaInput = <T = number|string>({ name, model, errorKey, strategy = inputStrategy }: UseInertiaInputProps) => {
-	const form = useForm()
+const useInertiaInput = <T = number|string, TForm = NestedObject>({ name, model, errorKey, strategy = inputStrategy }: UseInertiaInputProps) => {
+	const form = useForm<TForm>()
 
 	let usedModel = model ?? form.model
 
