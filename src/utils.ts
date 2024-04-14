@@ -53,32 +53,15 @@ export const fillEmptyValues = <TForm>(data: TForm) => {
 }
 
 /**
- * Appends a string to the end of parts of a dot notated string,
- *   excepting those with array notation, and the first and last elements
- */
-export const renameWithAttributes = (str: string, append = '_attributes') => {
-	const parts = str.split('.')
-
-	if(parts.length < 2) return str
-
-	for(let i = parts.length - 2; i > 0; i--) {
-		if(parts[i].charAt(parts[i].length - 1) !== ']') {
-			parts[i] = `${parts[i]}${append}`
-		} else {
-			parts[i].replace('[', '_attributes[')
-		}
-	}
-
-	return parts.join('.')
-}
-
-/**
- * Removes appended string '_attributes' from dot notation
+ * Removes appended string (default of '_attributes') from dot notation
  */
 export const stripAttributes = (str: string, attribute = '_attributes') => {
 	return str.replace(new RegExp(`${attribute}\\.`), '.')
 }
 
+/**
+ * Append string (default of '_attributes') to keys of nested records
+ */
 export const renameObjectWithAttributes = <T>(data: T, str = '_attributes') => {
 	const clone = structuredClone(data)
 
@@ -110,10 +93,7 @@ const renameKey = (obj, oldKey, newKey) => {
 	}
 }
 
-export const coerceArray = (arg: string | string[]) => {
-	if(Array.isArray(arg)) return arg
-	return [arg]
-}
+export const coerceArray = <T = unknown>(arg: T | T[]) => Array.isArray(arg) ? arg : [arg]
 
 /**
  * Returns whether a value should be considered empty in the context of a form input

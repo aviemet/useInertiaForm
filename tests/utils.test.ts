@@ -1,5 +1,5 @@
 import { NestedObject } from '../src/useInertiaForm'
-import { coerceArray, fillEmptyValues, renameObjectWithAttributes, renameWithAttributes, stripAttributes, unsetCompact } from '../src/utils'
+import { coerceArray, fillEmptyValues, renameObjectWithAttributes, stripAttributes, unsetCompact } from '../src/utils'
 
 const nestedData: NestedObject = {
 	one: 'one',
@@ -78,23 +78,10 @@ describe('fillEmptyValues', () => {
 	})
 })
 
-describe('renameWithAttributes', () => {
-	it('should add _attributes where appropriate to dot notation strings', () => {
-		expect(renameWithAttributes('user.person.name')).toEqual('user.person_attributes.name')
-		expect(renameWithAttributes('user.contact.phones[2].number')).toEqual('user.contact_attributes.phones[2].number')
-		expect(renameWithAttributes('user.person.manager.name')).toEqual('user.person_attributes.manager_attributes.name')
-	})
-
-	it('accepts another string to use in place of _attributes', () => {
-		expect(renameWithAttributes('user.person.name', '_input')).toEqual('user.person_input.name')
-	})
-})
-
 describe('stripAttributes', () => {
 	it('should remove _attributes from dot notation strings', () => {
-		const key = 'user.person.name'
-		const attributed = renameWithAttributes('user.person.name')
-		expect(stripAttributes(attributed)).toEqual(key)
+		const key = 'user.person_attributes.name'
+		expect(stripAttributes(key)).toEqual('user.person.name')
 	})
 
 	it('should not remove the word attributes without the _ or not at the end of a segment', () => {
