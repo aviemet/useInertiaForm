@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Method, Progress, VisitOptions, type RequestPayload } from '@inertiajs/core'
 import { router } from '@inertiajs/react'
 import { get, isEqual, set } from 'lodash'
@@ -102,12 +102,12 @@ export default function useInertiaForm<TForm>(
 	const [data, setData] = rememberKey ? useRemember<TForm>(transformedData, `${rememberKey}:data`) : useState<TForm>(transformedData)
 
 	// Detect root model name
-	const rootModelRef = useRef<string>()
-	useEffect(() => {
+	const rootModelKey = useMemo(() => {
 		const keys = data ? Object.keys(data) : []
 		if(keys.length === 1) {
-			rootModelRef.current = keys[0]
+			return keys[0]
 		}
+		return undefined
 	}, [])
 
 	// Errors
@@ -118,11 +118,11 @@ export default function useInertiaForm<TForm>(
 
 	// Use to prepend root model name to errors returned by the server
 	const rewriteErrorKeys = (errors: Partial<Record<keyof TForm, string>>) => {
-		if(!errors || !rootModelRef.current) return errors
+		if(!errors || !rootModelKey) return errors
 
 		const newErrors = {}
 		Object.keys(errors).forEach(key => {
-			newErrors[`${rootModelRef.current}.${key}`] = errors[key]
+			newErrors[`${rootModelKey}.${key}`] = errors[key]
 		})
 		return newErrors
 	}
@@ -162,110 +162,107 @@ export default function useInertiaForm<TForm>(
 		railsAttributes = meta.railsAttributes
 	} catch(e) {}
 
-	const submit = useCallback(
-		(method: Method, url: string, options: VisitOptions = {}) => {
-			const _options = {
-				...options,
-				onCancelToken: (token) => {
-					cancelToken.current = token
+	const submit = (method: Method, url: string, options: VisitOptions = {}) => {
+		const _options = {
+			...options,
+			onCancelToken: (token) => {
+				cancelToken.current = token
 
-					if(options.onCancelToken) {
-						return options.onCancelToken(token)
-					}
-				},
-				onBefore: (visit) => {
-					setWasSuccessful(false)
-					setRecentlySuccessful(false)
-					clearTimeout(recentlySuccessfulTimeoutId.current)
+				if(options.onCancelToken) {
+					return options.onCancelToken(token)
+				}
+			},
+			onBefore: (visit) => {
+				setWasSuccessful(false)
+				setRecentlySuccessful(false)
+				clearTimeout(recentlySuccessfulTimeoutId.current)
 
-					if(options.onBefore) {
-						return options.onBefore(visit)
-					}
-				},
-				onStart: (visit) => {
-					setProcessing(true)
+				if(options.onBefore) {
+					return options.onBefore(visit)
+				}
+			},
+			onStart: (visit) => {
+				setProcessing(true)
 
-					if(options.onStart) {
-						return options.onStart(visit)
-					}
-				},
-				onProgress: (event) => {
-					setProgress(event)
+				if(options.onStart) {
+					return options.onStart(visit)
+				}
+			},
+			onProgress: (event) => {
+				setProgress(event)
 
-					if(options.onProgress) {
-						return options.onProgress(event)
-					}
-				},
-				onSuccess: (page) => {
-					if(isMounted.current) {
-						setProcessing(false)
-						setProgress(null)
-						setErrors({})
-						setHasErrors(false)
-						setWasSuccessful(true)
-						setRecentlySuccessful(true)
-						recentlySuccessfulTimeoutId.current = setTimeout(() => {
-							if(isMounted.current) {
-								setRecentlySuccessful(false)
-							}
-						}, 2000)
-					}
+				if(options.onProgress) {
+					return options.onProgress(event)
+				}
+			},
+			onSuccess: (page) => {
+				if(isMounted.current) {
+					setProcessing(false)
+					setProgress(null)
+					setErrors({})
+					setHasErrors(false)
+					setWasSuccessful(true)
+					setRecentlySuccessful(true)
+					recentlySuccessfulTimeoutId.current = setTimeout(() => {
+						if(isMounted.current) {
+							setRecentlySuccessful(false)
+						}
+					}, 2000)
+				}
 
-					if(options.onSuccess) {
-						return options.onSuccess(page)
-					}
-				},
-				onError: (errors) => {
-					if(isMounted.current) {
-						setProcessing(false)
-						setProgress(null)
-						setErrors(rewriteErrorKeys(errors))
-						setHasErrors(true)
-					}
+				if(options.onSuccess) {
+					return options.onSuccess(page)
+				}
+			},
+			onError: (errors) => {
+				if(isMounted.current) {
+					setProcessing(false)
+					setProgress(null)
+					setErrors(rewriteErrorKeys(errors))
+					setHasErrors(true)
+				}
 
-					if(options.onError) {
-						return options.onError(errors)
-					}
-				},
-				onCancel: () => {
-					if(isMounted.current) {
-						setProcessing(false)
-						setProgress(null)
-					}
+				if(options.onError) {
+					return options.onError(errors)
+				}
+			},
+			onCancel: () => {
+				if(isMounted.current) {
+					setProcessing(false)
+					setProgress(null)
+				}
 
-					if(options.onCancel) {
-						return options.onCancel()
-					}
-				},
-				onFinish: (visit) => {
-					if(isMounted.current) {
-						setProcessing(false)
-						setProgress(null)
-					}
+				if(options.onCancel) {
+					return options.onCancel()
+				}
+			},
+			onFinish: (visit) => {
+				if(isMounted.current) {
+					setProcessing(false)
+					setProgress(null)
+				}
 
-					cancelToken.current = null
+				cancelToken.current = null
 
-					if(options.onFinish) {
-						return options.onFinish(visit)
-					}
-				},
-			}
+				if(options.onFinish) {
+					return options.onFinish(visit)
+				}
+			},
+		}
 
-			let transformedData = transformRef.current(structuredClone(data))
-			if(railsAttributes) {
-				transformedData = renameObjectWithAttributes(transformedData)
-			}
+		let transformedData = transformRef.current(structuredClone(data))
+		if(railsAttributes) {
+			transformedData = renameObjectWithAttributes(transformedData)
+		}
 
-			if(method === 'delete') {
-				router.delete(url, { ..._options, data: transformedData as RequestPayload })
-			} else {
-				router[method](url, transformedData as RequestPayload, _options)
-			}
-		},
-		[data, setErrors],
-	)
+		if(method === 'delete') {
+			router.delete(url, { ..._options, data: transformedData as RequestPayload })
+		} else {
+			router[method](url, transformedData as RequestPayload, _options)
+		}
+	}
 
-	const clearErrors = useCallback((fields?: string|string[]|Path<TForm>|Path<TForm>[]) => {
+	const clearErrors = (fields?: string|string[]|Path<TForm>|Path<TForm>[]) => {
 		if(!fields) {
 			setErrors({})
 			return
@@ -284,7 +281,7 @@ export default function useInertiaForm<TForm>(
 			setHasErrors(Object.keys(newErrors).length > 0)
 			return newErrors
 		})
-	}, [errors])
+	}
 
 	return {
 		data,
@@ -339,7 +336,7 @@ export default function useInertiaForm<TForm>(
 			return get(data, key)
 		},
 
-		unsetData: useCallback((key: string) => {
+		unsetData: (key: string) => {
 			setData(data => {
 				const clone = structuredClone(data)
 				if(onChangeRef.current) {
@@ -348,9 +345,9 @@ export default function useInertiaForm<TForm>(
 				unsetCompact(clone as NestedObject, key)
 				return clone
 			})
-		}, [data]),
+		},
 
-		setDefaults: useCallback((fieldOrFields?: string|TForm, maybeValue?: string) => {
+		setDefaults: (fieldOrFields?: string|TForm, maybeValue?: string) => {
 			if(fieldOrFields === undefined) {
 				setDefaults(() => data)
 				return
@@ -360,9 +357,9 @@ export default function useInertiaForm<TForm>(
 				...defaults,
 				...(typeof fieldOrFields === 'string' ? { [fieldOrFields]: maybeValue } : (fieldOrFields as TForm)),
 			}))
-		}, [data]),
+		},
 
-		reset: useCallback((fields?: string|string[]) => {
+		reset: (fields?: string|string[]) => {
 			if(!fields) {
 				if(onChangeRef.current) {
 					onChangeArgsRef.current = [undefined, defaults, data]
@@ -383,9 +380,9 @@ export default function useInertiaForm<TForm>(
 				onChangeArgsRef.current = [undefined, clone, data]
 			}
 			setData(clone)
-		}, [defaults, data]),
+		},
 
-		setError: useCallback((fieldOrFields: string|Record<string, string|string[]>, maybeValue?: string) => {
+		setError: (fieldOrFields: string|Record<string, string|string[]>, maybeValue?: string) => {
 			setErrors((errors) => {
 				const newErrors = {
 					...errors,
@@ -396,40 +393,40 @@ export default function useInertiaForm<TForm>(
 				setHasErrors(Object.keys(newErrors).length > 0)
 				return newErrors
 			})
-		}, [errors]),
+		},
 
-		getError: useCallback((key: string): string|string[] => {
+		getError: (key: string): string|string[] => {
 			return get(errors, key)
-		}, [errors]),
+		},
 
 		clearErrors,
 
 		submit,
 
-		get: useCallback((url, options) => {
+		get: (url, options) => {
 			submit('get', url, options)
-		}, []),
+		},
 
-		post: useCallback((url, options) => {
+		post: (url, options) => {
 			submit('post', url, options)
-		}, []),
+		},
 
-		put: useCallback((url, options) => {
+		put: (url, options) => {
 			submit('put', url, options)
-		}, []),
+		},
 
-		patch: useCallback((url, options) => {
+		patch: (url, options) => {
 			submit('patch', url, options)
-		}, []),
+		},
 
-		delete: useCallback((url, options) => {
+		delete: (url, options) => {
 			submit('delete', url, options)
-		}, []),
+		},
 
-		cancel: useCallback(() => {
+		cancel: () => {
 			if(cancelToken.current) {
 				cancelToken.current.cancel()
 			}
-		}, [cancelToken.current]),
+		},
 	}
 }
