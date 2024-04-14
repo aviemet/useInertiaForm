@@ -4,18 +4,18 @@ import { get, set } from 'lodash'
 import { useNestedAttribute } from './NestedFields'
 import { NestedObject } from './useInertiaForm'
 
-export interface DynamicInputsProps {
+export interface DynamicInputsProps<T = NestedObject> {
 	model?: string
-	emptyData: Record<string, unknown>
+	emptyData: T
 }
 
-type DynamicInputsReturn = {
+type DynamicInputsReturn<T = unknown> = {
 	addInput: () => void
-	removeInput: (i: number) => void
+	removeInput: (i: number) => T
 	paths: string[]
 }
 
-const useDynamicInputs = ({ model, emptyData }: DynamicInputsProps): DynamicInputsReturn => {
+const useDynamicInputs = <T extends NestedObject>({ model, emptyData }: DynamicInputsProps<T>): DynamicInputsReturn<T> => {
 	const { setData, unsetData, getData } = useForm()
 	const { model: formModel } = useFormMeta()
 	let inputModel = formModel ?? ''
@@ -45,7 +45,9 @@ const useDynamicInputs = ({ model, emptyData }: DynamicInputsProps): DynamicInpu
 	}, [])
 
 	const handleRemoveInputs = useCallback((i: number) => {
+		const record = getData(`${inputModel}[${i}]`) as T
 		unsetData(`${inputModel}[${i}]`)
+		return record
 	}, [])
 
 	const data = getData(inputModel)
