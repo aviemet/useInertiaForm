@@ -10,7 +10,7 @@ export interface DynamicInputsProps<T = NestedObject> {
 }
 
 type DynamicInputsReturn<T = unknown> = {
-	addInput: () => void
+	addInput: (override?: Partial<T>) => void
 	removeInput: (i: number) => T
 	paths: string[]
 }
@@ -27,7 +27,7 @@ const useDynamicInputs = <T extends NestedObject>({ model, emptyData }: DynamicI
 
 	inputModel = `${inputModel}.${model || ''}`
 
-	const handleAddInputs = useCallback(() => {
+	const handleAddInputs = useCallback((override: Partial<T> = {}) => {
 		setData((formData: NestedObject) => {
 			const clone = structuredClone(formData)
 			let node: unknown[] = get(clone, inputModel) as unknown[]
@@ -37,7 +37,7 @@ const useDynamicInputs = <T extends NestedObject>({ model, emptyData }: DynamicI
 				node = get(clone, inputModel) as unknown[]
 			}
 
-			node.push(emptyData)
+			node.push(Object.assign(emptyData, override))
 			set(clone, inputModel, node)
 
 			return clone
