@@ -2,20 +2,19 @@ import { useCallback } from 'react'
 import { useForm, useFormMeta } from './Form'
 import { get, set } from 'lodash'
 import { useNestedAttribute } from './NestedFields'
-import { NestedObject } from './useInertiaForm'
 
-export interface DynamicInputsProps<T = NestedObject> {
+export interface DynamicInputsProps<T = Record<string, unknown>> {
 	model?: string
 	emptyData: T
 }
 
-type DynamicInputsReturn<T = unknown> = {
-	addInput: () => void
+type DynamicInputsReturn<T = Record<string, unknown>> = {
+	addInput: (override?: (records: T[]) => Partial<T> | T) => void
 	removeInput: (i: number) => T
 	paths: string[]
 }
 
-const useDynamicInputs = <T extends NestedObject>({ model, emptyData }: DynamicInputsProps<T>): DynamicInputsReturn<T> => {
+const useDynamicInputs = <T extends Record<string, unknown>>({ model, emptyData }: DynamicInputsProps<T>): DynamicInputsReturn<T> => {
 	const { setData, unsetData, getData } = useForm()
 	const { model: formModel } = useFormMeta()
 	let inputModel = formModel ?? ''
@@ -27,17 +26,22 @@ const useDynamicInputs = <T extends NestedObject>({ model, emptyData }: DynamicI
 
 	inputModel = `${inputModel}.${model || ''}`
 
-	const handleAddInputs = useCallback(() => {
-		setData((formData: NestedObject) => {
+	const handleAddInputs = useCallback((override?: (records: T[]) => Partial<T>) => {
+		setData((formData: Record<string, unknown>) => {
 			const clone = structuredClone(formData)
-			let node: unknown[] = get(clone, inputModel) as unknown[]
+			let node = get(clone, inputModel) as T[]
 
 			if(!node || !Array.isArray(node)) {
 				set(clone, inputModel, [])
-				node = get(clone, inputModel) as unknown[]
+				node = get(clone, inputModel) as T[]
 			}
 
-			node.push(emptyData)
+			let merge = {}
+			if(override instanceof Function) {
+				merge = override(node)
+			}
+
+			node.push(Object.assign(emptyData, merge))
 			set(clone, inputModel, node)
 
 			return clone
