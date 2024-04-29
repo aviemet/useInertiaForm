@@ -1,3 +1,10 @@
+# [3.5.0](https://github.com/aviemet/useInertiaForm/compare/v3.4.0...v3.5.0) (2024-04-29)
+
+
+### Features
+
+* **usedynamicinputs:** adds override option to addInput ([91979ce](https://github.com/aviemet/useInertiaForm/commit/91979ce232d6b5619ceb814146173df5a22eca07))
+
 # [3.4.0](https://github.com/aviemet/useInertiaForm/compare/v3.3.3...v3.4.0) (2024-04-14)
 
 
