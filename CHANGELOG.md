@@ -1,3 +1,10 @@
+# [3.6.0](https://github.com/aviemet/useInertiaForm/compare/v3.5.0...v3.6.0) (2024-05-02)
+
+
+### Features
+
+* **usedynamicinputs:** adds support for a plain object override ([08698f5](https://github.com/aviemet/useInertiaForm/commit/08698f50e91dd6150f423aa42906d43431fabb4d))
+
 # [3.5.0](https://github.com/aviemet/useInertiaForm/compare/v3.4.0...v3.5.0) (2024-04-29)
 
 
