@@ -37,12 +37,11 @@ const initialData: InitialData = {
 
 describe('useInertiaForm', () => {
 	const { result } = renderHook(() => useInertiaForm(initialData))
-	const { data } = result.current
 
 	it('data value should be equal to initialData, with undefined values converted to empty strings', () => {
 		const expectedValue = structuredClone(initialData)
 		expectedValue.person.middle_name = ''
-		expect(data).toStrictEqual(expectedValue)
+		expect(result.current.data).toStrictEqual(expectedValue)
 	})
 })
 

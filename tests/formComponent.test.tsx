@@ -3,9 +3,10 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { Form } from '../src/Form'
 import Input from '../src/Inputs/Input'
-import { DynamicInputs, Submit } from '../src'
+import { DynamicInputs, Submit, useDynamicInputs } from '../src'
 import { router } from '@inertiajs/react'
 import { get } from 'lodash'
+import { act, renderHook } from '@testing-library/react-hooks'
 
 const initialData = {
 	user: {
@@ -74,7 +75,7 @@ describe('Form Component', () => {
 			)
 
 			const button = screen.getByRole('button')
-			await fireEvent.click(button)
+			fireEvent.click(button)
 
 			expect(mockRequest).toHaveBeenCalled()
 		})
@@ -139,7 +140,7 @@ describe('Form Component', () => {
 			)
 
 			const button = screen.getByRole('button')
-			await fireEvent.click(button)
+			fireEvent.click(button)
 
 			expect(mockRequest).toHaveBeenCalled()
 		})
@@ -159,6 +160,33 @@ describe('Form Component', () => {
 			const buttons = screen.getAllByRole('button')
 
 			expect(buttons.length).toBe(4)
+		})
+
+		it('adds inputs', () => {
+			const formProviderWrapper = ({ children }) => (
+				<Form to="/form" data={ initialData } model="contact" remember={ false }>
+					{ children }
+				</Form>
+			)
+			const { result } = renderHook(() => useDynamicInputs({
+				model: 'phones',
+				emptyData: { number: '' },
+			}), { wrapper: formProviderWrapper })
+
+			// phones: [
+			// 	{ number: '1234567890' },
+			// 	{ number: '2234567890' },
+			// 	{ number: '3234567890' },
+			// ],
+			act(() => {
+				result.current.addInput()
+				result.current.addInput({ number: '1' })
+				result.current.addInput(records => ({
+					number: `${Number(records[0]) + 1}`,
+				}))
+			})
+
+			// Need access to the form data context
 		})
 	})
 
