@@ -6,7 +6,7 @@ import Input from '../src/Inputs/Input'
 import { DynamicInputs, Submit, useDynamicInputs } from '../src'
 import { router } from '@inertiajs/react'
 import { get } from 'lodash'
-import { act, renderHook } from '@testing-library/react-hooks'
+import { act } from '@testing-library/react-hooks'
 
 const initialData = {
 	user: {
@@ -59,7 +59,7 @@ describe('Form Component', () => {
 			expect(input).toHaveValue('modified form data')
 		})
 
-		it('sends the correct data to the server upon form submit', async () => {
+		it('sends the correct data to the server upon form submit', () => {
 			const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
 				const data = request?.data
 				expect(get(data, 'person.nested.key')).toBe('value')
@@ -109,7 +109,7 @@ describe('Form Component', () => {
 			expect(input).toHaveValue('rails attributes')
 		})
 
-		it('sends the correct data to the server upon form submit', async () => {
+		it('sends the correct data to the server upon form submit', () => {
 			const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
 				const data = request?.data
 
@@ -163,35 +163,69 @@ describe('Form Component', () => {
 		})
 
 		it('adds inputs', () => {
-			const formProviderWrapper = ({ children }) => (
+			let form, inputs
+
+			render(
 				<Form to="/form" data={ initialData } model="contact" remember={ false }>
-					{ children }
-				</Form>
+					<TestComponent />
+				</Form>,
 			)
-			const { result } = renderHook(
-				() => useDynamicInputs({
+
+			function TestComponent() {
+				form = useForm<typeof initialData>()
+				inputs = useDynamicInputs({
 					model: 'phones',
 					emptyData: { number: '' },
-				}),
-				{ wrapper: formProviderWrapper },
-			)
-
-			const { result: formResult } = renderHook(
-				() => useForm<typeof initialData>(),
-				{ wrapper: formProviderWrapper },
-			)
+				})
+				return null
+			}
 
 			act(() => {
-				result.current.addInput()
-				result.current.addInput({ number: '1' })
-				result.current.addInput(records => ({
-					number: `${Number(records[0]) + 1}`,
-				}))
+				inputs.addInput()
+				inputs.addInput({ number: '1' })
+				inputs.addInput(records => {
+					return ({
+						number: `${parseInt(records[1].number) + 1}`,
+					})
+				})
 			})
 
-			expect(formResult.current.getData('contact.phones')).toContain({ number: '' })
-			expect(formResult.current.getData('contact.phones')).toContain({ number: '1' })
-			expect(formResult.current.getData('contact.phones')).toContain({ number: '1234567891' })
+			const phones = form.getData('contact.phones')
+
+			expect(phones).toContainEqual({ number: '' })
+			expect(phones).toContainEqual({ number: '1' })
+			expect(phones).toContainEqual({ number: '2234567891' })
+		})
+
+		it('removes inputs', () => {
+			let form, inputs
+
+			render(
+				<Form to="/form" data={ initialData } model="contact" remember={ false }>
+					<TestComponent />
+				</Form>,
+			)
+
+			function TestComponent() {
+				form = useForm<typeof initialData>()
+				inputs = useDynamicInputs({
+					model: 'phones',
+					emptyData: { number: '' },
+				})
+				return null
+			}
+
+			let phones = form.getData('contact.phones')
+			expect(phones.length).toEqual(3)
+
+			act(() => {
+				inputs.removeInput(1)
+			})
+
+			phones = form.getData('contact.phones')
+
+			expect(phones.length).toEqual(2)
+			expect(phones).not.toContainEqual({ number: '2234567890' })
 		})
 	})
 

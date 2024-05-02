@@ -29,7 +29,6 @@ const useDynamicInputs = <T extends Record<string, unknown>>({ model, emptyData 
 	inputModel = `${inputModel}.${model || ''}`
 
 	const handleAddInputs: AddInputHandler<T> = useCallback(override => {
-		console.log({ override })
 		setData((formData: T) => {
 			const clone = structuredClone(formData)
 			let node = get(clone, inputModel) as T[]
