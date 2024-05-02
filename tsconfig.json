@@ -12,6 +12,7 @@
     "noEmit": true,
     "outDir": "dist",
     "strict": false,
+    "strictNullChecks": false,
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
