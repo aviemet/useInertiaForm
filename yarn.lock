@@ -11922,7 +11922,6 @@ __metadata:
     typescript: ^5.4.5
   peerDependencies:
     "@inertiajs/react": ^1.0.0
-    lodash.isequal: ^4.5.0
     react: ^16.9.0 || ^17.0.0 || ^18.0.0
   languageName: unknown
   linkType: soft
