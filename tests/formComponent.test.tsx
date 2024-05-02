@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { Form } from '../src/Form'
+import { Form, useForm } from '../src/Form'
 import Input from '../src/Inputs/Input'
 import { DynamicInputs, Submit, useDynamicInputs } from '../src'
 import { router } from '@inertiajs/react'
@@ -168,16 +168,19 @@ describe('Form Component', () => {
 					{ children }
 				</Form>
 			)
-			const { result } = renderHook(() => useDynamicInputs({
-				model: 'phones',
-				emptyData: { number: '' },
-			}), { wrapper: formProviderWrapper })
+			const { result } = renderHook(
+				() => useDynamicInputs({
+					model: 'phones',
+					emptyData: { number: '' },
+				}),
+				{ wrapper: formProviderWrapper },
+			)
 
-			// phones: [
-			// 	{ number: '1234567890' },
-			// 	{ number: '2234567890' },
-			// 	{ number: '3234567890' },
-			// ],
+			const { result: formResult } = renderHook(
+				() => useForm<typeof initialData>(),
+				{ wrapper: formProviderWrapper },
+			)
+
 			act(() => {
 				result.current.addInput()
 				result.current.addInput({ number: '1' })
@@ -186,7 +189,9 @@ describe('Form Component', () => {
 				}))
 			})
 
-			// Need access to the form data context
+			expect(formResult.current.getData('contact.phones')).toContain({ number: '' })
+			expect(formResult.current.getData('contact.phones')).toContain({ number: '1' })
+			expect(formResult.current.getData('contact.phones')).toContain({ number: '1234567891' })
 		})
 	})
 
