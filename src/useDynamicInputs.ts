@@ -8,8 +8,10 @@ export interface DynamicInputsProps<T = Record<string, unknown>> {
 	emptyData: T
 }
 
+type AddInputHandler<T> = (override?: Partial<T> | ((records: T[]) => Partial<T>)) => void
+
 type DynamicInputsReturn<T = Record<string, unknown>> = {
-	addInput: (override?: (records: T[]) => Partial<T> | T) => void
+	addInput: AddInputHandler<T>
 	removeInput: (i: number) => T
 	paths: string[]
 }
@@ -26,8 +28,8 @@ const useDynamicInputs = <T extends Record<string, unknown>>({ model, emptyData 
 
 	inputModel = `${inputModel}.${model || ''}`
 
-	const handleAddInputs = useCallback((override?: (records: T[]) => Partial<T>) => {
-		setData((formData: Record<string, unknown>) => {
+	const handleAddInputs: AddInputHandler<T> = useCallback(override => {
+		setData((formData: T) => {
 			const clone = structuredClone(formData)
 			let node = get(clone, inputModel) as T[]
 
@@ -36,9 +38,11 @@ const useDynamicInputs = <T extends Record<string, unknown>>({ model, emptyData 
 				node = get(clone, inputModel) as T[]
 			}
 
-			let merge = {}
+			let merge: Partial<T> = {}
 			if(override instanceof Function) {
 				merge = override(node)
+			} else if(override !== undefined) {
+				merge = override
 			}
 
 			node.push(Object.assign(emptyData, merge))

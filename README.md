@@ -242,7 +242,87 @@ const PageWithFormOnIt = () => {
 
 ## useDynamicInputs
 
-Provides methods for managing arrays in form data. Use it to make a reusable component with your own buttons and styles:
+Provides methods for managing arrays in form data. Use it to make a reusable component with your own buttons and styles.
+
+`useDynamicInputs` accepts an object:
+
+```typescript
+{ 
+  model: string, 
+  emptyData: Record<string, unknown> 
+}
+```
+
+`model` should be a dot-notation string used to access an array in the form data
+`emptyData` is an object with default (probably empty) values to be pushed to the end of the data array when a new input is added
+
+It returns an object:
+
+```typescript
+{
+  addInput: (override?: Partial<T> | ((records: T[]) => Partial<T>)) => void,
+  removeInput: (i: number) => T,
+  paths: string[],
+}
+```
+
+`addInput` has 3 call signatures.
+When passed nothing, it will push a copy of `emptyData` to the form data array.
+When passed an object, it will merge that object with `emptyData`, overriding any existing keys/values.
+When passed a function, it will first call that function, and then merge it with `emptyData`
+
+```javascript
+const PhoneInputs = () => {
+  const { addInput, removeInput, paths } = useDynamicInputs({ 
+    model: 'contact.phones', 
+    emptyData: { number: '', type: '', order: 0 }
+  })
+
+  const handleAddInput = () => {
+     // Pushes { number: '', type: '', order: '' } to the phones form data array
+    addInput()
+    
+    // Override a value before pushing it to the form data array
+    addInput({
+      type: 'personal'
+    })
+
+    // Passing a function allows using the data to build dynamic values before pushing to the form data array
+    addInput(records => {
+      const max = records.reduce((acc, record) => {
+        if(record.order > acc) return record.order
+        return acc
+      }, 0)
+
+      return {
+        order: max + 1
+      }
+    })
+  }
+
+  return (
+    <>
+      <div style={ { display: 'flex' } }>
+        <label style={ { flex: 1 } }>{ label }</label>
+        <button onClick={ handleAddInput }>+</button>
+      </div>
+
+      { paths.map((path, i) => (
+        <NestedFields key={ i } model={ path }>
+          <div style={ { display: 'flex' } }>
+            <div>{ children }</div>
+            <button onClick={ onClick: () => removeInput(i) }>-</button>
+          </div>
+        </NestedFields>
+      )) }
+    </>
+  )
+}
+```
+
+### Reusable Dynamic Inputs Component
+
+Using `useDynamicInputs` you can build a dynamic inputs interface using your own markup structure or FE component framework.
 
 ```javascript
 const DynamicInputs = ({ children, model, label, emptyData }) => {

@@ -2,14 +2,17 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "esnext",
-    "lib": ["dom", "esnext"],
+    "lib": [
+      "dom",
+      "esnext"
+    ],
     "jsx": "react",
     "declaration": true,
     "sourceMap": true,
     "noEmit": true,
     "outDir": "dist",
     "strict": false,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
@@ -22,5 +25,7 @@
       "./node_modules/@types",
     ],
   },
-  "include": ["src", "useInertiaForm.ts.bak"]
+  "include": [
+    "src"
+  ]
 }

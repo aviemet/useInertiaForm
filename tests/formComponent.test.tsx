@@ -1,11 +1,12 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { Form } from '../src/Form'
+import { Form, useForm } from '../src/Form'
 import Input from '../src/Inputs/Input'
-import { DynamicInputs, Submit } from '../src'
+import { DynamicInputs, Submit, useDynamicInputs } from '../src'
 import { router } from '@inertiajs/react'
 import { get } from 'lodash'
+import { act } from '@testing-library/react-hooks'
 
 const initialData = {
 	user: {
@@ -58,7 +59,7 @@ describe('Form Component', () => {
 			expect(input).toHaveValue('modified form data')
 		})
 
-		it('sends the correct data to the server upon form submit', async () => {
+		it('sends the correct data to the server upon form submit', () => {
 			const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
 				const data = request?.data
 				expect(get(data, 'person.nested.key')).toBe('value')
@@ -74,7 +75,7 @@ describe('Form Component', () => {
 			)
 
 			const button = screen.getByRole('button')
-			await fireEvent.click(button)
+			fireEvent.click(button)
 
 			expect(mockRequest).toHaveBeenCalled()
 		})
@@ -108,7 +109,7 @@ describe('Form Component', () => {
 			expect(input).toHaveValue('rails attributes')
 		})
 
-		it('sends the correct data to the server upon form submit', async () => {
+		it('sends the correct data to the server upon form submit', () => {
 			const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
 				const data = request?.data
 
@@ -139,7 +140,7 @@ describe('Form Component', () => {
 			)
 
 			const button = screen.getByRole('button')
-			await fireEvent.click(button)
+			fireEvent.click(button)
 
 			expect(mockRequest).toHaveBeenCalled()
 		})
@@ -159,6 +160,72 @@ describe('Form Component', () => {
 			const buttons = screen.getAllByRole('button')
 
 			expect(buttons.length).toBe(4)
+		})
+
+		it('adds inputs', () => {
+			let form, inputs
+
+			render(
+				<Form to="/form" data={ initialData } model="contact" remember={ false }>
+					<TestComponent />
+				</Form>,
+			)
+
+			function TestComponent() {
+				form = useForm<typeof initialData>()
+				inputs = useDynamicInputs({
+					model: 'phones',
+					emptyData: { number: '' },
+				})
+				return null
+			}
+
+			act(() => {
+				inputs.addInput()
+				inputs.addInput({ number: '1' })
+				inputs.addInput(records => {
+					return ({
+						number: `${parseInt(records[1].number) + 1}`,
+					})
+				})
+			})
+
+			const phones = form.getData('contact.phones')
+
+			expect(phones).toContainEqual({ number: '' })
+			expect(phones).toContainEqual({ number: '1' })
+			expect(phones).toContainEqual({ number: '2234567891' })
+		})
+
+		it('removes inputs', () => {
+			let form, inputs
+
+			render(
+				<Form to="/form" data={ initialData } model="contact" remember={ false }>
+					<TestComponent />
+				</Form>,
+			)
+
+			function TestComponent() {
+				form = useForm<typeof initialData>()
+				inputs = useDynamicInputs({
+					model: 'phones',
+					emptyData: { number: '' },
+				})
+				return null
+			}
+
+			let phones = form.getData('contact.phones')
+			expect(phones.length).toEqual(3)
+
+			act(() => {
+				inputs.removeInput(1)
+			})
+
+			phones = form.getData('contact.phones')
+
+			expect(phones.length).toEqual(2)
+			expect(phones).not.toContainEqual({ number: '2234567890' })
 		})
 	})
 
