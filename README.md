@@ -254,6 +254,7 @@ Provides methods for managing arrays in form data. Use it to make a reusable com
 ```
 
 `model` should be a dot-notation string used to access an array in the form data
+
 `emptyData` is an object with default (probably empty) values to be pushed to the end of the data array when a new input is added
 
 It returns an object:
@@ -267,8 +268,11 @@ It returns an object:
 ```
 
 `addInput` has 3 call signatures.
+
 When passed nothing, it will push a copy of `emptyData` to the form data array.
+
 When passed an object, it will merge that object with `emptyData`, overriding any existing keys/values.
+
 When passed a function, it will first call that function, and then merge it with `emptyData`
 
 ```javascript
