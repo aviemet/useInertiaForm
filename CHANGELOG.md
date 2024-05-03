@@ -1,3 +1,10 @@
+# [3.7.0](https://github.com/aviemet/useInertiaForm/compare/v3.6.0...v3.7.0) (2024-05-03)
+
+
+### Features
+
+* **input:** makes Input more extensible ([406e6c6](https://github.com/aviemet/useInertiaForm/commit/406e6c69947b90347d70854f293ba652339e987f))
+
 # [3.6.0](https://github.com/aviemet/useInertiaForm/compare/v3.5.0...v3.6.0) (2024-05-02)
 
 
