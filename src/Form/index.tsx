@@ -84,7 +84,7 @@ const Form = <TForm extends NestedObject>({
 				if(resetAfterSubmit || (resetAfterSubmit !== false && async === true)) {
 					form.reset()
 				}
-				if(onSuccess) onSuccess(contextValueObject())
+				onSuccess?.(contextValueObject())
 			},
 		})
 	}
@@ -99,11 +99,11 @@ const Form = <TForm extends NestedObject>({
 
 	// Callbacks
 	useEffect(() => {
-		if(onChange) onChange(contextValueObject())
+		onChange?.(contextValueObject())
 	}, [form.data])
 
 	useEffect(() => {
-		if(onError) onError(contextValueObject())
+		onError?.(contextValueObject())
 	}, [form.errors])
 
 	return (

@@ -94,7 +94,7 @@ describe('unsetData', () => {
 	})
 })
 
-// Test not strictly necessary since we don't override setError
+// Tests not strictly necessary since we don't override setError
 describe('setError', () => {
 	it('should set errors by key', () => {
 		const { result } = renderHook(() => useInertiaForm(initialData))
