@@ -4,6 +4,20 @@
 ### Features
 
 * 🎸 Clears errors on an input when the value changes ([aaca443](https://github.com/aviemet/useInertiaForm/commit/aaca443a7a3b05b9988af7a698f353ba5f51883c))
+* 🎸 Updates tests ([28da649](https://github.com/aviemet/useInertiaForm/commit/28da6493c74b603488f2c4abf470d0c3a97b7dee))
+
+
+### BREAKING CHANGES
+
+* 🧨 Clears errors by default on value change. Must pass
+`clearErrorsOnChange: false` to `useInertiaInput` to disable behavior
+
+# [4.0.0](https://github.com/aviemet/useInertiaForm/compare/v3.7.0...v4.0.0) (2024-05-21)
+
+
+### Features
+
+* 🎸 Clears errors on an input when the value changes ([aaca443](https://github.com/aviemet/useInertiaForm/commit/aaca443a7a3b05b9988af7a698f353ba5f51883c))
 
 
 ### BREAKING CHANGES
