@@ -8,10 +8,19 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>((
-	{ name, component = 'input', model, ...props },
+	{ name, component = 'input', model, onChange, ...props },
 	ref,
 ) => {
 	const { inputName, inputId, value, setValue } = useInertiaInput({ name, model })
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if(onChange) {
+			onChange(e)
+			return
+		}
+
+		setValue(e.target.value)
+	}
 
 	const Element = component
 
@@ -20,7 +29,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((
 			name={ inputName }
 			id={ inputId }
 			value={ value }
-			onChange={ (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value) }
+			onChange={ handleChange }
 			ref={ ref }
 			{ ...props }
 		/>
