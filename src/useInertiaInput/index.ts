@@ -4,7 +4,7 @@ import inputStrategy, { type InputStrategy } from './inputStrategy'
 import { type NestedObject } from '../useInertiaForm'
 import { useEffect } from 'react'
 
-interface UseInertiaInputProps {
+export interface UseInertiaInputProps {
 	name: string
 	model?: string
 	errorKey?: string

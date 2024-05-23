@@ -1,5 +1,5 @@
 export { default as useInertiaForm, type UseInertiaFormProps, type NestedObject } from './useInertiaForm'
-export { default as useInertiaInput } from './useInertiaInput'
+export { default as useInertiaInput, type UseInertiaInputProps } from './useInertiaInput'
 export { default as useDynamicInputs } from './useDynamicInputs'
 export {
 	Form,
