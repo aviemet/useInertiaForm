@@ -34,7 +34,7 @@ export const unsetCompact = (data: NestedObject, path: string) => {
 }
 
 export const fillEmptyValues = <TForm>(data: TForm) => {
-	const clone = structuredClone(data)
+	const clone = structuredClone(data ?? {} as TForm)
 
 	for(const key in clone) {
 		if(isPlainObject(clone[key])) {
