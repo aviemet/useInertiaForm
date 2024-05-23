@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/aviemet/useInertiaForm/compare/v4.0.0...v4.1.0) (2024-05-23)
+
+
+### Features
+
+* **useinertiainput:** exports UseInertiaInputProps ([6e63ef2](https://github.com/aviemet/useInertiaForm/commit/6e63ef279ea864ece3ca74c658e375ca94d94e41))
+
 # [4.0.0](https://github.com/aviemet/useInertiaForm/compare/v3.7.0...v4.0.0) (2024-05-21)
 
 
