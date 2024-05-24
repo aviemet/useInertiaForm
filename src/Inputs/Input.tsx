@@ -30,7 +30,7 @@ const Input = <TForm extends NestedObject, T = string>(
 		defaultValue,
 		clearErrorsOnChange,
 	})
-
+	// console.log({ name, model, errorKey, defaultValue, inputName, inputId, value })
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = (e.target?.checked || e.target.value) as T
 		setValue(value)

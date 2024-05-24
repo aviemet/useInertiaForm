@@ -21,7 +21,7 @@ const DynamicInputs = ({
 
 	return (
 		<>
-			{ React.cloneElement(addInputButton, { onClick: addInput, type: 'button' }) }
+			{ React.cloneElement(addInputButton, { onClick: ( )=> addInput(), type: 'button' }) }
 			{ paths.map((path, i) => (
 				<NestedFields key={ i } model={ path }>
 					<div>{ children }</div>

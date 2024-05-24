@@ -6,6 +6,7 @@ import Input from '../src/Inputs/Input'
 import { DynamicInputs, useDynamicInputs } from '../src'
 import { act } from '@testing-library/react-hooks'
 import { multiRootData } from './components/data'
+import ContextTest from './components/ContextTest'
 
 describe('DynamicInputs', () => {
 	describe('With data object passed in', () => {
@@ -91,26 +92,32 @@ describe('DynamicInputs', () => {
 		})
 	})
 
-
-
-
-
-
-
+	/**
+	 * No data prop tests
+	 */
 	describe('With no data object passed in', () => {
 
 		it('renders dynamic input fields', () => {
 			render(
 				<Form to="/form" model="contact" remember={ false }>
-					<DynamicInputs model="phones" emptyData={ { number: '' } }>
+					<DynamicInputs model="phones" emptyData={ { title: '', number: '+1' } }>
+						<Input name="title" />
 						<Input name="number" />
 					</DynamicInputs>
+
+					<ContextTest />
 				</Form>,
 			)
 
 			const buttons = screen.getAllByRole('button')
+			const dataEl = screen.getByTestId('data')
+
+			act(() => {
+				buttons[0].click()
+			})
 
 			expect(buttons.length).toBe(1)
+			expect(dataEl).toHaveTextContent('{"contact":{"phones":[{"title":"","number":"+1"}]}}')
 		})
 
 		it('adds inputs', () => {
@@ -166,17 +173,20 @@ describe('DynamicInputs', () => {
 				return null
 			}
 
-			let phones = form.getData('contact.phones')
-			expect(phones.length).toEqual(3)
+
+			act(() => {
+				inputs.addInput()
+				inputs.addInput()
+			})
+
+			expect(form.getData('contact.phones').length).toEqual(2)
 
 			act(() => {
 				inputs.removeInput(1)
 			})
 
-			phones = form.getData('contact.phones')
+			expect(form.getData('contact.phones').length).toEqual(1)
 
-			expect(phones.length).toEqual(2)
-			expect(phones).not.toContainEqual({ number: '2234567890' })
 		})
 	})
 })

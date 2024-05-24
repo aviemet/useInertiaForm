@@ -67,7 +67,7 @@ const Form = <TForm extends NestedObject>({
 	 * otherwise submits using Inertia's `useForm.submit` method
 	 */
 	const submit = async (options?: Partial<VisitOptions>) => {
-		let shouldSubmit = to && onSubmit && onSubmit(contextValueObject()) === false ? false : true
+		let shouldSubmit = to && onSubmit?.(contextValueObject()) === false ? false : true
 
 		if(shouldSubmit) {
 			if(async) {
