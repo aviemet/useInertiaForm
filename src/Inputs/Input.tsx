@@ -1,39 +1,54 @@
 import React from 'react'
 import useInertiaInput from '../useInertiaInput'
+import { NestedObject } from '../useInertiaForm'
+import { BaseFormInputProps, InputConflicts } from '.'
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-	name: string
-	model?: string
+interface InputProps<TForm extends NestedObject, T = string>
+	extends
+	Omit<React.InputHTMLAttributes<HTMLInputElement>, InputConflicts>,
+	BaseFormInputProps<T, TForm>
+{
 	component?: React.ElementType
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>((
-	{ name, component = 'input', model, onChange, ...props },
-	ref,
+const Input = <TForm extends NestedObject, T = string>(
+	{ name,
+		component = 'input',
+		type = 'text',
+		model,
+		onChange,
+		errorKey,
+		defaultValue,
+		clearErrorsOnChange,
+		...props
+	}: InputProps<TForm, T>,
 ) => {
-	const { inputName, inputId, value, setValue } = useInertiaInput({ name, model })
+	const { form, inputName, inputId, value, setValue } = useInertiaInput<T, TForm>({
+		name,
+		model,
+		errorKey,
+		defaultValue,
+		clearErrorsOnChange,
+	})
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if(onChange) {
-			onChange(e)
-			return
-		}
-
-		setValue(e.target.value)
+		const value = (e.target?.checked || e.target.value) as T
+		setValue(value)
+		onChange?.(value, form)
 	}
 
 	const Element = component
 
 	return (
 		<Element
+			type={ type }
 			name={ inputName }
 			id={ inputId }
 			value={ value }
 			onChange={ handleChange }
-			ref={ ref }
 			{ ...props }
 		/>
 	)
-})
+}
 
 export default Input

@@ -1,54 +1,98 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { Form, useForm } from '../src/Form'
+import { Form } from '../src/Form'
 import Input from '../src/Inputs/Input'
-import { DynamicInputs, Submit, useDynamicInputs } from '../src'
+import { Submit } from '../src'
 import { router } from '@inertiajs/react'
 import { get } from 'lodash'
-import { act } from '@testing-library/react-hooks'
+import ContextTest from './components/ContextTest'
+import { multiRootData, singleRootData } from './components/data'
 
-const initialData = {
-	user: {
-		username: 'some name',
-	},
-	person: {
-		first_name: 'first',
-		last_name: 'last',
-		middle_name: undefined,
-		nested: {
-			key: 'value',
-		},
-	},
-	contact: {
-		phones: [
-			{ number: '1234567890' },
-			{ number: '2234567890' },
-			{ number: '3234567890' },
-		],
-	},
-}
 
 describe('Form Component', () => {
+	describe('When not passed a data object', () => {
+		it('builds the data object from inputs', () => {
+			render(
+				<Form role="form" to="/" remember={ false }>
+					<Input name="user.username" />
+					<Input name="user.firstName" />
+					<Input name="user.lastName" />
+
+					<ContextTest />
+				</Form>,
+			)
+
+			expect(screen.getByTestId('data')).toHaveTextContent(
+				'{"user":{"username":"","firstName":"","lastName":""}}',
+			)
+		})
+	})
+
+	describe('When passed a data object', () => {
+		it('it uses the data values ignoring defaultValue', () => {
+			render(
+				<Form role="form" to="/" remember={ false } data={ {
+					user: {
+						username: 'username',
+						firstName: 'Firsty',
+						lastName: 'Lasty',
+					},
+				} }>
+					<Input name="user.username" defaultValue="default1" />
+					<Input name="user.firstName" defaultValue="default2" />
+					<Input name="user.lastName" defaultValue="default3" />
+
+					<ContextTest />
+				</Form>,
+			)
+
+			expect(screen.getByTestId('data')).toHaveTextContent(
+				'{"user":{"username":"username","firstName":"Firsty","lastName":"Lasty"}}',
+			)
+		})
+
+		it('adds missing keys to the data object from inputs', () => {
+			render(
+				<Form role="form" to="/" remember={ false } data={ {
+					user: {
+						username: 'username',
+						firstName: 'Firsty',
+					},
+				} }>
+					<Input name="user.username" />
+					<Input name="user.firstName" />
+					<Input name="user.lastName" defaultValue="Lasty" />
+
+					<ContextTest />
+				</Form>,
+			)
+
+			expect(screen.getByTestId('data')).toHaveTextContent(
+				'{"user":{"username":"username","firstName":"Firsty","lastName":"Lasty"}}',
+			)
+		})
+	})
+
 	/**
 	 * Rails Attributes `false` tests
 	 */
 	describe('With railsAttributes false', () => {
 		it('renders a form with values in inputs', () => {
 			render(
-				<Form role="form" to="/form" data={ { ...initialData } } remember={ false }>
+				<Form role="form" to="/form" data={ { ...multiRootData } } remember={ false }>
 					<Input name="user.username" />
 				</Form>,
 			)
 
 			const input = screen.getByRole('textbox')
 
-			expect(input).toHaveValue(initialData.user.username)
+			expect(input).toHaveValue(multiRootData.user.username)
 		})
 
 		it('updates form data with user input', () => {
 			render(
-				<Form role="form" to="/form" data={ { ...initialData } } model="person" remember={ false }>
+				<Form role="form" to="/form" data={ { ...singleRootData } } model="person" remember={ false }>
 					<Input name="nested.key" />
 				</Form>,
 			)
@@ -67,7 +111,7 @@ describe('Form Component', () => {
 			})
 
 			render(
-				<Form model="person" to="/form" data={ initialData } remember={ false }>
+				<Form model="person" to="/form" data={ { ...singleRootData } } remember={ false }>
 					<Input name="first_name" />
 					<Input name="nested.key" />
 					<Submit>Submit</Submit>
@@ -87,18 +131,30 @@ describe('Form Component', () => {
 	describe('With railsAttributes true', () => {
 		it('renders a form with values in inputs', () => {
 			render(
-				<Form role="form" to="/form" data={ { ...initialData } } railsAttributes={ true }  remember={ false }>
+				<Form
+					role="form"
+					to="/form"
+					data={ { ...multiRootData } }
+					railsAttributes={ true }
+					remember={ false }
+				>
 					<Input name="user.username" />
 				</Form>,
 			)
 
 			const input = screen.getByRole('textbox')
-			expect(input).toHaveValue(initialData.user.username)
+			expect(input).toHaveValue(multiRootData.user.username)
 		})
 
 		it('updates values as normal', () => {
 			render(
-				<Form to="/form" data={ initialData } model="person" railsAttributes={ true } remember={ false }>
+				<Form
+					to="/form"
+					data={ singleRootData }
+					model="person"
+					railsAttributes={ true }
+					remember={ false }
+				>
 					<Input name="nested.key" />
 				</Form>,
 			)
@@ -113,8 +169,8 @@ describe('Form Component', () => {
 			const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
 				const data = request?.data
 
-				expect(get(data, 'user.username')).toBe(initialData.user.username)
-				expect(get(data, 'person.nested_attributes.key')).toBe(initialData.person.nested.key)
+				expect(get(data, 'user.username')).toBe(multiRootData.user.username)
+				expect(get(data, 'person.nested_attributes.key')).toBe(multiRootData.person.nested.key)
 				expect(get(data, 'extra.value')).toBe('exists')
 
 				return Promise.resolve({ data: request?.data })
@@ -128,7 +184,7 @@ describe('Form Component', () => {
 				<Form
 					model="person"
 					to="/form"
-					data={ initialData }
+					data={ multiRootData }
 					railsAttributes
 					remember={ false }
 					onSubmit={ handleSubmit }
@@ -147,88 +203,6 @@ describe('Form Component', () => {
 
 	})
 
-	describe('DynamicInputs', () => {
-		it('renders dynamic input fields', () => {
-			render(
-				<Form to="/form" data={ initialData } model="contact" remember={ false }>
-					<DynamicInputs model="phones" emptyData={ { number: '' } }>
-						<Input name="number" />
-					</DynamicInputs>
-				</Form>,
-			)
-
-			const buttons = screen.getAllByRole('button')
-
-			expect(buttons.length).toBe(4)
-		})
-
-		it('adds inputs', () => {
-			let form, inputs
-
-			render(
-				<Form to="/form" data={ initialData } model="contact" remember={ false }>
-					<TestComponent />
-				</Form>,
-			)
-
-			function TestComponent() {
-				form = useForm<typeof initialData>()
-				inputs = useDynamicInputs({
-					model: 'phones',
-					emptyData: { number: '' },
-				})
-				return null
-			}
-
-			act(() => {
-				inputs.addInput()
-				inputs.addInput({ number: '1' })
-				inputs.addInput(records => {
-					return ({
-						number: `${parseInt(records[1].number) + 1}`,
-					})
-				})
-			})
-
-			const phones = form.getData('contact.phones')
-
-			expect(phones).toContainEqual({ number: '' })
-			expect(phones).toContainEqual({ number: '1' })
-			expect(phones).toContainEqual({ number: '2234567891' })
-		})
-
-		it('removes inputs', () => {
-			let form, inputs
-
-			render(
-				<Form to="/form" data={ initialData } model="contact" remember={ false }>
-					<TestComponent />
-				</Form>,
-			)
-
-			function TestComponent() {
-				form = useForm<typeof initialData>()
-				inputs = useDynamicInputs({
-					model: 'phones',
-					emptyData: { number: '' },
-				})
-				return null
-			}
-
-			let phones = form.getData('contact.phones')
-			expect(phones.length).toEqual(3)
-
-			act(() => {
-				inputs.removeInput(1)
-			})
-
-			phones = form.getData('contact.phones')
-
-			expect(phones.length).toEqual(2)
-			expect(phones).not.toContainEqual({ number: '2234567890' })
-		})
-	})
-
 	describe('Filter', () => {
 		it('unsets data at the given paths', () => {
 			const handleChange = (form) => {
@@ -241,7 +215,7 @@ describe('Form Component', () => {
 				<Form
 					model="person"
 					to="/form"
-					data={ initialData }
+					data={ multiRootData }
 					filter={ ['person.last_name', 'user.username'] }
 					onChange={ handleChange }
 				>

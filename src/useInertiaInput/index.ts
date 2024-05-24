@@ -36,8 +36,7 @@ const useInertiaInput = <T = string|number|boolean, TForm = NestedObject>({
 
 	// Add a valid default value to the data object
 	const initializingRef = useRef(true)
-	if(usedModel === 'values') {
-	}
+
 	useEffect(() => {
 		if(!initializingRef.current) return
 
