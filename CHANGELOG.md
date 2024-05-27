@@ -1,3 +1,16 @@
+# [4.2.0](https://github.com/aviemet/useInertiaForm/compare/v4.1.0...v4.2.0) (2024-05-27)
+
+
+### Bug Fixes
+
+* 🐛 Fixes potential circular object ([128bb0c](https://github.com/aviemet/useInertiaForm/commit/128bb0cc56357fd43c0fd6973f2370a165c13aae))
+* 🐛 Updates types ([cf1c777](https://github.com/aviemet/useInertiaForm/commit/cf1c77747ba0ae2594b3991d6238bfa67e568f8d))
+
+
+### Features
+
+* 🎸 Builds data object from useInertiaInput ([fa74815](https://github.com/aviemet/useInertiaForm/commit/fa7481559d3b69ffda4e2167f6945f6492b98658))
+
 # [4.1.0](https://github.com/aviemet/useInertiaForm/compare/v4.0.0...v4.1.0) (2024-05-23)
 
 
