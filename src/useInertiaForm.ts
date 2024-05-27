@@ -108,7 +108,7 @@ export default function useInertiaForm<TForm>(
 			return keys[0]
 		}
 		return undefined
-	}, [])
+	}, [data])
 
 	// Errors
 	const [errors, setErrors] = rememberKey
@@ -293,9 +293,9 @@ export default function useInertiaForm<TForm>(
 		wasSuccessful,
 		recentlySuccessful,
 
-		transform: useCallback((callback) => {
+		transform: (callback) => {
 			transformRef.current = callback
-		}, []),
+		},
 
 		onChange: (callback) => {
 			onChangeRef.current = callback
@@ -310,6 +310,7 @@ export default function useInertiaForm<TForm>(
 					}
 
 					set(clone as NestedObject, keyOrData, maybeValue)
+
 					return clone
 				})
 			}

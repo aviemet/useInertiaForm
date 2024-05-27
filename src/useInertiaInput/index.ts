@@ -1,12 +1,13 @@
+import { useEffect, useRef } from 'react'
 import { useForm } from '../Form'
 import { useNestedAttribute } from '../NestedFields'
 import inputStrategy, { type InputStrategy } from './inputStrategy'
 import { type NestedObject } from '../useInertiaForm'
-import { useEffect } from 'react'
 
-export interface UseInertiaInputProps {
+export interface UseInertiaInputProps<T = string|number|boolean> {
 	name: string
 	model?: string
+	defaultValue?: T
 	errorKey?: string
 	strategy?: InputStrategy
 	clearErrorsOnChange?: boolean
@@ -15,24 +16,37 @@ export interface UseInertiaInputProps {
 /**
  * Returns form data and input specific methods to use with an input.
  */
-const useInertiaInput = <T = number|string, TForm = NestedObject>({
+const useInertiaInput = <T = string|number|boolean, TForm = NestedObject>({
 	name,
 	model,
+	defaultValue,
 	errorKey,
 	strategy = inputStrategy,
 	clearErrorsOnChange = true,
-}: UseInertiaInputProps) => {
+}: UseInertiaInputProps<T>) => {
 	const form = useForm<TForm>()
 
 	let usedModel = model ?? form.model
-
 	try {
 		const nested = useNestedAttribute()
 		usedModel += `.${nested}`
 	} catch(e) {}
 
-
 	const { inputName, inputId } = strategy(name, usedModel)
+
+	// Add a valid default value to the data object
+	const initializingRef = useRef(true)
+
+	useEffect(() => {
+		if(!initializingRef.current) return
+
+		const inputValue = form.getData(inputName)
+		if(inputValue === null || inputValue === undefined) {
+			form.setData(inputName, defaultValue || '')
+		}
+
+		initializingRef.current = false
+	}, [])
 
 	const value = form.getData(inputName) as T
 	const usedErrorKey = errorKey ?? inputName
@@ -40,7 +54,8 @@ const useInertiaInput = <T = number|string, TForm = NestedObject>({
 
 	// Clear errors when input value changes
 	useEffect(() => {
-		if(!clearErrorsOnChange || !error) return
+		if(initializingRef.current || !clearErrorsOnChange || !error) return
+
 		form.clearErrors(usedErrorKey)
 	}, [value])
 
@@ -48,7 +63,7 @@ const useInertiaInput = <T = number|string, TForm = NestedObject>({
 		form,
 		inputName: inputName,
 		inputId,
-		value,
+		value: value ?? '' as T,
 		setValue: (value: T) => {
 			return form.setData(inputName, value)
 		},

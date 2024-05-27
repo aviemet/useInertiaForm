@@ -9,7 +9,7 @@ import { unset } from 'lodash'
 type PartialHTMLForm = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange'|'onSubmit'|'onError'>
 
 export interface FormProps<TForm> extends PartialHTMLForm {
-	data: TForm
+	data?: TForm
 	model?: string
 	method?: HTTPVerb
 	to: string
@@ -40,6 +40,9 @@ const Form = <TForm extends NestedObject>({
 	onError,
 	...props
 }: Omit<FormProps<TForm>, 'railsAttributes'>) => {
+	/**
+	 * Omit values by key from the data object
+	 */
 	const filteredData = useCallback((data: TForm) => {
 		if(!filter) return data
 
@@ -57,14 +60,14 @@ const Form = <TForm extends NestedObject>({
 
 	const contextValueObject = useCallback((): UseFormProps<TForm> => (
 		{ ...form, model, method, to, submit }
-	), [data, form.data, form.errors])
+	), [data, form.data, form.errors, model, method, to])
 
 	/**
 	 * Submits the form. If async prop is true, submits using axios,
 	 * otherwise submits using Inertia's `useForm.submit` method
 	 */
 	const submit = async (options?: Partial<VisitOptions>) => {
-		let shouldSubmit = to && onSubmit && onSubmit(contextValueObject()) === false ? false : true
+		let shouldSubmit = to && onSubmit?.(contextValueObject()) === false ? false : true
 
 		if(shouldSubmit) {
 			if(async) {

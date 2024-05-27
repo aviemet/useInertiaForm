@@ -1,40 +1,45 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { Form, useForm } from '../src/Form'
-import TestInput from './TestInput'
-
-const FormContextTest = () => {
-	const { errors, setError } = useForm()
-
-	const handleClick = e => {
-		e.preventDefault()
-		setError('name', 'Error')
-	}
-
-	return (
-		<>
-			<button onClick={ handleClick } role="button" aria-label="error" />
-			<div data-testid="errors">{ JSON.stringify(errors) }</div>
-		</>
-	)
-}
+import { Form } from '../src/Form'
+import { Input } from '../src'
+import ContextTest from './components/ContextTest'
 
 describe ('useInertiaInput', () => {
-	describe('With clearErrorsOnChange = true', () => {
-		it('clears errors on an input when the value changes ', () => {
+	describe('With defaultValue', () => {
+		it('builds the data object with default values from inputs', () => {
 			render(
-				<Form role="form" to="/" data={ { name: '' } } remember={ false }>
-					<FormContextTest />
-					<TestInput name="name"  />
+				<Form role="form" to="/" model="values" remember={ false }>
+					<Input role="input" name="name" defaultValue="me" />
+
+					<ContextTest />
 				</Form>,
 			)
 
-			const errorButton = screen.getByRole('button', { name: 'error' })
 			const input = screen.getByRole('input')
 
-			fireEvent.click(errorButton)
-			expect(screen.getByTestId('errors')).toHaveTextContent('{"name":"Error"}')
+			expect(screen.getByTestId('data')).toHaveTextContent('{"values":{"name":"me"}}')
+
+			fireEvent.change(input, { target: { value: 'value' } })
+			expect(screen.getByTestId('data')).toHaveTextContent('{"values":{"name":"value"}}')
+		})
+	})
+
+	describe('With clearErrorsOnChange = true', () => {
+		it('clears errors on an input when the value changes ', () => {
+			render(
+				<Form role="form" to="/" data={ { errors: { name: '' } } } model="errors" remember={ false }>
+					<Input role="input" name="name"  />
+
+					<ContextTest cb={ form => {
+						form.setError('errors.name', 'Error')
+					} } />
+				</Form>,
+			)
+
+			const input = screen.getByRole('input')
+
+			expect(screen.getByTestId('errors')).toHaveTextContent('{"errors.name":"Error"}')
 
 			fireEvent.change(input, { target: { value: 'something' } })
 			expect(screen.getByTestId('errors')).toHaveTextContent('{}')
@@ -42,23 +47,24 @@ describe ('useInertiaInput', () => {
 
 	})
 
-	describe('With clearErrorsOnChange = true', () => {
+	describe('With clearErrorsOnChange = false', () => {
 		it('doesn\'t clear errors on an input when the value changes', () => {
 			render(
-				<Form role="form" to="/" data={ { name: '' } } remember={ false }>
-					<FormContextTest />
-					<TestInput name="name" clearErrorsOnChange={ false } />
+				<Form role="form" to="/" data={ { errors: { name: '' } } } model="errors" remember={ false }>
+					<Input role="input" name="name" clearErrorsOnChange={ false } />
+
+					<ContextTest cb={ form => {
+						form.setError('errors.name', 'Error')
+					} } />
 				</Form>,
 			)
 
-			const errorButton = screen.getByRole('button', { name: 'error' })
 			const input = screen.getByRole('input')
 
-			fireEvent.click(errorButton)
-			expect(screen.getByTestId('errors')).toHaveTextContent('{"name":"Error"}')
+			expect(screen.getByTestId('errors')).toHaveTextContent('{"errors.name":"Error"}')
 
 			fireEvent.change(input, { target: { value: 'something' } })
-			expect(screen.getByTestId('errors')).toHaveTextContent('{"name":"Error"}')
+			expect(screen.getByTestId('errors')).toHaveTextContent('{"errors.name":"Error"}')
 		})
 
 	})
