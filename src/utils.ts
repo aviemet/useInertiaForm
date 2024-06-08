@@ -2,6 +2,10 @@ import React from 'react'
 import { isPlainObject, unset, get, set, isEmpty } from 'lodash'
 import { type NestedObject } from './useInertiaForm'
 
+/**
+ * Creates context with simplified type notations
+ * Wraps useContext hook in an error check to enforce context context
+ */
 export const createContext = <CT extends unknown | null>() => {
 	const context = React.createContext<CT | undefined>(null)
 
@@ -18,15 +22,38 @@ export const createContext = <CT extends unknown | null>() => {
 	return [useContext, context.Provider] as const
 }
 
+/**
+ * Extends _.unset to remove empty array elements after unsetting an array by index
+ *   e.g. unset(data, 'path[0]')
+ * Allows special syntax of '[]' to refer to every element of an array
+ *   e.g. unset(data, 'path[].key'), will recursively unset 'key' in every array element
+ */
 type TArrType = string|number|NestedObject
 export const unsetCompact = (data: NestedObject, path: string) => {
+	const emptyArrayPosition = path.indexOf('[].')
+	if(emptyArrayPosition >= 0) {
+		console.log({ emptyArrayPosition })
+		const restPath = path.slice(emptyArrayPosition + 3)
+		const arr = get(data, restPath) as TArrType[]
+
+		arr.forEach((el, i) => {
+			// @ts-ignore
+			unsetCompact(el, restPath)
+			arr[i] = el
+		})
+		console.dir({ data, restPath, arr }, { depth: null })
+		set(data, restPath, arr.filter(a => a))
+	}
+
 	unset(data, path)
 
 	let position = path.indexOf('[')
-	while(position >= 0) {
+
+	if(position >= 0) {
 		const arrPath = path.slice(0, position)
-		// @ts-ignore - No way to tell TS that this will be an array
 		const arr = get(data, arrPath) as TArrType[]
+
+
 		set(data, arrPath, arr.filter(a => a))
 
 		position = path.indexOf('[', position + 1)

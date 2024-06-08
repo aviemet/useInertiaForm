@@ -6,10 +6,14 @@ const nestedData: NestedObject = {
 	two: {
 		three: 'three',
 		four: [
-			{ five: 'five' },
-			{ six: 'six' },
+			{ five: 'five', six: 'six' },
+			{ seven: 'seven' },
+			{ five: 'eight', six: 'nine', ten: [
+				{ eleven: 'eleven', twelve: 'twelve' },
+				{ eleven: 'eleven', thirteen: 'thirteen' },
+			] },
 		],
-		seven: {
+		last: {
 			just: 'testing',
 		},
 	},
@@ -22,34 +26,129 @@ describe('unsetCompact', () => {
 		unsetCompact(data, 'one')
 		unsetCompact(data, 'two.three')
 
-		expect(data).toMatchObject({
+		expect(data).toEqual({
 			two: {
 				four: [
-					{ five: 'five' },
-					{ six: 'six' },
+					{ five: 'five', six: 'six' },
+					{ seven: 'seven' },
+					{ five: 'eight', six: 'nine', ten: [
+						{ eleven: 'eleven', twelve: 'twelve' },
+						{ eleven: 'eleven', thirteen: 'thirteen' },
+					] },
 				],
-				seven: {
+				last: {
 					just: 'testing',
 				},
 			},
 		})
 	})
 
-	it('should reorder arrays making all elements sequential', () => {
+	it('should reorder arrays making all elements sequential and removing empty array elements', () => {
 		const data = structuredClone(nestedData)
 
 		unsetCompact(data, 'two.four[0]')
-		expect(data).toMatchObject({
+		unsetCompact(data, 'two.four[1].ten[0]')
+
+		expect(data).toEqual({
 			one: 'one',
 			two: {
 				three: 'three',
 				four: [
-					{ six: 'six' },
+					{ seven: 'seven' },
+					{ five: 'eight', six: 'nine', ten: [
+						{ eleven: 'eleven', thirteen: 'thirteen' },
+					] },
 				],
-				seven: {
+				last: {
 					just: 'testing',
 				},
 			},
+		})
+	})
+
+	describe('recursively unsets array elements by key with empty array brackets', () => {
+		const data = structuredClone(nestedData)
+
+		it('unsets all instances of a key', () => {
+			unsetCompact(data, 'two.four[].five')
+			expect(data).toEqual({
+				one: 'one',
+				two: {
+					three: 'three',
+					four: [
+						{ six: 'six' },
+						{ seven: 'seven' },
+						{ six: 'nine', ten: [
+							{ eleven: 'eleven', twelve: 'twelve' },
+							{ eleven: 'eleven', thirteen: 'thirteen' },
+						] },
+					],
+					last: {
+						just: 'testing',
+					},
+				},
+			})
+		})
+
+		it('works with nested array objects', () => {
+			unsetCompact(data, 'two.four[].ten[].twelve')
+			expect(data).toEqual({
+				one: 'one',
+				two: {
+					three: 'three',
+					four: [
+						{ six: 'six' },
+						{ seven: 'seven' },
+						{ six: 'nine', ten: [
+							{ eleven: 'eleven' },
+							{ eleven: 'eleven', thirteen: 'thirteen' },
+						] },
+					],
+					last: {
+						just: 'testing',
+					},
+				},
+			})
+		})
+
+		it('works when an element is specified after an empty bracket', () => {
+			unsetCompact(data, 'two.four[].ten[1].thirteen')
+			expect(data).toEqual({
+				one: 'one',
+				two: {
+					three: 'three',
+					four: [
+						{ six: 'six' },
+						{ seven: 'seven' },
+						{ six: 'nine', ten: [
+							{ eleven: 'eleven' },
+							{ eleven: 'eleven' },
+						] },
+					],
+					last: {
+						just: 'testing',
+					},
+				},
+			})
+		})
+
+		it('works when an empty bracket is specified after an element ', () => {
+			unsetCompact(data, 'two.four[2].ten[].eleven')
+			expect(data).toEqual({
+				one: 'one',
+				two: {
+					three: 'three',
+					four: [
+						{ six: 'six' },
+						{ seven: 'seven' },
+						{ six: 'nine', ten: [] },
+					],
+					last: {
+						just: 'testing',
+					},
+				},
+			})
+
 		})
 	})
 })
