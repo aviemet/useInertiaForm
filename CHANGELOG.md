@@ -1,3 +1,16 @@
+# [4.3.0](https://github.com/aviemet/useInertiaForm/compare/v4.2.0...v4.3.0) (2024-06-09)
+
+
+### Features
+
+* **unsetcompact:** adds special [] syntax to unsetCompact ([a06396a](https://github.com/aviemet/useInertiaForm/commit/a06396a19604dfe3aab0443ebdc13a3a4fffdc71))
+* working on unset algorithm ([8f8c9b0](https://github.com/aviemet/useInertiaForm/commit/8f8c9b08b942dcd3b60c05e42024afc176e295ac))
+
+
+### Performance Improvements
+
+* **unsetcompact:** avoids recursion for trailing [] notation ([3d888ba](https://github.com/aviemet/useInertiaForm/commit/3d888baffaa9c7d5aa560a53bcea292d1ec3dffe))
+
 # [4.2.0](https://github.com/aviemet/useInertiaForm/compare/v4.1.0...v4.2.0) (2024-05-27)
 
 
