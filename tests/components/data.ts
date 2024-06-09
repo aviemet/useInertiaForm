@@ -12,9 +12,9 @@ export const multiRootData = {
 	},
 	contact: {
 		phones: [
-			{ number: '1234567890' },
-			{ number: '2234567890' },
-			{ number: '3234567890' },
+			{ number: '1234567890', type: 'home' },
+			{ number: '2234567890', type: 'home' },
+			{ number: '3234567890', type: 'home' },
 		],
 	},
 }

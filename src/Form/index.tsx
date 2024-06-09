@@ -4,7 +4,7 @@ import { type VisitOptions } from '@inertiajs/core'
 import useInertiaForm, { NestedObject } from '../useInertiaForm'
 import { useForm, type UseFormProps, type HTTPVerb, FormProvider } from './FormProvider'
 import FormMetaWrapper, { useFormMeta, type FormMetaValue } from './FormMetaWrapper'
-import { unset } from 'lodash'
+import { unsetCompact } from '../utils'
 
 type PartialHTMLForm = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange'|'onSubmit'|'onError'>
 
@@ -48,7 +48,7 @@ const Form = <TForm extends NestedObject>({
 
 		const clone = structuredClone(data)
 		filter.forEach(path => {
-			unset(clone, path)
+			unsetCompact(clone, path)
 		})
 		return clone
 	}, [data, filter])

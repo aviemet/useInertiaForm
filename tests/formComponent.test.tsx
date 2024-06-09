@@ -211,6 +211,8 @@ describe('Form Component', () => {
 				expect(form.data.person.last_name).toBeUndefined()
 				expect(form.data.user.username).toBeUndefined()
 				expect(form.data.person.first_name).toBeDefined()
+				expect(form.data.contact.phones[0].number).toBeDefined()
+				expect(form.data.contact.phones[0].type).toBeUndefined()
 			}
 
 			render(
@@ -218,7 +220,7 @@ describe('Form Component', () => {
 					model="person"
 					to="/form"
 					data={ multiRootData }
-					filter={ ['person.last_name', 'user.username'] }
+					filter={ ['person.last_name', 'user.username', 'contact.phones[].type'] }
 					onChange={ handleChange }
 				>
 					<Input name="first_name" />
