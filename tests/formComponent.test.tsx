@@ -1,9 +1,11 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { Form } from '../src/Form'
-import Input from '../src/Inputs/Input'
-import { Submit } from '../src'
+import {
+	Form,
+	Input,
+	Submit,
+} from '../src'
 import { router } from '@inertiajs/react'
 import { get } from 'lodash'
 import ContextTest from './components/ContextTest'

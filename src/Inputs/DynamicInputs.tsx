@@ -1,6 +1,6 @@
 import React from 'react'
-import NestedFields from '../NestedFields'
-import useDynamicInputs from '../useDynamicInputs'
+import NestedFields from './NestedFields'
+import useDynamicInputs from './useDynamicInputs'
 
 export interface DynamicInputsProps {
 	children: React.ReactNode

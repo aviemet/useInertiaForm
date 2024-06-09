@@ -84,4 +84,12 @@ module.exports = {
 		}],
 		'comma-dangle': [2, 'always-multiline'],
 	},
+	overrides: [
+		{
+			files: ['*.test.ts*'],
+			rules: {
+				'no-unused-vars': 'off',
+			},
+		},
+	],
 }
