@@ -1,3 +1,10 @@
+## [4.3.1](https://github.com/aviemet/useInertiaForm/compare/v4.3.0...v4.3.1) (2024-06-09)
+
+
+### Bug Fixes
+
+* uses unsetCompact for Form filter prop ([e5947ae](https://github.com/aviemet/useInertiaForm/commit/e5947ae145993b779b27bd473749dbe0ffdd739d))
+
 # [4.3.0](https://github.com/aviemet/useInertiaForm/compare/v4.2.0...v4.3.0) (2024-06-09)
 
 
