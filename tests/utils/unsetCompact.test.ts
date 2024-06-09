@@ -136,7 +136,7 @@ describe('unsetCompact', () => {
 			})
 		})
 
-		it('works when an empty bracket is specified after an element ', () => {
+		it('works when an empty bracket is specified after an element', () => {
 			const data = structuredClone(nestedData)
 
 			unsetCompact(data, 'two.four[2].ten[].eleven')
@@ -157,7 +157,27 @@ describe('unsetCompact', () => {
 					},
 				},
 			})
-
 		})
+
+		it('ignores trailing []', () => {
+			const data = structuredClone(nestedData)
+
+			unsetCompact(data, 'two.four[2].ten[]')
+			expect(data).toEqual({
+				one: 'one',
+				two: {
+					three: 'three',
+					four: [
+						{ five: 'five', six: 'six' },
+						{ seven: 'seven' },
+						{ five: 'eight', six: 'nine' },
+					],
+					last: {
+						just: 'testing',
+					},
+				},
+			})
+		})
+
 	})
 })
