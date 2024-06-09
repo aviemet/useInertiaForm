@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import { createContext } from './utils'
-import { useFormMeta } from './Form/'
+import { createContext } from '../utils'
+import { useFormMeta } from '../Form'
 
 export interface NestedFieldsProps {
 	children: React.ReactNode | React.ReactElement[]

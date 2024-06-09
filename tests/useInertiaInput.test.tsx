@@ -1,8 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { Form } from '../src/Form'
-import { Input } from '../src'
+import { Form, Input } from '../src'
 import ContextTest from './components/ContextTest'
 
 describe ('useInertiaInput', () => {

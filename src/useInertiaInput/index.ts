@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useForm } from '../Form'
-import { useNestedAttribute } from '../NestedFields'
+import { useNestedAttribute } from '../Inputs/NestedFields'
 import inputStrategy, { type InputStrategy } from './inputStrategy'
 import { type NestedObject } from '../useInertiaForm'
 

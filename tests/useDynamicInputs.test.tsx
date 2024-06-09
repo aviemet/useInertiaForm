@@ -1,9 +1,13 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import { Form, useForm } from '../src/Form'
-import Input from '../src/Inputs/Input'
-import { DynamicInputs, useDynamicInputs } from '../src'
+import {
+	Form,
+	useForm,
+	DynamicInputs,
+	useDynamicInputs,
+	Input,
+} from '../src'
 import { act } from '@testing-library/react-hooks'
 import { multiRootData } from './components/data'
 import ContextTest from './components/ContextTest'
