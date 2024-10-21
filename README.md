@@ -6,19 +6,29 @@ It address two issues with the original: [the bug preventing the `transform` met
 
 This was developed alongside a Rails project, so the form handling ethos follows Rails conventions, however, effort was taken to make it as agnostic as possible and it should be useable in a Laravel application as well.
 
-## Quickstart
+## References
+
+### Wiki
+
+I've chosen to keep the main readme clean and only provide basic examples to help get started. 
 
 [More in depth documentation is available on the Wiki section of this repo](https://github.com/aviemet/useInertiaForm/wiki)
 
+### Codesandbox
+
 [Here is a codesandbox with usage examples for all hooks and components](https://codesandbox.io/s/useinertiaform-examples-0so45f)
+
+If you encounter a bug, please try to reacreate it with a fork of the codesandbox below and submit it with the issue. I don't have much time to address issues, so seeing an actual recreation can really help me identifiy if it's something I should look into.
+
+## Quickstart
 
 Below are basic usage examples of the exported members of this project
 
-### useInertiaForm
+### [useInertiaForm](https://github.com/aviemet/useInertiaForm/wiki/1.-useInertiaForm)
 
 Drop in replacement for Inertia.js' `useForm`, with support for nested data
 
-```javascript
+```typescript
 const { data, setData, getData, unsetData, errors, setError, getError } = useInertiaForm({
   user: {
     firstName: 'Finn'
@@ -30,11 +40,11 @@ getData('user.firstName')
 setData('user.lastName', 'Human')
 ```
 
-### Form component
+### [Form component](https://github.com/aviemet/useInertiaForm/wiki/2.-Form-component)
 
 Create a custom form component for your project
 
-```javascript
+```typescript
 import { Form as InertiaForm, type FormProps, type NestedObject } from 'use-inertia-form'
 
 const Form = <TForm extends NestedObject>(
@@ -52,15 +62,13 @@ const Form = <TForm extends NestedObject>(
     </div>
   )
 }
-
-export default Form
 ```
 
-### useInertiaInput
+### [useInertiaInput](https://github.com/aviemet/useInertiaForm/wiki/2.1-useInertiaInput)
 
 Create custom inputs for your project
 
-```javascript
+```typescript
 import { useInertiaInput } from 'use-inertia-form'
 
 const TextInput = ({ name, model, label }) => {
@@ -80,11 +88,11 @@ const TextInput = ({ name, model, label }) => {
 }
 ```
 
-### NestedFields
+### [NestedFields](https://github.com/aviemet/useInertiaForm/wiki/2.2-NestedFields)
 
 Helper component for visually specifying nested data lookup context
 
-```javascript
+```typescript
 import { NestedFields } from 'use-inertia-form'
 import { Form, TextInput } from 'my/project/components'
 
@@ -116,11 +124,11 @@ const EditUserForm = () => {
 }
 ```
 
-### useDynamicInputs
+### [useDynamicInputs](https://github.com/aviemet/useInertiaForm/wiki/2.3-useDynamicInputs)
 
 Build a custom component for handling arrays in nested data object
 
-```javascript
+```typescript
 import { useDynamicInputs, NestedFields } from 'use-inertia-form'
 
 const DynamicInputs = ({ children, model, label, emptyData }) => {
@@ -146,15 +154,15 @@ const DynamicInputs = ({ children, model, label, emptyData }) => {
 }
 ```
 
-### Submit
+### [Submit](https://github.com/aviemet/useInertiaForm/wiki/2.4-Submit-component)
 
 Not necessary to use, any submit button in the `<Form>` will cause the form to submit. This component just has a few standard features already built in.
 
 ### Putting it all together
 
-You can now use those components together to build forms with nested data support
+You can now use those components together to build forms with nested data support.
 
-```javascript
+```typescript
 import { NestedFields, Submit } from 'use-inertia-form'
 import { Form, TextInput, DynamicInputs } from 'my/project/components'
 
