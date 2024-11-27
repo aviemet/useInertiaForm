@@ -6,8 +6,7 @@ import { BaseFormInputProps, InputConflicts } from '.'
 interface InputProps<TForm extends NestedObject, T = string>
 	extends
 	Omit<React.InputHTMLAttributes<HTMLInputElement>, InputConflicts>,
-	BaseFormInputProps<T, TForm>
-{
+	BaseFormInputProps<T, TForm> {
 	component?: React.ElementType
 }
 

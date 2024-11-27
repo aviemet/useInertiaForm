@@ -13,12 +13,12 @@ import {
 	type PathValue,
 } from './utils'
 
-type OnChangeCallback = (key: string|undefined, value: unknown, prev: unknown) => void
+type OnChangeCallback = (key: string | undefined, value: unknown, prev: unknown) => void
 
-export type Primitive = string|number|null|undefined
+export type Primitive = string | number | null | undefined
 
 export type NestedObject = {
-	[key: string]: unknown|NestedObject|NestedObject[]
+	[key: string]: unknown | NestedObject | NestedObject[]
 };
 
 type setDataByPath<TForm> = <P extends Path<TForm>>(key: P, value: PathValue<TForm, P>) => void;
@@ -33,27 +33,27 @@ type unsetDataByPath<TForm> = (key: Path<TForm>) => void
 type unsetDataByString = (key: string) => void
 
 type resetAll = () => void
-type resetByPath<TForm> = (field: Path<TForm>|Path<TForm>[]) => void
-type resetByString = (field: string|string[]) => void
+type resetByPath<TForm> = (field: Path<TForm> | Path<TForm>[]) => void
+type resetByString = (field: string | string[]) => void
 
-type setErrorByPath<TForm> = (field: Path<TForm>, value: string|string[]) => void
-type setErrorByString = (field: string, value: string|string[]) => void
-type setErrorByObject = (errors: Record<string, string|string[]>) => void
+type setErrorByPath<TForm> = (field: Path<TForm>, value: string | string[]) => void
+type setErrorByString = (field: string, value: string | string[]) => void
+type setErrorByObject = (errors: Record<string, string | string[]>) => void
 
-type getErrorByPath<TForm> = (field: Path<TForm>) => string|string[]|undefined
-type getErrorByString = (field: string) => string|string[]|undefined
+type getErrorByPath<TForm> = (field: Path<TForm>) => string | string[] | undefined
+type getErrorByString = (field: string) => string | string[] | undefined
 
 type clearAllErrors = () => void
-type clearErrorsByPath<TForm> = (field: Path<TForm>|Path<TForm>[]) => void
-type clearErrorsByString = (field: string|string[]) => void
+type clearErrorsByPath<TForm> = (field: Path<TForm> | Path<TForm>[]) => void
+type clearErrorsByString = (field: string | string[]) => void
 
 export interface UseInertiaFormProps<TForm> {
 	data: TForm
 	isDirty: boolean
-	errors: Partial<Record<keyof TForm, string|string[]>>
+	errors: Partial<Record<keyof TForm, string | string[]>>
 	hasErrors: boolean
 	processing: boolean
-	progress: Progress|null
+	progress: Progress | null
 	wasSuccessful: boolean
 	recentlySuccessful: boolean
 	setData: setDataByObject<TForm> & setDataByMethod<TForm> & setDataByPath<TForm> & setDataByString
@@ -82,7 +82,7 @@ export default function useInertiaForm<TForm>(
 	initialValues?: TForm,
 ): UseInertiaFormProps<TForm>
 export default function useInertiaForm<TForm>(
-	rememberKeyOrInitialValues?: string|TForm,
+	rememberKeyOrInitialValues?: string | TForm,
 	maybeInitialValues?: TForm,
 ): UseInertiaFormProps<TForm> {
 	// Data
@@ -160,6 +160,7 @@ export default function useInertiaForm<TForm>(
 	try {
 		const meta = useFormMeta()
 		railsAttributes = meta.railsAttributes
+	// eslint-disable-next-line no-unused-vars
 	} catch(e) {}
 
 	const submit = (method: Method, url: string, options: VisitOptions = {}) => {
@@ -262,7 +263,7 @@ export default function useInertiaForm<TForm>(
 		}
 	}
 
-	const clearErrors = (fields?: string|string[]|Path<TForm>|Path<TForm>[]) => {
+	const clearErrors = (fields?: string | string[] | Path<TForm> | Path<TForm>[]) => {
 		if(!fields) {
 			setErrors({})
 			return
@@ -301,7 +302,7 @@ export default function useInertiaForm<TForm>(
 			onChangeRef.current = callback
 		},
 
-		setData: (keyOrData: string|TForm|((previousData: TForm) => TForm), maybeValue?: any) => {
+		setData: (keyOrData: string | TForm | ((previousData: TForm) => TForm), maybeValue?: any) => {
 			if(typeof keyOrData === 'string') {
 				return setData(data => {
 					const clone = structuredClone(data)
@@ -348,7 +349,7 @@ export default function useInertiaForm<TForm>(
 			})
 		},
 
-		setDefaults: (fieldOrFields?: string|TForm, maybeValue?: string) => {
+		setDefaults: (fieldOrFields?: string | TForm, maybeValue?: string) => {
 			if(fieldOrFields === undefined) {
 				setDefaults(() => data)
 				return
@@ -360,7 +361,7 @@ export default function useInertiaForm<TForm>(
 			}))
 		},
 
-		reset: (fields?: string|string[]) => {
+		reset: (fields?: string | string[]) => {
 			if(!fields) {
 				if(onChangeRef.current) {
 					onChangeArgsRef.current = [undefined, defaults, data]
@@ -383,7 +384,7 @@ export default function useInertiaForm<TForm>(
 			setData(clone)
 		},
 
-		setError: (fieldOrFields: string|Record<string, string|string[]>, maybeValue?: string) => {
+		setError: (fieldOrFields: string | Record<string, string | string[]>, maybeValue?: string) => {
 			setErrors((errors) => {
 				const newErrors = {
 					...errors,
@@ -396,7 +397,7 @@ export default function useInertiaForm<TForm>(
 			})
 		},
 
-		getError: (key: string): string|string[] => {
+		getError: (key: string): string | string[] => {
 			return get(errors, key)
 		},
 

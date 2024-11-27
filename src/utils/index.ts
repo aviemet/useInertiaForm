@@ -3,6 +3,7 @@ export { fillEmptyValues } from './fillEmptyValues'
 export { isUnset } from './isUnset'
 export { renameObjectWithAttributes } from './renameObjectWithAttributes'
 export { unsetCompact } from './unsetCompact'
+export { useMaybeRemember } from './useMaybeRemember'
 
 /**
  * Removes appended string (default of '_attributes') from dot notation

@@ -4,7 +4,7 @@ import { useNestedAttribute } from '../Inputs/NestedFields'
 import inputStrategy, { type InputStrategy } from './inputStrategy'
 import { type NestedObject } from '../useInertiaForm'
 
-export interface UseInertiaInputProps<T = string|number|boolean> {
+export interface UseInertiaInputProps<T = string | number | boolean> {
 	name: string
 	model?: string
 	defaultValue?: T
@@ -16,7 +16,7 @@ export interface UseInertiaInputProps<T = string|number|boolean> {
 /**
  * Returns form data and input specific methods to use with an input.
  */
-const useInertiaInput = <T = string|number|boolean, TForm = NestedObject>({
+const useInertiaInput = <T = string | number | boolean, TForm = NestedObject>({
 	name,
 	model,
 	defaultValue,
