@@ -2,13 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Method, Progress, VisitOptions, type RequestPayload } from '@inertiajs/core'
 import { router } from '@inertiajs/react'
 import { get, isEqual, set } from 'lodash'
-import { useRemember } from '@inertiajs/react'
 import { useFormMeta } from './Form/FormMetaWrapper'
 import {
 	coerceArray,
 	fillEmptyValues,
 	renameObjectWithAttributes,
 	unsetCompact,
+	useMaybeRemember,
 	type Path,
 	type PathValue,
 } from './utils'
@@ -99,7 +99,7 @@ export default function useInertiaForm<TForm>(
 	const [rememberKey, transformedData] = getFormArguments()
 
 	const [defaults, setDefaults] = useState(transformedData || {} as TForm)
-	const [data, setData] = rememberKey ? useRemember<TForm>(transformedData, `${rememberKey}:data`) : useState<TForm>(transformedData)
+	const [data, setData] = useMaybeRemember<TForm>(transformedData, rememberKey ? `${rememberKey}:data` : undefined)
 
 	// Detect root model name
 	const rootModelKey = useMemo(() => {
@@ -111,9 +111,7 @@ export default function useInertiaForm<TForm>(
 	}, [data])
 
 	// Errors
-	const [errors, setErrors] = rememberKey
-		? useRemember({} as Partial<Record<keyof TForm, string>>, `${rememberKey}:errors`)
-		: useState({} as Partial<Record<keyof TForm, string>>)
+	const [errors, setErrors] = useMaybeRemember<Partial<Record<keyof TForm, string>>>({}, rememberKey ? `${rememberKey}:errors` : undefined)
 	const [hasErrors, setHasErrors] = useState(false)
 
 	// Use to prepend root model name to errors returned by the server
