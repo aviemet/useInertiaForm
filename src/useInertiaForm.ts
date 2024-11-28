@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Method, Progress, VisitOptions, type RequestPayload } from '@inertiajs/core'
 import { router } from '@inertiajs/react'
-import { get, isEqual, set } from 'lodash'
+import { get, isEqual, isPlainObject, set } from 'lodash'
 import { useFormMeta } from './Form/FormMetaWrapper'
 import {
 	coerceArray,
@@ -104,7 +104,7 @@ export default function useInertiaForm<TForm>(
 	// Detect root model name
 	const rootModelKey = useMemo(() => {
 		const keys = data ? Object.keys(data) : []
-		if(keys.length === 1) {
+		if(keys.length === 1 && isPlainObject(data[keys[0]])) {
 			return keys[0]
 		}
 		return undefined
