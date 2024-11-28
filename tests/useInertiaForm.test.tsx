@@ -1,7 +1,52 @@
+import React from 'react'
 import { act, renderHook } from '@testing-library/react-hooks'
-import { router } from '@inertiajs/core'
+import { router, type Page } from '@inertiajs/core'
 import { useInertiaForm } from '../src'
 import { get } from 'lodash'
+
+const Home = ({ pageNumber, lastLoaded }) => {
+	return (
+		<div>
+			<div>This is page { pageNumber }</div>
+			<div>
+				Last loaded at <span id="last-loaded">{ lastLoaded }</span>
+			</div>
+		</div>
+	)
+}
+
+Home.layout = (page) => <div children={ page } />
+
+const pageComponent = (overrides: Partial<Page> = {}): Page => ({
+	component: 'Home',
+	props: {
+		errors: {},
+	},
+	url: '/',
+	version: '1',
+	scrollRegions: [],
+	rememberedState: {},
+	...overrides,
+})
+
+export const homePage = pageComponent()
+
+router.init({
+	initialPage: homePage,
+	resolveComponent: () => {},
+	swapComponent: () => {
+		return Promise.resolve({
+			component: 'home',
+			props: {
+				errors: {},
+			},
+			url: '/',
+			version: '1',
+			scrollRegions: [],
+			rememberedState: {},
+		})
+	},
+})
 
 type InitialData = {
 	user: {
@@ -547,26 +592,26 @@ describe('submit', () => {
 					},
 				}
 
-				axios.mockResolvedValueOnce({
-					response: {
-						errors: {
-							username: ['must exist'],
+				const serverErrors = {
+					username: ['must exist'],
+				};
+
+				// Mock Inertia's initial state
+				jest.mock('@inertiajs/inertia', () => ({
+					Inertia: {
+						page: {
+							props: {
+								errors: {}, // Start with no errors
+							},
 						},
 					},
-				});
+				}));
 
-				const { result } = renderHook(() => useInertiaForm(testData))
-
-				const mockRequest = jest.spyOn(router, 'visit').mockImplementation(() => {
-					return Promise.resolve({
-						errors: {
-							username: ["must exist"],
-						},
-					})
-				})
+				Inertia.page.props.errors = serverErrors;
 
 				await act(async () => {
 					await result.current.submit('post', '/form')
+					console.log({ mockRequest })
 				})
 
 				act(() => {
@@ -582,4 +627,3 @@ describe('submit', () => {
 		})
 	})
 })
-
