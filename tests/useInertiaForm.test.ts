@@ -10,7 +10,7 @@ type InitialData = {
 	person: {
 		first_name?: string
 		last_name?: string
-		middle_name?: string|undefined
+		middle_name?: string | undefined
 	}
 	contact: {
 		phones: { number?: string }[]
