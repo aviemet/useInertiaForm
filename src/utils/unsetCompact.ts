@@ -7,7 +7,7 @@ import { type NestedObject } from '../useInertiaForm'
  * Allows special syntax of '[]' to refer to every element of an array
  *   e.g. unset(data, 'path[].key'), will recursively unset 'key' in every array element
  */
-type TArrType = string|number|NestedObject
+type TArrType = string | number | NestedObject
 export const unsetCompact = (data: NestedObject, path: string) => {
 	// Ignore tailing [] since it causes unnecessary recursion
 	const sanitizedPath = path.replace(/\[\]$/, '')

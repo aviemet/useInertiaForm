@@ -2,12 +2,10 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "esnext",
-    "lib": [
-      "dom",
-      "esnext"
-    ],
+    "lib": ["dom", "esnext"],
     "jsx": "react",
     "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
     "noEmit": true,
     "outDir": "dist",
@@ -20,13 +18,11 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "rootDir": "./src",
+    "rootDir": ".",
     "skipLibCheck": true,
     "typeRoots": [
       "./node_modules/@types",
     ],
   },
-  "include": [
-    "src"
-  ],
+  "include": ["src", "tests"],
 }

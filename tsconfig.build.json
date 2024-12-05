@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declarationMap": true,
+    "rootDir": "./src",
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "**/__tests__/**"]
+}

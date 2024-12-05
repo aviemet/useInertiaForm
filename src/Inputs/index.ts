@@ -8,10 +8,9 @@ export { default as NestedFields, type NestedFieldsProps } from './NestedFields'
 export { default as DynamicInputs }  from './DynamicInputs'
 export { default as useDynamicInputs, type DynamicInputsProps } from './useDynamicInputs'
 
-export type InputConflicts = 'name'|'onChange'|'onBlur'|'onFocus'|'value'|'defaultValue'
+export type InputConflicts = 'name' | 'onChange' | 'onBlur' | 'onFocus' | 'value' | 'defaultValue'
 export interface BaseFormInputProps<T, TForm extends NestedObject = NestedObject>
-	extends UseInertiaInputProps<T>
-{
+	extends UseInertiaInputProps<T> {
 	model?: string
 	errorKey?: string
 	field?: boolean

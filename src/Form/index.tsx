@@ -6,7 +6,7 @@ import { useForm, type UseFormProps, type HTTPVerb, FormProvider } from './FormP
 import FormMetaWrapper, { useFormMeta, type FormMetaValue } from './FormMetaWrapper'
 import { unsetCompact } from '../utils'
 
-type PartialHTMLForm = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange'|'onSubmit'|'onError'>
+type PartialHTMLForm = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange' | 'onSubmit' | 'onError'>
 
 export interface FormProps<TForm> extends PartialHTMLForm {
 	data?: TForm
@@ -18,7 +18,7 @@ export interface FormProps<TForm> extends PartialHTMLForm {
 	remember?: boolean
 	railsAttributes?: boolean
 	filter?: string[]
-	onSubmit?: (form: UseFormProps<TForm>) => boolean|void
+	onSubmit?: (form: UseFormProps<TForm>) => boolean | void
 	onChange?: (form: UseFormProps<TForm>) => void
 	onSuccess?: (form: UseFormProps<TForm>) => void
 	onError?: (form: UseFormProps<TForm>) => void
@@ -60,7 +60,7 @@ const Form = <TForm extends NestedObject>({
 
 	const contextValueObject = useCallback((): UseFormProps<TForm> => (
 		{ ...form, model, method, to, submit }
-	), [data, form.data, form.errors, model, method, to])
+	), [data, form, form.data, form.errors, model, method, to])
 
 	/**
 	 * Submits the form. If async prop is true, submits using axios,
