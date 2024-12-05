@@ -17,7 +17,7 @@ const Submit = React.forwardRef<HTMLButtonElement, ButtonProps>((
 		if(!requiredFields || requiredFields.length === 0) return false
 
 		return requiredFields.some((field) => isUnset(getData(field)))
-	}, [data])
+	}, [data, requiredFields])
 
 	return (
 		<Component { ...{

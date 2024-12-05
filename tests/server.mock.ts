@@ -22,6 +22,6 @@ export const server = setupServer(
 
 	// Error scenario
 	http.post('/api/data-error', () => {
-		return HttpResponse.json(mockErrorResponse, { status: 404 });
+		return HttpResponse.json(mockErrorResponse, { status: 302 });
 	})
 )
