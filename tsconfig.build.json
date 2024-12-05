@@ -1,28 +1,11 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "esnext",
-    "lib": [
-      "dom",
-      "esnext"
-    ],
-    "jsx": "react",
-    "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
-    "noEmit": true,
-    "outDir": "dist",
-    "strict": false,
-    "strictNullChecks": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
-    "esModuleInterop": true,
     "rootDir": "./src",
-    "skipLibCheck": true,
-    "typeRoots": ["./node_modules/@types"],
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "**/__tests__/**"]

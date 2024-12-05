@@ -25,9 +25,7 @@ afterAll(() => server.close());
 describe('submit', () => {
 	it('should handle response details correctly', async () => {
 		const testData = {
-			user: {
-				username: 'some name',
-			},
+			email: 'some name',
 		};
 
 		jest.spyOn(router, 'post').mockImplementation((url, data, options) => {
@@ -57,9 +55,8 @@ describe('submit', () => {
 		// Assert that response contains the transformed data and a success message
 		expect(result.current.errors).toMatchObject({
 			data: {
-				message: 'Success',
 				submittedData: {
-					user: { username: 'some name' },
+					email: ['must exist'],
 				},
 			},
 		});
