@@ -1,8 +1,21 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Method, Progress, VisitOptions, type RequestPayload } from '@inertiajs/core'
+import {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react'
+import {
+	ActiveVisit,
+	Method,
+	type Page,
+	type PageProps,
+	type PendingVisit,
+	type Progress,
+	type VisitOptions as InertiaVisitOptions,
+	type RequestPayload,
+} from '@inertiajs/core'
 import { router } from '@inertiajs/react'
-import { get, isEqual, isPlainObject, set } from 'lodash'
-import { useFormMeta } from './Form/FormMetaWrapper'
 import {
 	coerceArray,
 	fillEmptyValues,
@@ -12,6 +25,12 @@ import {
 	type Path,
 	type PathValue,
 } from './utils'
+import { get, isEqual, isPlainObject, set } from 'lodash'
+import { useFormMeta } from './Form/FormMetaWrapper'
+
+type VisitOptions = Omit<InertiaVisitOptions, 'errors'> & {
+	errors?: Record<string, string | string[]>
+}
 
 type OnChangeCallback = (key: string | undefined, value: unknown, prev: unknown) => void
 
@@ -104,6 +123,7 @@ export default function useInertiaForm<TForm>(
 	// Detect root model name
 	const rootModelKey = useMemo(() => {
 		const keys = data ? Object.keys(data) : []
+
 		if(keys.length === 1 && isPlainObject(data[keys[0]])) {
 			return keys[0]
 		}
@@ -171,7 +191,7 @@ export default function useInertiaForm<TForm>(
 					return options.onCancelToken(token)
 				}
 			},
-			onBefore: (visit) => {
+			onBefore: (visit: PendingVisit) => {
 				setWasSuccessful(false)
 				setRecentlySuccessful(false)
 				clearTimeout(recentlySuccessfulTimeoutId.current)
@@ -180,21 +200,21 @@ export default function useInertiaForm<TForm>(
 					return options.onBefore(visit)
 				}
 			},
-			onStart: (visit) => {
+			onStart: (visit: PendingVisit) => {
 				setProcessing(true)
 
 				if(options.onStart) {
 					return options.onStart(visit)
 				}
 			},
-			onProgress: (event) => {
+			onProgress: (event: Progress) => {
 				setProgress(event)
 
 				if(options.onProgress) {
 					return options.onProgress(event)
 				}
 			},
-			onSuccess: (page) => {
+			onSuccess: (page: Page<PageProps>) => {
 				if(isMounted.current) {
 					setProcessing(false)
 					setProgress(null)
@@ -213,7 +233,7 @@ export default function useInertiaForm<TForm>(
 					return options.onSuccess(page)
 				}
 			},
-			onError: (errors) => {
+			onError: (errors: Partial<Record<keyof TForm, string>>) => {
 				if(isMounted.current) {
 					setProcessing(false)
 					setProgress(null)
@@ -235,7 +255,7 @@ export default function useInertiaForm<TForm>(
 					return options.onCancel()
 				}
 			},
-			onFinish: (visit) => {
+			onFinish: (visit: ActiveVisit) => {
 				if(isMounted.current) {
 					setProcessing(false)
 					setProgress(null)
