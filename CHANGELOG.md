@@ -1,3 +1,10 @@
+## [4.3.2](https://github.com/aviemet/useInertiaForm/compare/v4.3.1...v4.3.2) (2024-12-05)
+
+
+### Bug Fixes
+
+* fixes assigning errors to root key when data is flat and contains only one element ([5b9548e](https://github.com/aviemet/useInertiaForm/commit/5b9548e4888717a4b90a85e7374b4cfabab2749f))
+
 ## [4.3.1](https://github.com/aviemet/useInertiaForm/compare/v4.3.0...v4.3.1) (2024-06-09)
 
 
