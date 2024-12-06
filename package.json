@@ -5,6 +5,7 @@
   "main": "dist/useInertiaForm.js",
   "cjs": "dist/useInertiaForm.cjs",
   "unpkg": "dist/useInertiaForm.umd.min.js",
+  "types": "dist/index.d.ts",
   "homepage": "https://github.com/aviemet/useInertiaForm#readme",
   "sideEffects": false,
   "files": [
@@ -14,7 +15,9 @@
     "react",
     "hooks",
     "react-hooks",
-    "inertiajs"
+    "inertiajs",
+    "useForm",
+    "useInertiaForm"
   ],
   "repository": {
     "type": "git",
@@ -22,12 +25,13 @@
   },
   "author": "Avram Walden <aviemet@gmail.com>",
   "license": "MIT",
+  "packageManager": "yarn@4.5.3",
   "bugs": {
     "url": "https://github.com/aviemet/useInertiaForm/issues"
   },
   "scripts": {
     "build": "yarn clean && rollup -c --bundleConfigAsCjs",
-    "watch": "rollup --watch -c --bundleConfigAsCjs",
+    "build:watch": "yarn clean && rollup --watch -c --bundleConfigAsCjs",
     "clean": "rimraf dist",
     "lint": "eslint '**/*.{js,ts}'",
     "lint:fix": "npm run lint -- --fix",
@@ -39,14 +43,6 @@
     "release": "semantic-release",
     "cz": "git-cz"
   },
-  "dependencies": {
-    "@inertiajs/react": "^1.2.0",
-    "@rollup/plugin-typescript": "^12.1.1",
-    "axios": "^1.7.8",
-    "lodash": "^4.17.21",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
-  },
   "devDependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.25.9",
@@ -56,11 +52,13 @@
     "@commitlint/cli": "^19.6.0",
     "@commitlint/config-conventional": "^19.6.0",
     "@eslint/compat": "^1.2.3",
+    "@inertiajs/react": "^1.2.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@stylistic/eslint-plugin": "^2.11.0",
@@ -75,6 +73,7 @@
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^8.16.0",
     "@typescript-eslint/parser": "^8.16.0",
+    "axios": "^1.7.8",
     "axios-mock-adapter": "^2.1.0",
     "circular-json": "^0.5.9",
     "commitizen": "^4.3.1",
@@ -96,10 +95,14 @@
     "jest-fixed-jsdom": "^0.0.9",
     "jest-mock-axios": "^4.8.0",
     "lint-staged": "^15.2.10",
+    "lodash": "^4.17.21",
     "msw": "^2.6.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-test-renderer": "^18.3.1",
     "rimraf": "^6.0.1",
     "rollup": "^4.27.4",
+    "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-filesize": "^10.0.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-sourcemaps": "^0.6.3",
@@ -111,7 +114,10 @@
   },
   "peerDependencies": {
     "@inertiajs/react": "^1.0.0",
-    "react": "^16.9.0 || ^17.0.0 || ^18.0.0"
+    "axios": "^1.7.8",
+    "lodash": "^2.0.0 || ^3.0.0 || ^4.0.0",
+    "react": "^16.9.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0"
   },
   "husky": {
     "hooks": {

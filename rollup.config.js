@@ -6,6 +6,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import sourcemaps from 'rollup-plugin-sourcemaps'
 import terser from '@rollup/plugin-terser'
 import filesize from 'rollup-plugin-filesize'
+import { dts } from 'rollup-plugin-dts'
 import pkg from './package.json'
 
 const externalDeps = [
@@ -24,6 +25,7 @@ const basePlugins = [
 	commonjs(),
 	typescript({
 		tsconfig: './tsconfig.build.json',
+		declarationDir: './dist',
 	}),
 	sourcemaps(),
 	filesize({
@@ -77,5 +79,22 @@ export default [
 		],
 		plugins: basePlugins,
 		external: externalDeps,
+	},
+	{
+		input: 'src/index.ts',
+		output: [
+			{
+				file: pkg.types,
+				format: 'es',
+			},
+		],
+		plugins: [
+			dts({
+				compilerOptions: {
+					baseUrl: './dist',
+				},
+			}),
+		],
+		external: [...externalDeps],
 	},
 ]
