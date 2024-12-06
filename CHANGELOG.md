@@ -1,3 +1,10 @@
+## [4.3.3](https://github.com/aviemet/useInertiaForm/compare/v4.3.2...v4.3.3) (2024-12-06)
+
+
+### Bug Fixes
+
+* properly generates dist files, updates yarn ([a0b987e](https://github.com/aviemet/useInertiaForm/commit/a0b987e2117cc37bd73ca87c071475666fb821ac))
+
 ## [4.3.2](https://github.com/aviemet/useInertiaForm/compare/v4.3.1...v4.3.2) (2024-12-05)
 
 
