@@ -5,6 +5,7 @@
   "main": "dist/useInertiaForm.js",
   "cjs": "dist/useInertiaForm.cjs",
   "unpkg": "dist/useInertiaForm.umd.min.js",
+  "types": "dist/index.d.ts",
   "homepage": "https://github.com/aviemet/useInertiaForm#readme",
   "sideEffects": false,
   "files": [
@@ -24,12 +25,13 @@
   },
   "author": "Avram Walden <aviemet@gmail.com>",
   "license": "MIT",
+  "packageManager": "yarn@4.5.3",
   "bugs": {
     "url": "https://github.com/aviemet/useInertiaForm/issues"
   },
   "scripts": {
     "build": "yarn clean && rollup -c --bundleConfigAsCjs",
-    "watch": "rollup --watch -c --bundleConfigAsCjs",
+    "build:watch": "yarn clean && rollup --watch -c --bundleConfigAsCjs",
     "clean": "rimraf dist",
     "lint": "eslint '**/*.{js,ts}'",
     "lint:fix": "npm run lint -- --fix",
@@ -100,6 +102,7 @@
     "react-test-renderer": "^18.3.1",
     "rimraf": "^6.0.1",
     "rollup": "^4.27.4",
+    "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-filesize": "^10.0.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-sourcemaps": "^0.6.3",
