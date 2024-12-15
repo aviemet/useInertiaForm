@@ -52,7 +52,7 @@
     "@commitlint/cli": "^19.6.0",
     "@commitlint/config-conventional": "^19.6.0",
     "@eslint/compat": "^1.2.3",
-    "@inertiajs/react": "^1.2.0",
+    "@inertiajs/react": "^2.0.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-json": "^6.1.0",
@@ -113,7 +113,7 @@
     "typescript": "^5.7.2"
   },
   "peerDependencies": {
-    "@inertiajs/react": "^1.0.0",
+    "@inertiajs/react": "^2.0.0",
     "axios": "^1.7.8",
     "lodash": "^2.0.0 || ^3.0.0 || ^4.0.0",
     "react": "^16.9.0 || ^17.0.0 || ^18.0.0",
