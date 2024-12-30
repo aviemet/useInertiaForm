@@ -13952,7 +13952,7 @@ __metadata:
     ts-jest: "npm:^29.2.5"
     typescript: "npm:^5.7.2"
   peerDependencies:
-    "@inertiajs/react": ^2.0.0
+    "@inertiajs/react": ^1.0.0 || ^2.0.0
     axios: ^1.7.8
     lodash: ^2.0.0 || ^3.0.0 || ^4.0.0
     react: ^16.9.0 || ^17.0.0 || ^18.0.0
