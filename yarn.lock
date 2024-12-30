@@ -2068,27 +2068,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inertiajs/core@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@inertiajs/core@npm:1.2.0"
+"@inertiajs/core@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@inertiajs/core@npm:2.0.0"
   dependencies:
     axios: "npm:^1.6.0"
     deepmerge: "npm:^4.0.0"
-    nprogress: "npm:^0.2.0"
     qs: "npm:^6.9.0"
-  checksum: 10/9c11e7a9ccf625be6123fb61c506e8601bf7964ce4dd1119cf043cead4846f69b1872a68914a2a806850658c2aa1631a79463d914c5384722126262ef2e78818
+  checksum: 10/d5ba94d2f4daded640238af3028e2c0a8bd874a35f79ba8c93855fd26f7db6a198a5d8ac9694668c6ef53b313d78199b0e5d0cdd3277bf71b3b4f1436647eb38
   languageName: node
   linkType: hard
 
-"@inertiajs/react@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@inertiajs/react@npm:1.2.0"
+"@inertiajs/react@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@inertiajs/react@npm:2.0.0"
   dependencies:
-    "@inertiajs/core": "npm:1.2.0"
+    "@inertiajs/core": "npm:2.0.0"
     lodash.isequal: "npm:^4.5.0"
   peerDependencies:
-    react: ^16.9.0 || ^17.0.0 || ^18.0.0
-  checksum: 10/6ac6a96df302d0bb7866d988fa1d8c55e94e1c3ecd9cd7c44f307d4d9f3474af5a5452151582dc1806befb0c23498e5e35a74d211a7cab7b4ceeb4a60b4384a7
+    react: ^16.9.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/a9ee537472d8e2ea9e877260e404c58441a98a3d7efe97855815468e542f20eb672875cbbf0a7da98d554e03d2aeb0cfc222ffc98a3393c211fa551d4acc7c63
   languageName: node
   linkType: hard
 
@@ -10818,13 +10817,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nprogress@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "nprogress@npm:0.2.0"
-  checksum: 10/1870a74c054c01899f89e85122d7548832d083b5fa5d3cc6aafc2d4f92901e15face402ef557be5b103aed7b6e1406c656b842dec32b553b4b052031ea1b0935
-  languageName: node
-  linkType: hard
-
 "nwsapi@npm:^2.2.2":
   version: 2.2.9
   resolution: "nwsapi@npm:2.2.9"
@@ -13900,7 +13892,7 @@ __metadata:
     "@commitlint/cli": "npm:^19.6.0"
     "@commitlint/config-conventional": "npm:^19.6.0"
     "@eslint/compat": "npm:^1.2.3"
-    "@inertiajs/react": "npm:^1.2.0"
+    "@inertiajs/react": "npm:^2.0.0"
     "@rollup/plugin-babel": "npm:^6.0.4"
     "@rollup/plugin-commonjs": "npm:^28.0.1"
     "@rollup/plugin-json": "npm:^6.1.0"
@@ -13960,7 +13952,7 @@ __metadata:
     ts-jest: "npm:^29.2.5"
     typescript: "npm:^5.7.2"
   peerDependencies:
-    "@inertiajs/react": ^1.0.0
+    "@inertiajs/react": ^1.0.0 || ^2.0.0
     axios: ^1.7.8
     lodash: ^2.0.0 || ^3.0.0 || ^4.0.0
     react: ^16.9.0 || ^17.0.0 || ^18.0.0
