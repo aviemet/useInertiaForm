@@ -2,7 +2,6 @@ module.exports = {
 	preset: 'ts-jest',
 	clearMocks: true,
 	testMatch: ['<rootDir>/tests/**/*.test.(ts|tsx)'],
-	// testEnvironment: './fixJestDomEnvironment.ts',
 	testEnvironment: 'jest-fixed-jsdom',
 	testEnvironmentOptions: {
 		customExportConditions: ['node'],
@@ -15,4 +14,5 @@ module.exports = {
 			},
 		}],
 	},
+	setupFilesAfterEnv: ['./jest.setup.ts'],
 }
