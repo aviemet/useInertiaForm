@@ -151,10 +151,10 @@ export default function useInertiaForm<TForm>(
 	const [wasSuccessful, setWasSuccessful] = useState(false)
 	const [recentlySuccessful, setRecentlySuccessful] = useState(false)
 	const cancelToken = useRef<any>(null)
-	const recentlySuccessfulTimeoutId = useRef<NodeJS.Timeout>()
+	const recentlySuccessfulTimeoutId = useRef<NodeJS.Timeout>(null)
 
 	let transformRef = useRef((data: TForm) => data)
-	const isMounted = useRef<boolean>()
+	const isMounted = useRef<boolean>(null)
 
 	useEffect(() => {
 		isMounted.current = true
@@ -164,8 +164,8 @@ export default function useInertiaForm<TForm>(
 	}, [])
 
 	// OnChange function processes
-	let onChangeRef = useRef<OnChangeCallback>()
-	let onChangeArgsRef = useRef<Parameters<OnChangeCallback>>()
+	let onChangeRef = useRef<OnChangeCallback>(null)
+	let onChangeArgsRef = useRef<Parameters<OnChangeCallback>>(null)
 
 	useEffect(() => {
 		if(onChangeRef.current && onChangeArgsRef.current) {

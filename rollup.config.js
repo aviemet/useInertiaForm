@@ -16,6 +16,7 @@ const externalDeps = [
 	'@inertiajs/react',
 	'lodash',
 	'axios',
+	'react/jsx-runtime',
 ];
 
 // Base plugins to avoid redundancy
@@ -26,6 +27,9 @@ const basePlugins = [
 	typescript({
 		tsconfig: './tsconfig.build.json',
 		declarationDir: './dist',
+		jsx: 'react-jsx',
+		include: ['*.ts+(|x)', '**/*.ts+(|x)'],
+		exclude: ['node_modules', 'dist'],
 	}),
 	sourcemaps(),
 	filesize({
@@ -58,6 +62,7 @@ export default [
 				'@inertiajs/react': '@inertiajs/react',
 				'lodash': '_',
 				'axios': 'axios',
+				'react/jsx-runtime': 'jsxRuntime',
 			},
 		},
 		plugins: [...basePlugins, terser()],
