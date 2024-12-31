@@ -3,11 +3,11 @@
     "target": "ESNext",
     "module": "esnext",
     "lib": ["dom", "esnext"],
-    "jsx": "react",
+    "jsx": "react-jsx",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "noEmit": true,
+    "noEmit": false,
     "outDir": "dist",
     "strict": false,
     "strictNullChecks": false,
@@ -23,6 +23,9 @@
     "typeRoots": [
       "./node_modules/@types",
     ],
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "types": ["react", "node"]
   },
   "include": ["src", "tests"],
 }

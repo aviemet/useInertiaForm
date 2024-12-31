@@ -6,8 +6,8 @@ export interface DynamicInputsProps {
 	children: React.ReactNode
 	model?: string
 	emptyData: Record<string, unknown>
-	addInputButton?: JSX.Element
-	removeInputButton?: JSX.Element
+	addInputButton?: React.ReactElement<React.ButtonHTMLAttributes<HTMLButtonElement>>
+	removeInputButton?: React.ReactElement<React.ButtonHTMLAttributes<HTMLButtonElement>>
 }
 
 const DynamicInputs = ({
@@ -21,7 +21,7 @@ const DynamicInputs = ({
 
 	return (
 		<>
-			{ React.cloneElement(addInputButton, { onClick: ( )=> addInput(), type: 'button' }) }
+			{ React.cloneElement(addInputButton, { onClick: ()=> addInput(), type: 'button' }) }
 			{ paths.map((path, i) => (
 				<NestedFields key={ i } model={ path }>
 					<div>{ children }</div>

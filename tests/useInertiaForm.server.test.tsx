@@ -1,5 +1,5 @@
-import { router } from '@inertiajs/core'
-import { renderHook, act } from '@testing-library/react-hooks'
+import { router } from '@inertiajs/react'
+import { renderHook, act } from '@testing-library/react'
 import { server } from './server.mock'
 import { useInertiaForm } from '../src'
 
