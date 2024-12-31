@@ -65,12 +65,11 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
-    "@testing-library/react-hooks": "^8.0.1",
     "@testing-library/user-event": "^14.5.2",
     "@types/jest": "^29.5.14",
     "@types/lodash": "^4.17.13",
-    "@types/react": "^18.3.18",
-    "@types/react-dom": "^18.3.5",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
     "@typescript-eslint/eslint-plugin": "^8.19.0",
     "@typescript-eslint/parser": "^8.19.0",
     "axios": "^1.7.9",
@@ -97,9 +96,9 @@
     "lint-staged": "^15.3.0",
     "lodash": "^4.17.21",
     "msw": "^2.7.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-test-renderer": "^18.3.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-test-renderer": "^19.0.0",
     "rimraf": "^6.0.1",
     "rollup": "^4.29.1",
     "rollup-plugin-dts": "^6.1.1",
@@ -116,8 +115,8 @@
     "@inertiajs/react": "^1.0.0 || ^2.0.0",
     "axios": "^1.7.8",
     "lodash": "^2.0.0 || ^3.0.0 || ^4.0.0",
-    "react": "^16.9.0 || ^17.0.0 || ^18.0.0",
-    "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0"
+    "react": "^16.9.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "husky": {
     "hooks": {
