@@ -19,19 +19,19 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        uses: borales/actions-yarn@v4
+        uses: borales/actions-yarn@v5
         with: 
           cmd: install
 
       - name: Build
-        uses: borales/actions-yarn@v4
+        uses: borales/actions-yarn@v5
         with: 
           cmd: build
 
       - name: Release
-        uses: borales/actions-yarn@v4
+        uses: borales/actions-yarn@v5
         with: 
-          cmd: run release
+          cmd: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

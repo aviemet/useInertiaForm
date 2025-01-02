@@ -21,14 +21,16 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        uses: borales/actions-yarn@v4
+        uses: borales/actions-yarn@v5
         with: 
           cmd: install
 
       - name: Lint
-        uses: borales/actions-yarn@v4
+        uses: borales/actions-yarn@v5
         with: 
           cmd: lint:all
 
       - name: Run Vite tests
-        run: test
+        uses: borales/actions-yarn@v5
+        with: 
+          cmd: test
