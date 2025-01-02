@@ -5,16 +5,11 @@ import jsxA11yPlugin from 'eslint-plugin-jsx-a11y'
 import jsoncPlugin from 'eslint-plugin-jsonc'
 import tsParser from '@typescript-eslint/parser'
 import jsoncParser from 'jsonc-eslint-parser'
-// import stylelint from 'eslint-plugin-stylelint'
 
 const ignores = [
-	'app/javascript/**/*',
-	'app/frontend/types/serializers/**/*',
-	'app/frontend/lib/routes/urlParams.ts',
-	'app/frontend/lib/routes/routes.js',
-	'app/frontend/lib/routes/routes.d.ts',
-	'tmp/**/*',
-	'public/**/*',
+	'dist/**/*',
+	'.vscode/**/*',
+	'.yarn/**/*',
 ]
 
 export default [
@@ -53,6 +48,8 @@ export default [
 			'@stylistic': stylistic,
 		},
 		rules: {
+			'react/jsx-uses-react': 'off',
+			'react/react-in-jsx-scope': 'off',
 			'@stylistic/indent': ['error', 'tab', {
 				SwitchCase: 1,
 				VariableDeclarator: 'first',
