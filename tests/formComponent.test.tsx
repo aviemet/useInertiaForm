@@ -1,4 +1,3 @@
-import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {
@@ -10,7 +9,6 @@ import { router } from '@inertiajs/react'
 import { get } from 'lodash'
 import ContextTest from './components/ContextTest'
 import { multiRootData, singleRootData } from './components/data'
-
 
 describe('Form Component', () => {
 	describe('When not passed a data object', () => {

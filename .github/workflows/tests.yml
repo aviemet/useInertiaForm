@@ -1,11 +1,13 @@
-name: Release
+name: Test
+
 on:
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
-  release:
+  test:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -23,15 +25,12 @@ jobs:
         with: 
           cmd: install
 
-      - name: Build
+      - name: Lint
         uses: borales/actions-yarn@v5
         with: 
-          cmd: build
+          cmd: lint:all
 
-      - name: Release
+      - name: Run Vite tests
         uses: borales/actions-yarn@v5
         with: 
-          cmd: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          cmd: test

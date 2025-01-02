@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { NestedObject, useForm, UseFormProps } from '../../src'
 import CircularJSON from 'circular-json'
 
