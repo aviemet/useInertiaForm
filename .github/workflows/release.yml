@@ -31,7 +31,7 @@ jobs:
       - name: Release
         uses: borales/actions-yarn@v5
         with: 
-          cmd: release
+          cmd: run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
