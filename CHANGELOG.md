@@ -1,3 +1,10 @@
+# [4.4.0](https://github.com/aviemet/useInertiaForm/compare/v4.3.3...v4.4.0) (2025-01-03)
+
+
+### Features
+
+* 🎸 bump new version ([dd95c90](https://github.com/aviemet/useInertiaForm/commit/dd95c9096530f8854a8756aa17a3db40c529c8a3))
+
 ## [4.3.3](https://github.com/aviemet/useInertiaForm/compare/v4.3.2...v4.3.3) (2024-12-06)
 
 
