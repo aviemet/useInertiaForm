@@ -1,10 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useCallback, useEffect } from 'react'
 import axios from 'axios'
 import { type VisitOptions } from '@inertiajs/core'
 import useInertiaForm, { NestedObject } from '../useInertiaForm'
 import { useForm, type UseFormProps, type HTTPVerb, FormProvider } from './FormProvider'
 import FormMetaWrapper, { useFormMeta, type FormMetaValue } from './FormMetaWrapper'
-import { unsetCompact } from '../utils'
+import { renameObjectWithAttributes, unsetCompact } from '../utils'
 
 type PartialHTMLForm = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange' | 'onSubmit' | 'onError'>
 
@@ -40,6 +42,8 @@ const Form = <TForm extends NestedObject>({
 	onError,
 	...props
 }: Omit<FormProps<TForm>, 'railsAttributes'>) => {
+	const { railsAttributes } = useFormMeta()
+
 	/**
 	 * Omit values by key from the data object
 	 */
@@ -69,13 +73,17 @@ const Form = <TForm extends NestedObject>({
 	const submit = async (options?: Partial<VisitOptions>) => {
 		let shouldSubmit = to && onSubmit?.(contextValueObject()) === false ? false : true
 
-		if(shouldSubmit) {
-			if(async) {
-				return axios[method](to, form.data)
-			} else {
-				return form.submit(method, to, options)
-			}
-		}
+		if(!shouldSubmit) return
+
+		// if(async) {
+		// 	const data = railsAttributes === true ?
+		// 		renameObjectWithAttributes(form.data)
+		// 		:
+		// 		form.data
+		// 	return axios[method](to, data)
+		// }
+
+		return form.submit(method, to, { ...options, async: async === true ? true : false })
 	}
 
 	const handleSubmit = (e: React.FormEvent) => {

@@ -27,9 +27,11 @@ import {
 } from './utils'
 import { get, isEqual, isPlainObject, set } from 'lodash'
 import { useFormMeta } from './Form/FormMetaWrapper'
+import axios from 'axios'
 
 type VisitOptions = Omit<InertiaVisitOptions, 'errors'> & {
 	errors?: Record<string, string | string[]>
+	async?: boolean
 }
 
 type OnChangeCallback = (key: string | undefined, value: unknown, prev: unknown) => void
@@ -274,10 +276,29 @@ export default function useInertiaForm<TForm>(
 			transformedData = renameObjectWithAttributes(transformedData)
 		}
 
-		if(method === 'delete') {
-			router.delete(url, { ..._options, data: transformedData as RequestPayload })
+		if(options.async === true) {
+			_options.onBefore(undefined)
+			_options.onStart(undefined)
+			axios[method](url, transformedData as RequestPayload, {
+				onUploadProgress: progessEvent => {
+					_options.onProgress(progessEvent)
+				},
+			})
+				.then(response => {
+					_options.onSuccess(undefined)
+				})
+				.catch(error => {
+					_options.onError(error)
+				})
+				.finally(() => {
+					_options.onFinish(undefined)
+				})
 		} else {
-			router[method](url, transformedData as RequestPayload, _options)
+			if(method === 'delete') {
+				router.delete(url, { ..._options, data: transformedData as RequestPayload })
+			} else {
+				router[method](url, transformedData as RequestPayload, _options)
+			}
 		}
 	}
 

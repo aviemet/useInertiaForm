@@ -9,6 +9,7 @@ import { router } from '@inertiajs/react'
 import { get } from 'lodash'
 import ContextTest from './components/ContextTest'
 import { multiRootData, singleRootData } from './components/data'
+import axios from 'axios'
 
 describe('Form Component', () => {
 	describe('When not passed a data object', () => {
@@ -103,25 +104,56 @@ describe('Form Component', () => {
 			expect(input).toHaveValue('modified form data')
 		})
 
-		it('sends the correct data to the server upon form submit', () => {
-			const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
-				const data = request?.data
-				expect(get(data, 'person.nested.key')).toBe('value')
-				return Promise.resolve({ data: request?.data })
+		describe('when async is false', () => {
+			it('sends the correct data to the server upon form submit', async () => {
+				let capturedData: any
+
+				const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
+					capturedData = request?.data
+
+					return Promise.resolve({ data: request?.data })
+				})
+
+				render(
+					<Form model="person" to="/form" data={ { ...singleRootData } } remember={ false }>
+						<Input name="first_name" />
+						<Input name="nested.key" />
+						<Submit>Submit</Submit>
+					</Form>,
+				)
+
+				const button = screen.getByRole('button')
+				await fireEvent.click(button)
+
+				expect(mockRequest).toHaveBeenCalled()
+
+				expect(get(capturedData, 'person.nested.key')).toBe('value')
 			})
+		})
 
-			render(
-				<Form model="person" to="/form" data={ { ...singleRootData } } remember={ false }>
-					<Input name="first_name" />
-					<Input name="nested.key" />
-					<Submit>Submit</Submit>
-				</Form>,
-			)
+		describe('when async is true', () => {
+			it('sends the correct data to the server upon form submit', async () => {
+				let capturedData: any
+				const mockRequest = jest.spyOn(axios, 'post').mockImplementation((url, data, config) => {
+					capturedData = data
+					return Promise.resolve({ data })
+				})
 
-			const button = screen.getByRole('button')
-			fireEvent.click(button)
+				render(
+					<Form async model="person" to="/form" data={ { ...singleRootData } } remember={ false }>
+						<Input name="first_name" />
+						<Input name="nested.key" />
+						<Submit>Submit</Submit>
+					</Form>,
+				)
 
-			expect(mockRequest).toHaveBeenCalled()
+				const button = screen.getByRole('button')
+				await fireEvent.click(button)
+
+				expect(mockRequest).toHaveBeenCalled()
+
+				expect(get(capturedData, 'person.nested.key')).toBe('value')
+			})
 		})
 	})
 
@@ -165,42 +197,86 @@ describe('Form Component', () => {
 			expect(input).toHaveValue('rails attributes')
 		})
 
-		it('sends the correct data to the server upon form submit', () => {
-			const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
-				const data = request?.data
+		describe('with async false', () => {
+			it('sends the correct data to the server upon form submit', () => {
+				let capturedData: any
 
-				expect(get(data, 'user.username')).toBe(multiRootData.user.username)
-				expect(get(data, 'person.nested_attributes.key')).toBe(multiRootData.person.nested.key)
-				expect(get(data, 'extra.value')).toBe('exists')
+				const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
+					capturedData = request?.data
 
-				return Promise.resolve({ data: request?.data })
+					return Promise.resolve({ data: request?.data })
+				})
+
+				const handleSubmit = (form) => {
+					form.transform(data => ({ ...data, extra: { value: 'exists' } }))
+				}
+
+				render(
+					<Form
+						model="person"
+						to="/form"
+						data={ multiRootData }
+						railsAttributes
+						remember={ false }
+						onSubmit={ handleSubmit }
+					>
+						<Input name="first_name" />
+						<Input name="nested.key" />
+						<Submit>Submit</Submit>
+					</Form>,
+				)
+
+				const button = screen.getByRole('button')
+				fireEvent.click(button)
+
+				expect(mockRequest).toHaveBeenCalled()
+
+				expect(get(capturedData, 'user.username')).toBe(multiRootData.user.username)
+				expect(get(capturedData, 'person.nested_attributes.key')).toBe(multiRootData.person.nested.key)
+				expect(get(capturedData, 'extra.value')).toBe('exists')
 			})
-
-			const handleSubmit = (form) => {
-				form.transform(data => ({ ...data, extra: { value: 'exists' } }))
-			}
-
-			render(
-				<Form
-					model="person"
-					to="/form"
-					data={ multiRootData }
-					railsAttributes
-					remember={ false }
-					onSubmit={ handleSubmit }
-				>
-					<Input name="first_name" />
-					<Input name="nested.key" />
-					<Submit>Submit</Submit>
-				</Form>,
-			)
-
-			const button = screen.getByRole('button')
-			fireEvent.click(button)
-
-			expect(mockRequest).toHaveBeenCalled()
 		})
 
+		describe('with async true', () => {
+			it('sends the correct data to the server upon form submit', async () => {
+				let capturedData: any
+
+				const mockRequest = jest.spyOn(axios, 'post').mockImplementation((url, data, config) => {
+					capturedData = data
+
+					return Promise.resolve({ data })
+				})
+
+				const handleSubmit = (form) => {
+					form.transform(data => ({ ...data, extra: { value: 'exists' } }))
+				}
+
+				render(
+					<Form
+						async
+						model="person"
+						to="/form"
+						data={ singleRootData }
+						railsAttributes
+						remember={ false }
+						onSubmit={ handleSubmit }
+					>
+						<Input name="first_name" />
+						<Input name="nested.key" />
+						<Submit>Submit</Submit>
+					</Form>,
+				)
+
+				const button = screen.getByRole('button')
+				await fireEvent.click(button)
+
+				expect(mockRequest).toHaveBeenCalled()
+
+				expect(get(capturedData, 'person.first_name')).toEqual(singleRootData.person.first_name)
+				expect(get(capturedData, 'person.nested_attributes.key')).toEqual(singleRootData.person.nested.key)
+				expect(get(capturedData, 'extra.value')).toEqual('exists')
+			})
+		})
 	})
 
 	describe('Filter', () => {

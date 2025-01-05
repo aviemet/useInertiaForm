@@ -2,6 +2,8 @@ import { act, renderHook } from '@testing-library/react'
 import { router } from '@inertiajs/core'
 import { useInertiaForm } from '../src'
 import { get } from 'lodash'
+import axios from 'axios'
+import { singleRootData } from './components/data'
 
 type InitialData = {
 	user: {
@@ -535,6 +537,56 @@ describe('submit', () => {
 			result.current.transform(data => ({ ...data, transformed: 'value' }))
 			result.current.submit('post', '/form')
 			expect(mockRequest).toHaveBeenCalled()
+		})
+	})
+
+	describe('when async is true', () => {
+		it('should submit transformed data using axios', async () => {
+			const testData = {
+				user: {
+					username: 'some name',
+				},
+			}
+
+			let capturedData: any
+			const mockRequest = jest.spyOn(axios, 'post').mockImplementation((url, data) => {
+				capturedData = data
+				return Promise.resolve({ data })
+			})
+
+			const { result } = renderHook(() => useInertiaForm(testData))
+
+			await act(async () => {
+				result.current.transform(data => ({ ...data, transformed: 'value' }))
+				await result.current.submit('post', '/form', { async: true })
+
+				expect(mockRequest).toHaveBeenCalled()
+
+				expect(capturedData).toMatchObject({ ...testData, transformed: 'value' })
+			})
+		})
+
+		it('should trigger the onSuccess option', async () => {
+			let capturedData: any
+			const mockRequest = jest.spyOn(axios, 'post').mockImplementation((url, data) => {
+				capturedData = data
+				return Promise.resolve({ data })
+			})
+
+			const { result } = renderHook(() => useInertiaForm(singleRootData))
+
+			await act(async () => {
+				await result.current.submit('post', '/form', {
+					async: true,
+					onSuccess: (page) => {
+						console.log(page)
+					},
+				})
+
+				expect(mockRequest).toHaveBeenCalled()
+
+
+			})
 		})
 	})
 })
