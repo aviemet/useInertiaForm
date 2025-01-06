@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {
 	Form,
@@ -147,8 +147,10 @@ describe('Form Component', () => {
 					</Form>,
 				)
 
-				const button = screen.getByRole('button')
-				await fireEvent.click(button)
+				await act(async () => {
+					const button = screen.getByRole('button')
+					await fireEvent.click(button)
+				})
 
 				expect(mockRequest).toHaveBeenCalled()
 
@@ -267,8 +269,10 @@ describe('Form Component', () => {
 					</Form>,
 				)
 
-				const button = screen.getByRole('button')
-				await fireEvent.click(button)
+				await act(async () => {
+					const button = screen.getByRole('button')
+					await fireEvent.click(button)
+				})
 
 				expect(mockRequest).toHaveBeenCalled()
 
@@ -289,7 +293,7 @@ describe('Form Component', () => {
 				expect(form.data.contact.phones[0].type).toBeUndefined()
 			}
 
-			render(
+			() => render(
 				<Form
 					model="person"
 					to="/form"

@@ -566,27 +566,117 @@ describe('submit', () => {
 			})
 		})
 
-		it('should trigger the onSuccess option', async () => {
-			let capturedData: any
-			const mockRequest = jest.spyOn(axios, 'post').mockImplementation((url, data) => {
-				capturedData = data
-				return Promise.resolve({ data })
-			})
+		it('should trigger all callbacks in correct order with progress', async () => {
+			const callOrder: string[] = [];
+			const callbacks = {
+				onBefore: jest.fn(() => {
+					callOrder.push('onBefore')
+				}),
+				onStart: jest.fn(() => {
+					callOrder.push('onStart')
+				}),
+				onProgress: jest.fn(() => {
+					callOrder.push('onProgress')
+				}),
+				onSuccess: jest.fn(() => {
+					callOrder.push('onSuccess')
+				}),
+				onError: jest.fn(),
+				onFinish: jest.fn(() => {
+					callOrder.push('onFinish')
+				}),
+			};
 
-			const { result } = renderHook(() => useInertiaForm(singleRootData))
+			const mockRequest = jest.spyOn(axios, 'post').mockImplementation((url, data, config) => {
+				if(config?.onUploadProgress) {
+					config.onUploadProgress({
+						loaded: 50,
+						total: 100,
+						progress: 0.5,
+						bytes: 50,
+						lengthComputable: true,
+						percentage: 50,
+					});
+				}
+				return Promise.resolve({ data });
+			});
+
+			const { result } = renderHook(() => useInertiaForm(singleRootData));
 
 			await act(async () => {
 				await result.current.submit('post', '/form', {
 					async: true,
-					onSuccess: (page) => {
-						console.log(page)
-					},
+					...callbacks,
+				});
+			});
+
+			expect(mockRequest).toHaveBeenCalled()
+
+			expect(callbacks.onBefore).toHaveBeenCalledWith(undefined);
+			expect(callbacks.onStart).toHaveBeenCalledWith(undefined);
+			expect(callbacks.onProgress).toHaveBeenCalledWith({
+				loaded: 50,
+				total: 100,
+				progress: 0.5,
+				bytes: 50,
+				lengthComputable: true,
+				percentage: 50,
+			});
+			expect(callbacks.onSuccess).toHaveBeenCalledWith(undefined);
+			expect(callbacks.onFinish).toHaveBeenCalledWith(undefined);
+
+			expect(callOrder).toEqual([
+				'onBefore',
+				'onStart',
+				'onProgress',
+				'onSuccess',
+				'onFinish',
+			]);
+		});
+
+		it('should handle errors correctly', async () => {
+			const callbacks = {
+				onBefore: jest.fn(),
+				onStart: jest.fn(),
+				onProgress: jest.fn(),
+				onSuccess: jest.fn(),
+				onError: jest.fn(),
+				onFinish: jest.fn(),
+			};
+
+			const mockError = new Error('Test error');
+			const mockRequest = jest.spyOn(axios, 'post').mockImplementation((url, data, config) => {
+				if(config?.onUploadProgress) {
+					config.onUploadProgress({
+						loaded: 50,
+						total: 100,
+						progress: 0.5,
+						bytes: 50,
+						lengthComputable: true,
+						percentage: 50,
+					});
+				}
+				return Promise.reject(mockError);
+			});
+
+			const { result } = renderHook(() => useInertiaForm(singleRootData));
+
+			await act(async () => {
+				await result.current.submit('post', '/form', {
+					async: true,
+					...callbacks,
 				})
+			});
 
-				expect(mockRequest).toHaveBeenCalled()
+			expect(mockRequest).toHaveBeenCalled()
 
+			expect(callbacks.onBefore).toHaveBeenCalled();
+			expect(callbacks.onStart).toHaveBeenCalled();
+			expect(callbacks.onProgress).toHaveBeenCalled();
+			expect(callbacks.onError).toHaveBeenCalledWith(mockError);
+			expect(callbacks.onFinish).toHaveBeenCalled();
+			expect(callbacks.onSuccess).not.toHaveBeenCalled();
+		});
 
-			})
-		})
 	})
 })

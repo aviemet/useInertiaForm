@@ -27,12 +27,20 @@ import {
 } from './utils'
 import { get, isEqual, isPlainObject, set } from 'lodash'
 import { useFormMeta } from './Form/FormMetaWrapper'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
-type VisitOptions = Omit<InertiaVisitOptions, 'errors'> & {
-	errors?: Record<string, string | string[]>
-	async?: boolean
-}
+type VisitOptions =
+  | (Omit<InertiaVisitOptions, 'errors' | 'onSuccess'> & {
+  	errors?: Record<string, string | string[]>
+  	async?: false
+  	onSuccess?: (page: Page<PageProps>) => void
+  })
+  | (Omit<InertiaVisitOptions, 'errors' | 'onSuccess'> & {
+  	errors?: Record<string, string | string[]>
+  	async: true
+  	onSuccess?: (page: AxiosResponse<any, any>) => void
+  })
+
 
 type OnChangeCallback = (key: string | undefined, value: unknown, prev: unknown) => void
 
@@ -183,8 +191,10 @@ export default function useInertiaForm<TForm>(
 	// eslint-disable-next-line no-unused-vars
 	} catch(e) {}
 
-	const submit = (method: Method, url: string, options: VisitOptions = {}) => {
-		const _options = {
+	const submit = (method: Method, url: string, options: VisitOptions = {
+		async: false,
+	}) => {
+		const _options: VisitOptions = {
 			...options,
 			onCancelToken: (token) => {
 				cancelToken.current = token
@@ -216,7 +226,7 @@ export default function useInertiaForm<TForm>(
 					return options.onProgress(event)
 				}
 			},
-			onSuccess: (page: Page<PageProps>) => {
+			onSuccess: (page) => {
 				if(isMounted.current) {
 					setProcessing(false)
 					setProgress(null)
@@ -285,7 +295,7 @@ export default function useInertiaForm<TForm>(
 				},
 			})
 				.then(response => {
-					_options.onSuccess(undefined)
+					_options.onSuccess(response)
 				})
 				.catch(error => {
 					_options.onError(error)
