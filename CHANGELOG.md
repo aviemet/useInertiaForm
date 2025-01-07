@@ -1,3 +1,11 @@
+# [4.5.0](https://github.com/aviemet/useInertiaForm/compare/v4.4.0...v4.5.0) (2025-01-07)
+
+
+### Features
+
+* 🎸 fixes support for async form submission ([23b162e](https://github.com/aviemet/useInertiaForm/commit/23b162e0a28fdd2a4652cd6c91809c67c555fb9e))
+* fixes async submit not applying transofmration or attributes rewrites ([5113126](https://github.com/aviemet/useInertiaForm/commit/5113126b3d6b3d95c6278be9b9057dc774fdf6cc))
+
 # [4.4.0](https://github.com/aviemet/useInertiaForm/compare/v4.3.3...v4.4.0) (2025-01-03)
 
 
