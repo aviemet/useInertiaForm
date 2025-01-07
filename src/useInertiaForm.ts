@@ -29,18 +29,11 @@ import { get, isEqual, isPlainObject, set } from 'lodash'
 import { useFormMeta } from './Form/FormMetaWrapper'
 import axios, { AxiosResponse } from 'axios'
 
-type VisitOptions =
-  | (Omit<InertiaVisitOptions, 'errors' | 'onSuccess'> & {
-  	errors?: Record<string, string | string[]>
-  	async?: false
-  	onSuccess?: (page: Page<PageProps>) => void
-  })
-  | (Omit<InertiaVisitOptions, 'errors' | 'onSuccess'> & {
-  	errors?: Record<string, string | string[]>
-  	async: true
-  	onSuccess?: (page: AxiosResponse<any, any>) => void
-  })
-
+type VisitOptions<TAsync extends boolean = boolean> =	(Omit<InertiaVisitOptions, 'errors' | 'onSuccess'> & {
+	errors?: Record<string, string | string[]>
+	async: TAsync
+	onSuccess?: (page: TAsync extends true ? AxiosResponse<any, any> : Page<PageProps>) => void
+})
 
 type OnChangeCallback = (key: string | undefined, value: unknown, prev: unknown) => void
 
@@ -285,7 +278,6 @@ export default function useInertiaForm<TForm>(
 		if(railsAttributes) {
 			transformedData = renameObjectWithAttributes(transformedData)
 		}
-
 		if(options.async === true) {
 			_options.onBefore(undefined)
 			_options.onStart(undefined)

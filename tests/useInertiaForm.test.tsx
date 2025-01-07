@@ -4,6 +4,7 @@ import { useInertiaForm } from '../src'
 import { get } from 'lodash'
 import axios from 'axios'
 import { singleRootData } from './components/data'
+import { fillEmptyValues } from '../src/utils'
 
 type InitialData = {
 	user: {
@@ -598,7 +599,7 @@ describe('submit', () => {
 						percentage: 50,
 					});
 				}
-				return Promise.resolve({ data });
+				return Promise.resolve(data);
 			});
 
 			const { result } = renderHook(() => useInertiaForm(singleRootData));
@@ -622,7 +623,7 @@ describe('submit', () => {
 				lengthComputable: true,
 				percentage: 50,
 			});
-			expect(callbacks.onSuccess).toHaveBeenCalledWith(undefined);
+			expect(callbacks.onSuccess).toHaveBeenCalledWith(fillEmptyValues(singleRootData));
 			expect(callbacks.onFinish).toHaveBeenCalledWith(undefined);
 
 			expect(callOrder).toEqual([

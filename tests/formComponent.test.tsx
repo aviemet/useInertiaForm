@@ -6,6 +6,7 @@ import {
 	Submit,
 } from '../src'
 import { router } from '@inertiajs/react'
+import { Page, type PendingVisit } from '@inertiajs/core'
 import { get } from 'lodash'
 import ContextTest from './components/ContextTest'
 import { multiRootData, singleRootData } from './components/data'
@@ -305,6 +306,99 @@ describe('Form Component', () => {
 					<Submit>Submit</Submit>
 				</Form>,
 			)
+		})
+	})
+
+	describe('when async is false', () => {
+		it('should trigger all callbacks in correct order with progress', async () => {
+			const callOrder: string[] = [];
+			const callbacks = {
+				onBefore: jest.fn(() => {
+					callOrder.push('onBefore')
+				}),
+				onStart: jest.fn(() => {
+					callOrder.push('onStart')
+				}),
+				onProgress: jest.fn(() => {
+					callOrder.push('onProgress')
+				}),
+				onSuccess: jest.fn(() => {
+					callOrder.push('onSuccess')
+				}),
+				onError: jest.fn(),
+				onFinish: jest.fn(() => {
+					callOrder.push('onFinish')
+				}),
+			}
+
+			const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
+				const pendingVisit: PendingVisit = Object.assign({
+					url: new URL(`http://www.example.com${route}`),
+					method: 'post',
+					data: {},
+					replace: false,
+					preserveScroll: false,
+					preserveState: false,
+					only: [],
+					except: [],
+					headers: {},
+					errorBag: null,
+					forceFormData: false,
+					queryStringArrayFormat: 'indices',
+					async: false,
+					showProgress: false,
+					prefetch: false,
+					fresh: false,
+					reset: [],
+					preserveUrl: false,
+					completed: false,
+					cancelled: false,
+					interrupted: false,
+				}, request)
+
+				request.onBefore(pendingVisit)
+				request.onStart(pendingVisit)
+				request.onSuccess({
+					component: 'Page',
+					props: {},
+					url: `http://www.example.com${route}`,
+					version: '',
+					clearHistory: true,
+					encryptHistory: true,
+				} as Page<{}>)
+				request.onFinish(pendingVisit as any)
+
+				return Promise.resolve(request)
+			})
+
+			render(
+				<Form
+					model="person"
+					to="/form"
+					data={ singleRootData }
+					onBefore={ callbacks.onBefore }
+					onStart={ callbacks.onStart }
+					onProgress={ callbacks.onProgress }
+					onSuccess={ callbacks.onSuccess }
+					onFinish={ callbacks.onFinish }
+				>
+					<Input name="first_name" />
+					<Submit>Submit</Submit>
+				</Form>
+			)
+
+			const button = screen.getByRole('button')
+			await act(async () => {
+				await fireEvent.click(button)
+			});
+
+			expect(mockRequest).toHaveBeenCalled()
+
+			expect(callbacks.onBefore).toHaveBeenCalled();
+			expect(callbacks.onStart).toHaveBeenCalled();
+			expect(callbacks.onSuccess).toHaveBeenCalled();
+			expect(callbacks.onFinish).toHaveBeenCalled();
+
 		})
 	})
 })
