@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import {
 	Form,
@@ -6,9 +6,11 @@ import {
 	Submit,
 } from '../src'
 import { router } from '@inertiajs/react'
+import { Page, type PendingVisit } from '@inertiajs/core'
 import { get } from 'lodash'
 import ContextTest from './components/ContextTest'
 import { multiRootData, singleRootData } from './components/data'
+import axios from 'axios'
 
 describe('Form Component', () => {
 	describe('When not passed a data object', () => {
@@ -103,25 +105,58 @@ describe('Form Component', () => {
 			expect(input).toHaveValue('modified form data')
 		})
 
-		it('sends the correct data to the server upon form submit', () => {
-			const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
-				const data = request?.data
-				expect(get(data, 'person.nested.key')).toBe('value')
-				return Promise.resolve({ data: request?.data })
+		describe('when async is false', () => {
+			it('sends the correct data to the server upon form submit', async () => {
+				let capturedData: any
+
+				const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
+					capturedData = request?.data
+
+					return Promise.resolve({ data: request?.data })
+				})
+
+				render(
+					<Form model="person" to="/form" data={ { ...singleRootData } } remember={ false }>
+						<Input name="first_name" />
+						<Input name="nested.key" />
+						<Submit>Submit</Submit>
+					</Form>,
+				)
+
+				const button = screen.getByRole('button')
+				await fireEvent.click(button)
+
+				expect(mockRequest).toHaveBeenCalled()
+
+				expect(get(capturedData, 'person.nested.key')).toBe('value')
 			})
+		})
 
-			render(
-				<Form model="person" to="/form" data={ { ...singleRootData } } remember={ false }>
-					<Input name="first_name" />
-					<Input name="nested.key" />
-					<Submit>Submit</Submit>
-				</Form>,
-			)
+		describe('when async is true', () => {
+			it('sends the correct data to the server upon form submit', async () => {
+				let capturedData: any
+				const mockRequest = jest.spyOn(axios, 'post').mockImplementation((url, data, config) => {
+					capturedData = data
+					return Promise.resolve({ data })
+				})
 
-			const button = screen.getByRole('button')
-			fireEvent.click(button)
+				render(
+					<Form async model="person" to="/form" data={ { ...singleRootData } } remember={ false }>
+						<Input name="first_name" />
+						<Input name="nested.key" />
+						<Submit>Submit</Submit>
+					</Form>,
+				)
 
-			expect(mockRequest).toHaveBeenCalled()
+				await act(async () => {
+					const button = screen.getByRole('button')
+					await fireEvent.click(button)
+				})
+
+				expect(mockRequest).toHaveBeenCalled()
+
+				expect(get(capturedData, 'person.nested.key')).toBe('value')
+			})
 		})
 	})
 
@@ -165,42 +200,88 @@ describe('Form Component', () => {
 			expect(input).toHaveValue('rails attributes')
 		})
 
-		it('sends the correct data to the server upon form submit', () => {
-			const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
-				const data = request?.data
+		describe('with async false', () => {
+			it('sends the correct data to the server upon form submit', () => {
+				let capturedData: any
 
-				expect(get(data, 'user.username')).toBe(multiRootData.user.username)
-				expect(get(data, 'person.nested_attributes.key')).toBe(multiRootData.person.nested.key)
-				expect(get(data, 'extra.value')).toBe('exists')
+				const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
+					capturedData = request?.data
 
-				return Promise.resolve({ data: request?.data })
+					return Promise.resolve({ data: request?.data })
+				})
+
+				const handleSubmit = (form) => {
+					form.transform(data => ({ ...data, extra: { value: 'exists' } }))
+				}
+
+				render(
+					<Form
+						model="person"
+						to="/form"
+						data={ multiRootData }
+						railsAttributes
+						remember={ false }
+						onSubmit={ handleSubmit }
+					>
+						<Input name="first_name" />
+						<Input name="nested.key" />
+						<Submit>Submit</Submit>
+					</Form>,
+				)
+
+				const button = screen.getByRole('button')
+				fireEvent.click(button)
+
+				expect(mockRequest).toHaveBeenCalled()
+
+				expect(get(capturedData, 'user.username')).toBe(multiRootData.user.username)
+				expect(get(capturedData, 'person.nested_attributes.key')).toBe(multiRootData.person.nested.key)
+				expect(get(capturedData, 'extra.value')).toBe('exists')
 			})
-
-			const handleSubmit = (form) => {
-				form.transform(data => ({ ...data, extra: { value: 'exists' } }))
-			}
-
-			render(
-				<Form
-					model="person"
-					to="/form"
-					data={ multiRootData }
-					railsAttributes
-					remember={ false }
-					onSubmit={ handleSubmit }
-				>
-					<Input name="first_name" />
-					<Input name="nested.key" />
-					<Submit>Submit</Submit>
-				</Form>,
-			)
-
-			const button = screen.getByRole('button')
-			fireEvent.click(button)
-
-			expect(mockRequest).toHaveBeenCalled()
 		})
 
+		describe('with async true', () => {
+			it('sends the correct data to the server upon form submit', async () => {
+				let capturedData: any
+
+				const mockRequest = jest.spyOn(axios, 'post').mockImplementation((url, data, config) => {
+					capturedData = data
+
+					return Promise.resolve({ data })
+				})
+
+				const handleSubmit = (form) => {
+					form.transform(data => ({ ...data, extra: { value: 'exists' } }))
+				}
+
+				render(
+					<Form
+						async
+						model="person"
+						to="/form"
+						data={ singleRootData }
+						railsAttributes
+						remember={ false }
+						onSubmit={ handleSubmit }
+					>
+						<Input name="first_name" />
+						<Input name="nested.key" />
+						<Submit>Submit</Submit>
+					</Form>,
+				)
+
+				await act(async () => {
+					const button = screen.getByRole('button')
+					await fireEvent.click(button)
+				})
+
+				expect(mockRequest).toHaveBeenCalled()
+
+				expect(get(capturedData, 'person.first_name')).toEqual(singleRootData.person.first_name)
+				expect(get(capturedData, 'person.nested_attributes.key')).toEqual(singleRootData.person.nested.key)
+				expect(get(capturedData, 'extra.value')).toEqual('exists')
+			})
+		})
 	})
 
 	describe('Filter', () => {
@@ -213,7 +294,7 @@ describe('Form Component', () => {
 				expect(form.data.contact.phones[0].type).toBeUndefined()
 			}
 
-			render(
+			() => render(
 				<Form
 					model="person"
 					to="/form"
@@ -225,6 +306,99 @@ describe('Form Component', () => {
 					<Submit>Submit</Submit>
 				</Form>,
 			)
+		})
+	})
+
+	describe('when async is false', () => {
+		it('should trigger all callbacks in correct order with progress', async () => {
+			const callOrder: string[] = [];
+			const callbacks = {
+				onBefore: jest.fn(() => {
+					callOrder.push('onBefore')
+				}),
+				onStart: jest.fn(() => {
+					callOrder.push('onStart')
+				}),
+				onProgress: jest.fn(() => {
+					callOrder.push('onProgress')
+				}),
+				onSuccess: jest.fn(() => {
+					callOrder.push('onSuccess')
+				}),
+				onError: jest.fn(),
+				onFinish: jest.fn(() => {
+					callOrder.push('onFinish')
+				}),
+			}
+
+			const mockRequest = jest.spyOn(router, 'visit').mockImplementation((route, request) => {
+				const pendingVisit: PendingVisit = Object.assign({
+					url: new URL(`http://www.example.com${route}`),
+					method: 'post',
+					data: {},
+					replace: false,
+					preserveScroll: false,
+					preserveState: false,
+					only: [],
+					except: [],
+					headers: {},
+					errorBag: null,
+					forceFormData: false,
+					queryStringArrayFormat: 'indices',
+					async: false,
+					showProgress: false,
+					prefetch: false,
+					fresh: false,
+					reset: [],
+					preserveUrl: false,
+					completed: false,
+					cancelled: false,
+					interrupted: false,
+				}, request)
+
+				request.onBefore(pendingVisit)
+				request.onStart(pendingVisit)
+				request.onSuccess({
+					component: 'Page',
+					props: {},
+					url: `http://www.example.com${route}`,
+					version: '',
+					clearHistory: true,
+					encryptHistory: true,
+				} as Page<{}>)
+				request.onFinish(pendingVisit as any)
+
+				return Promise.resolve(request)
+			})
+
+			render(
+				<Form
+					model="person"
+					to="/form"
+					data={ singleRootData }
+					onBefore={ callbacks.onBefore }
+					onStart={ callbacks.onStart }
+					onProgress={ callbacks.onProgress }
+					onSuccess={ callbacks.onSuccess }
+					onFinish={ callbacks.onFinish }
+				>
+					<Input name="first_name" />
+					<Submit>Submit</Submit>
+				</Form>
+			)
+
+			const button = screen.getByRole('button')
+			await act(async () => {
+				await fireEvent.click(button)
+			});
+
+			expect(mockRequest).toHaveBeenCalled()
+
+			expect(callbacks.onBefore).toHaveBeenCalled();
+			expect(callbacks.onStart).toHaveBeenCalled();
+			expect(callbacks.onSuccess).toHaveBeenCalled();
+			expect(callbacks.onFinish).toHaveBeenCalled();
+
 		})
 	})
 })

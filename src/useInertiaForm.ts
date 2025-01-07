@@ -27,10 +27,13 @@ import {
 } from './utils'
 import { get, isEqual, isPlainObject, set } from 'lodash'
 import { useFormMeta } from './Form/FormMetaWrapper'
+import axios, { AxiosResponse } from 'axios'
 
-type VisitOptions = Omit<InertiaVisitOptions, 'errors'> & {
+type VisitOptions<TAsync extends boolean = boolean> =	(Omit<InertiaVisitOptions, 'errors' | 'onSuccess'> & {
 	errors?: Record<string, string | string[]>
-}
+	async: TAsync
+	onSuccess?: (page: TAsync extends true ? AxiosResponse<any, any> : Page<PageProps>) => void
+})
 
 type OnChangeCallback = (key: string | undefined, value: unknown, prev: unknown) => void
 
@@ -181,8 +184,10 @@ export default function useInertiaForm<TForm>(
 	// eslint-disable-next-line no-unused-vars
 	} catch(e) {}
 
-	const submit = (method: Method, url: string, options: VisitOptions = {}) => {
-		const _options = {
+	const submit = (method: Method, url: string, options: VisitOptions = {
+		async: false,
+	}) => {
+		const _options: VisitOptions = {
 			...options,
 			onCancelToken: (token) => {
 				cancelToken.current = token
@@ -214,7 +219,7 @@ export default function useInertiaForm<TForm>(
 					return options.onProgress(event)
 				}
 			},
-			onSuccess: (page: Page<PageProps>) => {
+			onSuccess: (page) => {
 				if(isMounted.current) {
 					setProcessing(false)
 					setProgress(null)
@@ -273,11 +278,29 @@ export default function useInertiaForm<TForm>(
 		if(railsAttributes) {
 			transformedData = renameObjectWithAttributes(transformedData)
 		}
-
-		if(method === 'delete') {
-			router.delete(url, { ..._options, data: transformedData as RequestPayload })
+		if(options.async === true) {
+			_options.onBefore(undefined)
+			_options.onStart(undefined)
+			axios[method](url, transformedData as RequestPayload, {
+				onUploadProgress: progessEvent => {
+					_options.onProgress(progessEvent)
+				},
+			})
+				.then(response => {
+					_options.onSuccess(response)
+				})
+				.catch(error => {
+					_options.onError(error)
+				})
+				.finally(() => {
+					_options.onFinish(undefined)
+				})
 		} else {
-			router[method](url, transformedData as RequestPayload, _options)
+			if(method === 'delete') {
+				router.delete(url, { ..._options, data: transformedData as RequestPayload })
+			} else {
+				router[method](url, transformedData as RequestPayload, _options)
+			}
 		}
 	}
 

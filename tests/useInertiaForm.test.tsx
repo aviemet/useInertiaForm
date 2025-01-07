@@ -2,6 +2,9 @@ import { act, renderHook } from '@testing-library/react'
 import { router } from '@inertiajs/core'
 import { useInertiaForm } from '../src'
 import { get } from 'lodash'
+import axios from 'axios'
+import { singleRootData } from './components/data'
+import { fillEmptyValues } from '../src/utils'
 
 type InitialData = {
 	user: {
@@ -536,5 +539,145 @@ describe('submit', () => {
 			result.current.submit('post', '/form')
 			expect(mockRequest).toHaveBeenCalled()
 		})
+	})
+
+	describe('when async is true', () => {
+		it('should submit transformed data using axios', async () => {
+			const testData = {
+				user: {
+					username: 'some name',
+				},
+			}
+
+			let capturedData: any
+			const mockRequest = jest.spyOn(axios, 'post').mockImplementation((url, data) => {
+				capturedData = data
+				return Promise.resolve({ data })
+			})
+
+			const { result } = renderHook(() => useInertiaForm(testData))
+
+			await act(async () => {
+				result.current.transform(data => ({ ...data, transformed: 'value' }))
+				await result.current.submit('post', '/form', { async: true })
+
+				expect(mockRequest).toHaveBeenCalled()
+
+				expect(capturedData).toMatchObject({ ...testData, transformed: 'value' })
+			})
+		})
+
+		it('should trigger all callbacks in correct order with progress', async () => {
+			const callOrder: string[] = [];
+			const callbacks = {
+				onBefore: jest.fn(() => {
+					callOrder.push('onBefore')
+				}),
+				onStart: jest.fn(() => {
+					callOrder.push('onStart')
+				}),
+				onProgress: jest.fn(() => {
+					callOrder.push('onProgress')
+				}),
+				onSuccess: jest.fn(() => {
+					callOrder.push('onSuccess')
+				}),
+				onError: jest.fn(),
+				onFinish: jest.fn(() => {
+					callOrder.push('onFinish')
+				}),
+			};
+
+			const mockRequest = jest.spyOn(axios, 'post').mockImplementation((url, data, config) => {
+				if(config?.onUploadProgress) {
+					config.onUploadProgress({
+						loaded: 50,
+						total: 100,
+						progress: 0.5,
+						bytes: 50,
+						lengthComputable: true,
+						percentage: 50,
+					});
+				}
+				return Promise.resolve(data);
+			});
+
+			const { result } = renderHook(() => useInertiaForm(singleRootData));
+
+			await act(async () => {
+				await result.current.submit('post', '/form', {
+					async: true,
+					...callbacks,
+				});
+			});
+
+			expect(mockRequest).toHaveBeenCalled()
+
+			expect(callbacks.onBefore).toHaveBeenCalledWith(undefined);
+			expect(callbacks.onStart).toHaveBeenCalledWith(undefined);
+			expect(callbacks.onProgress).toHaveBeenCalledWith({
+				loaded: 50,
+				total: 100,
+				progress: 0.5,
+				bytes: 50,
+				lengthComputable: true,
+				percentage: 50,
+			});
+			expect(callbacks.onSuccess).toHaveBeenCalledWith(fillEmptyValues(singleRootData));
+			expect(callbacks.onFinish).toHaveBeenCalledWith(undefined);
+
+			expect(callOrder).toEqual([
+				'onBefore',
+				'onStart',
+				'onProgress',
+				'onSuccess',
+				'onFinish',
+			]);
+		});
+
+		it('should handle errors correctly', async () => {
+			const callbacks = {
+				onBefore: jest.fn(),
+				onStart: jest.fn(),
+				onProgress: jest.fn(),
+				onSuccess: jest.fn(),
+				onError: jest.fn(),
+				onFinish: jest.fn(),
+			};
+
+			const mockError = new Error('Test error');
+			const mockRequest = jest.spyOn(axios, 'post').mockImplementation((url, data, config) => {
+				if(config?.onUploadProgress) {
+					config.onUploadProgress({
+						loaded: 50,
+						total: 100,
+						progress: 0.5,
+						bytes: 50,
+						lengthComputable: true,
+						percentage: 50,
+					});
+				}
+				return Promise.reject(mockError);
+			});
+
+			const { result } = renderHook(() => useInertiaForm(singleRootData));
+
+			await act(async () => {
+				await result.current.submit('post', '/form', {
+					async: true,
+					...callbacks,
+				})
+			});
+
+			expect(mockRequest).toHaveBeenCalled()
+
+			expect(callbacks.onBefore).toHaveBeenCalled();
+			expect(callbacks.onStart).toHaveBeenCalled();
+			expect(callbacks.onProgress).toHaveBeenCalled();
+			expect(callbacks.onError).toHaveBeenCalledWith(mockError);
+			expect(callbacks.onFinish).toHaveBeenCalled();
+			expect(callbacks.onSuccess).not.toHaveBeenCalled();
+		});
+
 	})
 })

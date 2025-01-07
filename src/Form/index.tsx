@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useCallback, useEffect } from 'react'
-import axios from 'axios'
 import { type VisitOptions } from '@inertiajs/core'
 import useInertiaForm, { NestedObject } from '../useInertiaForm'
 import { useForm, type UseFormProps, type HTTPVerb, FormProvider } from './FormProvider'
@@ -18,10 +19,13 @@ export interface FormProps<TForm> extends PartialHTMLForm {
 	remember?: boolean
 	railsAttributes?: boolean
 	filter?: string[]
-	onSubmit?: (form: UseFormProps<TForm>) => boolean | void
 	onChange?: (form: UseFormProps<TForm>) => void
+	onSubmit?: (form: UseFormProps<TForm>) => boolean | void
+	onBefore?: (form:  UseFormProps<TForm>) => void
+	onStart?: (form:  UseFormProps<TForm>) => void
 	onSuccess?: (form: UseFormProps<TForm>) => void
 	onError?: (form: UseFormProps<TForm>) => void
+	onFinish?: (form: UseFormProps<TForm>) => void
 }
 
 const Form = <TForm extends NestedObject>({
@@ -34,10 +38,13 @@ const Form = <TForm extends NestedObject>({
 	resetAfterSubmit,
 	remember = true,
 	filter,
-	onSubmit,
 	onChange,
+	onSubmit,
+	onBefore,
+	onStart,
 	onSuccess,
 	onError,
+	onFinish,
 	...props
 }: Omit<FormProps<TForm>, 'railsAttributes'>) => {
 	/**
@@ -61,7 +68,6 @@ const Form = <TForm extends NestedObject>({
 	const contextValueObject = useCallback((): UseFormProps<TForm> => (
 		{ ...form, model, method, to, submit }
 	), [data, form, form.data, form.errors, model, method, to])
-
 	/**
 	 * Submits the form. If async prop is true, submits using axios,
 	 * otherwise submits using Inertia's `useForm.submit` method
@@ -69,27 +75,40 @@ const Form = <TForm extends NestedObject>({
 	const submit = async (options?: Partial<VisitOptions>) => {
 		let shouldSubmit = to && onSubmit?.(contextValueObject()) === false ? false : true
 
-		if(shouldSubmit) {
-			if(async) {
-				return axios[method](to, form.data)
-			} else {
-				return form.submit(method, to, options)
-			}
-		}
+		if(!shouldSubmit) return
+
+		return form.submit(method, to, { ...options, async: async === true ? true : false })
 	}
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault()
 		e.stopPropagation()
 
-		submit({
+		const submitOptions: Partial<VisitOptions> = {
 			onSuccess: () => {
 				if(resetAfterSubmit || (resetAfterSubmit !== false && async === true)) {
 					form.reset()
 				}
 				onSuccess?.(contextValueObject())
 			},
-		})
+		}
+		if(onBefore) {
+			submitOptions.onBefore = () => {
+				onBefore(contextValueObject())
+			}
+		}
+		if(onStart) {
+			submitOptions.onStart = () => {
+				onStart(contextValueObject())
+			}
+		}
+		if(onFinish) {
+			submitOptions.onFinish = () => {
+				onFinish(contextValueObject())
+			}
+		}
+
+		submit(submitOptions)
 	}
 
 	// Set values from url search params. Allows for prefilling form data from a link
