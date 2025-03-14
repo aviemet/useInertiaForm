@@ -14,7 +14,6 @@ const externalDeps = [
 	'react-dom',
 	'@inertiajs/core',
 	'@inertiajs/react',
-	'lodash',
 	'axios',
 	'react/jsx-runtime',
 ];

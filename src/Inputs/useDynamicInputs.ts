@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useForm, useFormMeta } from '../Form'
-import { get, set } from 'lodash'
+import { get, set } from 'es-toolkit/compat'
 import { useNestedAttribute } from './NestedFields'
 
 export interface DynamicInputsProps<T = Record<string, unknown>> {
