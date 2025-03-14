@@ -1,4 +1,6 @@
-module.exports = {
+import type { Config } from "jest"
+
+const config: Config = {
 	preset: "ts-jest",
 	clearMocks: true,
 	testMatch: ["<rootDir>/tests/**/*.test.(ts|tsx)"],
@@ -15,4 +17,9 @@ module.exports = {
 		}],
 	},
 	setupFilesAfterEnv: ["./jest.setup.ts"],
+	transformIgnorePatterns: [
+		"/node_modules/(?!lodash-es)",
+	],
 }
+
+export default config
