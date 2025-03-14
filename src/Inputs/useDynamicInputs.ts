@@ -1,7 +1,7 @@
-import { useCallback } from 'react'
-import { useForm, useFormMeta } from '../Form'
-import { get, set } from 'lodash'
-import { useNestedAttribute } from './NestedFields'
+import { useCallback } from "react"
+import { useForm, useFormMeta } from "../Form"
+import { get, set } from "lodash"
+import { useNestedAttribute } from "./NestedFields"
 
 export interface DynamicInputsProps<T = Record<string, unknown>> {
 	model?: string
@@ -19,14 +19,14 @@ type DynamicInputsReturn<T = Record<string, unknown>> = {
 const useDynamicInputs = <T extends Record<string, unknown>>({ model, emptyData }: DynamicInputsProps<T>): DynamicInputsReturn<T> => {
 	const { setData, unsetData, getData } = useForm()
 	const { model: formModel } = useFormMeta()
-	let inputModel = formModel ?? ''
+	let inputModel = formModel ?? ""
 
 	try {
 		const nestedModel = useNestedAttribute()
 		inputModel = formModel ? `${inputModel}.${nestedModel}` : nestedModel
 	} catch(e) {}
 
-	inputModel = `${inputModel}.${model || ''}`
+	inputModel = `${inputModel}.${model || ""}`
 
 	const handleAddInputs: AddInputHandler<T> = useCallback(override => {
 		setData((formData: T) => {
@@ -63,7 +63,7 @@ const useDynamicInputs = <T extends Record<string, unknown>>({ model, emptyData 
 	const generatePaths = useCallback(() => {
 		if(!Array.isArray(data)) return []
 
-		return data.map((_,i) => `${model || ''}[${i}]`)
+		return data.map((_, i) => `${model || ""}[${i}]`)
 	}, [data])
 
 	return {

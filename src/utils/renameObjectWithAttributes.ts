@@ -1,15 +1,15 @@
-import { isPlainObject } from 'lodash'
-import { NestedObject } from '../useInertiaForm'
+import { isPlainObject } from "lodash"
+import { NestedObject } from "../useInertiaForm"
 
 /**
  * Append string (default of '_attributes') to keys of nested records
  */
-export const renameObjectWithAttributes = <T>(data: T, str = '_attributes') => {
+export const renameObjectWithAttributes = <T>(data: T, str = "_attributes") => {
 	const clone = structuredClone(data)
 
 	// Start at one level deep
 	Object.values(clone).forEach(value => {
-		if(isPlainObject(value)){
+		if(isPlainObject(value)) {
 			recursiveAppendString(value, str)
 		}
 	})

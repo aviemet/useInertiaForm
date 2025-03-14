@@ -1,7 +1,7 @@
-import React from 'react'
-import useInertiaInput from '../useInertiaInput'
-import { NestedObject } from '../useInertiaForm'
-import { BaseFormInputProps, InputConflicts } from '.'
+import React from "react"
+import useInertiaInput from "../useInertiaInput"
+import { NestedObject } from "../useInertiaForm"
+import { BaseFormInputProps, InputConflicts } from "."
 
 interface InputProps<TForm extends NestedObject, T = string>
 	extends
@@ -12,8 +12,8 @@ interface InputProps<TForm extends NestedObject, T = string>
 
 const Input = <TForm extends NestedObject, T = string>(
 	{ name,
-		component = 'input',
-		type = 'text',
+		component = "input",
+		type = "text",
 		model,
 		onChange,
 		errorKey,

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 
 /**
  * Creates context with simplified type notations
@@ -12,7 +12,7 @@ export const createContext = <CT extends unknown | null>() => {
 			(context as unknown) as React.Context<T>,
 		)
 		if(c === null) {
-			throw new Error('useContext must be inside a Provider with a value')
+			throw new Error("useContext must be inside a Provider with a value")
 		}
 		return c
 	}

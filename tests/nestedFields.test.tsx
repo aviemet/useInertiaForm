@@ -1,15 +1,15 @@
-import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
+import { render, screen } from "@testing-library/react"
+import "@testing-library/jest-dom"
 
 import {
 	Form,
 	Input,
 	NestedFields,
-} from '../src'
-import ContextTest from './components/ContextTest'
+} from "../src"
+import ContextTest from "./components/ContextTest"
 
-describe('NestedFields', () => {
-	it('adds values to the form data object', () => {
+describe("NestedFields", () => {
+	it("adds values to the form data object", () => {
 		render(
 			<Form role="form" to="/" model="user" remember={ false }>
 				<Input name="username" />
@@ -22,8 +22,8 @@ describe('NestedFields', () => {
 			</Form>,
 		)
 
-		expect(screen.getByTestId('data')).toHaveTextContent(
-			'{"user":{"username":"","nest":{"nested_value":""}}}',
+		expect(screen.getByTestId("data")).toHaveTextContent(
+			"{\"user\":{\"username\":\"\",\"nest\":{\"nested_value\":\"\"}}}",
 		)
 
 	})

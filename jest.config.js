@@ -1,18 +1,18 @@
 module.exports = {
-	preset: 'ts-jest',
+	preset: "ts-jest",
 	clearMocks: true,
-	testMatch: ['<rootDir>/tests/**/*.test.(ts|tsx)'],
-	testEnvironment: 'jest-fixed-jsdom',
+	testMatch: ["<rootDir>/tests/**/*.test.(ts|tsx)"],
+	testEnvironment: "jest-fixed-jsdom",
 	testEnvironmentOptions: {
-		customExportConditions: ['node'],
+		customExportConditions: ["node"],
 	},
 	transform: {
-		'^.+\\.tsx?$': ['ts-jest', {
-			tsconfig: 'tsconfig.test.json',
+		"^.+\\.tsx?$": ["ts-jest", {
+			tsconfig: "tsconfig.test.json",
 			diagnostics: {
 				warnOnly: true,
 			},
 		}],
 	},
-	setupFilesAfterEnv: ['./jest.setup.ts'],
+	setupFilesAfterEnv: ["./jest.setup.ts"],
 }

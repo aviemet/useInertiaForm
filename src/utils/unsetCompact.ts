@@ -1,5 +1,5 @@
-import { unset, get  } from 'lodash'
-import { type NestedObject } from '../useInertiaForm'
+import { unset, get } from "lodash"
+import { type NestedObject } from "../useInertiaForm"
 
 /**
  * Extends _.unset splice out array elements rather than leaving empty values in arrays
@@ -10,11 +10,11 @@ import { type NestedObject } from '../useInertiaForm'
 type TArrType = string | number | NestedObject
 export const unsetCompact = (data: NestedObject, path: string) => {
 	// Ignore tailing [] since it causes unnecessary recursion
-	const sanitizedPath = path.replace(/\[\]$/, '')
+	const sanitizedPath = path.replace(/\[\]$/, "")
 
 	// Handle special empty array syntax
-	if(sanitizedPath.includes('[]')) {
-		const emptyArrayPosition = sanitizedPath.indexOf('[]')
+	if(sanitizedPath.includes("[]")) {
+		const emptyArrayPosition = sanitizedPath.indexOf("[]")
 		const startPath = sanitizedPath.slice(0, emptyArrayPosition)
 		const restPath = sanitizedPath.slice(emptyArrayPosition + 2)
 		const arr = get(data, startPath) as TArrType[]
@@ -29,9 +29,9 @@ export const unsetCompact = (data: NestedObject, path: string) => {
 
 	// Directly removing an array element is the only way to have an empty array element
 	// Handle it separately using slice rather than unset
-	if(sanitizedPath.charAt(sanitizedPath.length - 1) === ']') {
+	if(sanitizedPath.charAt(sanitizedPath.length - 1) === "]") {
 		const match = sanitizedPath.match(/(?<index>\d*)\]$/)
-		const arr = get(data, sanitizedPath.slice(0, sanitizedPath.lastIndexOf('[')))
+		const arr = get(data, sanitizedPath.slice(0, sanitizedPath.lastIndexOf("[")))
 
 		if(Array.isArray(arr) && match?.groups?.index !== undefined) {
 			arr.splice(Number(match.groups.index), 1)

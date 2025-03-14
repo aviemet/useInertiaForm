@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash'
+import { isEmpty } from "lodash"
 
 /**
  * Returns whether a value should be considered empty in the context of a form input
@@ -8,11 +8,11 @@ export const isUnset = (v: any) => {
 		return true
 	}
 
-	if(typeof v === 'string') {
-		return v === ''
+	if(typeof v === "string") {
+		return v === ""
 	}
 
-	if(typeof v === 'number') {
+	if(typeof v === "number") {
 		return v === 0 ? false : !Boolean(v)
 	}
 
@@ -20,7 +20,7 @@ export const isUnset = (v: any) => {
 		return isNaN(v.valueOf())
 	}
 
-	if(typeof v === 'boolean') {
+	if(typeof v === "boolean") {
 		return false
 	}
 

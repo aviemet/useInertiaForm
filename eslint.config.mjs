@@ -88,6 +88,8 @@ export default [
 					while: { after: false },
 					switch: { after: false },
 					catch: { after: false },
+					import: { after: true },
+					export: { after: true },
 				},
 			}],
 			'@stylistic/comma-dangle': ['error', {
@@ -107,6 +109,32 @@ export default [
           '!!': false,
         },
       }],
+			"@stylistic/semi": ["error", "never"],
+			"@stylistic/jsx-quotes": ["error", "prefer-double"],
+			"@stylistic/quotes": ["error", "double"],
+			"@stylistic/space-before-function-paren": ["error", "never"],
+			"@stylistic/arrow-spacing": "error",
+			"@stylistic/space-before-blocks": ["error", "always"],
+			"@stylistic/no-multiple-empty-lines": ["error", {
+				max: 2,
+				maxBOF: 0,
+			}],
+			"@stylistic/comma-spacing": ["error", {
+				before: false,
+				after: true,
+			}],
+			"@stylistic/no-multi-spaces": "error",
+			"@stylistic/spaced-comment": ["error", "always", {
+				"line": {
+					"markers": ["/"],
+					"exceptions": ["-", "+"],
+				},
+				"block": {
+					"markers": ["!"],
+					"exceptions": ["*"],
+					"balanced": true,
+				},
+			}],
 			'no-trailing-spaces': ['error', {
         skipBlankLines: false,
         ignoreComments: false
