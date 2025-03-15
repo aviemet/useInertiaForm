@@ -10,7 +10,7 @@ This was developed alongside a Rails project, so the form handling ethos follows
 
 ### Wiki
 
-I've chosen to keep the main readme clean and only provide basic examples to help get started. 
+I've chosen to keep the main readme clean and only provide basic examples to help get started.
 
 [More in depth documentation is available on the Wiki section of this repo](https://github.com/aviemet/useInertiaForm/wiki)
 
@@ -18,7 +18,7 @@ I've chosen to keep the main readme clean and only provide basic examples to hel
 
 [Here is a codesandbox with usage examples for all hooks and components](https://codesandbox.io/s/useinertiaform-examples-0so45f)
 
-If you encounter a bug, please try to reacreate it with a fork of the codesandbox below and submit it with the issue. I don't have much time to address issues, so seeing an actual recreation can really help me identifiy if it's something I should look into.
+If you encounter a bug, please try to recreate it with a fork of the codesandbox below and submit it with the issue. I don't have much time to address issues, so seeing an actual recreation can really help me identify if it's something I should look into.
 
 ## Quickstart
 

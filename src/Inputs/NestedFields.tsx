@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
-import { createContext } from '../utils'
-import { useFormMeta } from '../Form'
+import React, { useEffect } from "react"
+import { createContext } from "../utils"
+import { useFormMeta } from "../Form"
 
 export interface NestedFieldsProps {
 	children: React.ReactNode | React.ReactElement[]
@@ -16,7 +16,7 @@ const NestedFields = ({ children, model }: NestedFieldsProps) => {
 	try {
 		const nested = useNestedAttribute()
 
-		if(model.charAt(0) === '[') {
+		if(model.charAt(0) === "[") {
 			inputModel = `${nested}${model}`
 		} else {
 			inputModel = `${nested}.${model}`

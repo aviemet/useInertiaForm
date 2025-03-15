@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react'
-import { useForm } from '../Form'
-import { useNestedAttribute } from '../Inputs/NestedFields'
-import inputStrategy, { type InputStrategy } from './inputStrategy'
-import { type NestedObject } from '../useInertiaForm'
+import { useEffect, useRef } from "react"
+import { useForm } from "../Form"
+import { useNestedAttribute } from "../Inputs/NestedFields"
+import inputStrategy, { type InputStrategy } from "./inputStrategy"
+import { type NestedObject } from "../useInertiaForm"
 
 export interface UseInertiaInputProps<T = string | number | boolean> {
 	name: string
@@ -42,7 +42,7 @@ const useInertiaInput = <T = string | number | boolean, TForm = NestedObject>({
 
 		const inputValue = form.getData(inputName)
 		if(inputValue === null || inputValue === undefined) {
-			form.setData(inputName, defaultValue || '')
+			form.setData(inputName, defaultValue || "")
 		}
 
 		initializingRef.current = false
@@ -63,7 +63,7 @@ const useInertiaInput = <T = string | number | boolean, TForm = NestedObject>({
 		form,
 		inputName: inputName,
 		inputId,
-		value: value ?? '' as T,
+		value: value ?? "" as T,
 		setValue: (value: T) => {
 			return form.setData(inputName, value)
 		},

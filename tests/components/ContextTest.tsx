@@ -1,12 +1,12 @@
-import { useEffect } from 'react'
-import { NestedObject, useForm, UseFormProps } from '../../src'
-import CircularJSON from 'circular-json'
+import { useEffect } from "react"
+import { NestedObject, useForm, UseFormProps } from "../../src"
+import CircularJSON from "circular-json"
 
 const safeStringify = (obj) => {
 	try {
 		return CircularJSON.stringify(obj)
 	} catch(err) {
-		console.error('Error stringifying object:', err)
+		console.error("Error stringifying object:", err)
 		return null
 	}
 }
