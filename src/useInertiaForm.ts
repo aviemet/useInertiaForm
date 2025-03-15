@@ -4,7 +4,7 @@ import {
 	useMemo,
 	useRef,
 	useState,
-} from 'react'
+} from "react"
 import {
 	ActiveVisit,
 	Method,
@@ -14,8 +14,8 @@ import {
 	type Progress,
 	type VisitOptions as InertiaVisitOptions,
 	type RequestPayload,
-} from '@inertiajs/core'
-import { router } from '@inertiajs/react'
+} from "@inertiajs/core"
+import { router } from "@inertiajs/react"
 import {
 	coerceArray,
 	fillEmptyValues,
@@ -24,13 +24,12 @@ import {
 	useMaybeRemember,
 	type Path,
 	type PathValue,
-} from './utils'
-import { isEqual, isPlainObject } from 'es-toolkit'
-import { get, set } from 'es-toolkit/compat'
-import { useFormMeta } from './Form/FormMetaWrapper'
-import axios, { AxiosResponse } from 'axios'
+} from "./utils"
+import { get, isEqual, isPlainObject, set } from "lodash"
+import { useFormMeta } from "./Form/FormMetaWrapper"
+import axios, { AxiosResponse } from "axios"
 
-type VisitOptions<TAsync extends boolean = boolean> =	(Omit<InertiaVisitOptions, 'errors' | 'onSuccess'> & {
+type VisitOptions<TAsync extends boolean = boolean> =	(Omit<InertiaVisitOptions, "errors" | "onSuccess"> & {
 	errors?: Record<string, string | string[]>
 	async: TAsync
 	onSuccess?: (page: TAsync extends true ? AxiosResponse<any, any> : Page<PageProps>) => void
@@ -42,10 +41,10 @@ export type Primitive = string | number | null | undefined
 
 export type NestedObject = {
 	[key: string]: unknown | NestedObject | NestedObject[]
-};
+}
 
-type setDataByPath<TForm> = <P extends Path<TForm>>(key: P, value: PathValue<TForm, P>) => void;
-type setDataByString = (key: string, value: unknown) => void;
+type setDataByPath<TForm> = <P extends Path<TForm>>(key: P, value: PathValue<TForm, P>) => void
+type setDataByString = (key: string, value: unknown) => void
 type setDataByObject<TForm> = (data: TForm) => void
 type setDataByMethod<TForm> = (data: (previousData: TForm) => TForm) => void
 
@@ -112,7 +111,7 @@ export default function useInertiaForm<TForm>(
 	const getFormArguments = useCallback((): [string, TForm] => {
 		let rememberKey: string = null
 		let transformedData = rememberKeyOrInitialValues
-		if(typeof rememberKeyOrInitialValues === 'string') {
+		if(typeof rememberKeyOrInitialValues === "string") {
 			rememberKey = rememberKeyOrInitialValues
 			transformedData = maybeInitialValues
 		}
@@ -283,8 +282,8 @@ export default function useInertiaForm<TForm>(
 			_options.onBefore(undefined)
 			_options.onStart(undefined)
 			axios[method](url, transformedData as RequestPayload, {
-				onUploadProgress: progessEvent => {
-					_options.onProgress(progessEvent)
+				onUploadProgress: progressEvent => {
+					_options.onProgress(progressEvent)
 				},
 			})
 				.then(response => {
@@ -297,7 +296,7 @@ export default function useInertiaForm<TForm>(
 					_options.onFinish(undefined)
 				})
 		} else {
-			if(method === 'delete') {
+			if(method === "delete") {
 				router.delete(url, { ..._options, data: transformedData as RequestPayload })
 			} else {
 				router[method](url, transformedData as RequestPayload, _options)
@@ -345,7 +344,7 @@ export default function useInertiaForm<TForm>(
 		},
 
 		setData: (keyOrData: string | TForm | ((previousData: TForm) => TForm), maybeValue?: any) => {
-			if(typeof keyOrData === 'string') {
+			if(typeof keyOrData === "string") {
 				return setData(data => {
 					const clone = structuredClone(data)
 					if(onChangeRef.current) {
@@ -399,7 +398,7 @@ export default function useInertiaForm<TForm>(
 
 			setDefaults((defaults) => ({
 				...defaults,
-				...(typeof fieldOrFields === 'string' ? { [fieldOrFields]: maybeValue } : (fieldOrFields as TForm)),
+				...(typeof fieldOrFields === "string" ? { [fieldOrFields]: maybeValue } : (fieldOrFields as TForm)),
 			}))
 		},
 
@@ -430,7 +429,7 @@ export default function useInertiaForm<TForm>(
 			setErrors((errors) => {
 				const newErrors = {
 					...errors,
-					...(typeof fieldOrFields === 'string'
+					...(typeof fieldOrFields === "string"
 						? { [fieldOrFields]: maybeValue }
 						: (fieldOrFields as Record<keyof TForm, string>)),
 				}
@@ -448,23 +447,23 @@ export default function useInertiaForm<TForm>(
 		submit,
 
 		get: (url, options) => {
-			submit('get', url, options)
+			submit("get", url, options)
 		},
 
 		post: (url, options) => {
-			submit('post', url, options)
+			submit("post", url, options)
 		},
 
 		put: (url, options) => {
-			submit('put', url, options)
+			submit("put", url, options)
 		},
 
 		patch: (url, options) => {
-			submit('patch', url, options)
+			submit("patch", url, options)
 		},
 
 		delete: (url, options) => {
-			submit('delete', url, options)
+			submit("delete", url, options)
 		},
 
 		cancel: () => {

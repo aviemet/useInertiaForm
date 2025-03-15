@@ -1,9 +1,9 @@
-import React from 'react'
-import { type UseInertiaFormProps } from '../useInertiaForm'
-import { type AxiosResponse } from 'axios'
-import { NestedObject } from '../useInertiaForm'
+import React from "react"
+import { type UseInertiaFormProps } from "../useInertiaForm"
+import { type AxiosResponse } from "axios"
+import { NestedObject } from "../useInertiaForm"
 
-export type HTTPVerb = 'post' | 'put' | 'get' | 'patch' | 'delete'
+export type HTTPVerb = "post" | "put" | "get" | "patch" | "delete"
 
 export interface UseFormProps<TForm = NestedObject> extends UseInertiaFormProps<TForm> {
 	model?: string
@@ -20,7 +20,7 @@ export const createContext = <CT extends unknown | null>() => {
 			(context as unknown) as React.Context<UseFormProps<T>>,
 		)
 		if(c === null) {
-			throw new Error('useContext must be inside a Provider with a value')
+			throw new Error("useContext must be inside a Provider with a value")
 		}
 		return c
 	}

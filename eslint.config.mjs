@@ -1,29 +1,28 @@
-import { fixupPluginRules } from '@eslint/compat'
-import stylistic from '@stylistic/eslint-plugin'
-import reactHooksPlugin from 'eslint-plugin-react-hooks'
-import jsxA11yPlugin from 'eslint-plugin-jsx-a11y'
-import jsoncPlugin from 'eslint-plugin-jsonc'
-import tsParser from '@typescript-eslint/parser'
-import jsoncParser from 'jsonc-eslint-parser'
+import { fixupPluginRules } from "@eslint/compat"
+import stylistic from "@stylistic/eslint-plugin"
+import reactHooksPlugin from "eslint-plugin-react-hooks"
+import jsxA11yPlugin from "eslint-plugin-jsx-a11y"
+import tsParser from "@typescript-eslint/parser"
+import jsoncParser from "jsonc-eslint-parser"
 
 const ignores = [
-	'dist/**/*',
-	'.vscode/**/*',
-	'.yarn/**/*',
+	"dist/**/*",
+	".vscode/**/*",
+	".yarn/**/*",
 ]
 
-export default [
+const config = [
 	// Typescript/Javascript files
 	{
 		...stylistic.configs.customize({
-			indent: 'tab',
+			indent: "tab",
 		}),
 
-		files: ['**/*.{js,jsx,ts,tsx}'],
+		files: ["**/*.{js,jsx,ts,tsx}"],
 		ignores,
 		languageOptions: {
-			ecmaVersion: 'latest',
-			sourceType: 'module',
+			ecmaVersion: "latest",
+			sourceType: "module",
 			parser: tsParser,
 			parserOptions: {
 				ecmaFeatures: {
@@ -32,54 +31,54 @@ export default [
 			},
 		},
 		settings: {
-			'react': {
-				version: 'detect',
+			"react": {
+				version: "detect",
 			},
-			'import/resolver': {
+			"import/resolver": {
 				typescript: {},
 			},
-			'jsx-a11y': {
-				polymorphicPropName: 'component',
+			"jsx-a11y": {
+				polymorphicPropName: "component",
 			},
 		},
 		plugins: {
-			'react-hooks': fixupPluginRules(reactHooksPlugin),
-			'jsx-a11y': jsxA11yPlugin,
-			'@stylistic': stylistic,
+			"react-hooks": fixupPluginRules(reactHooksPlugin),
+			"jsx-a11y": jsxA11yPlugin,
+			"@stylistic": stylistic,
 		},
 		rules: {
-			'react/jsx-uses-react': 'off',
-			'react/react-in-jsx-scope': 'off',
-			'@stylistic/indent': ['error', 'tab', {
+			"react/jsx-uses-react": "off",
+			"react/react-in-jsx-scope": "off",
+			"@stylistic/indent": ["error", "tab", {
 				SwitchCase: 1,
-				VariableDeclarator: 'first',
+				VariableDeclarator: "first",
 				MemberExpression: 1,
 				ArrayExpression: 1,
 				ignoredNodes: [
-          "TSTypeParameterInstantiation",
-        ],
+					"TSTypeParameterInstantiation",
+				],
 			}],
-			'@stylistic/brace-style': ['error', '1tbs', {
+			"@stylistic/brace-style": ["error", "1tbs", {
 				allowSingleLine: true,
 			}],
-			'@stylistic/object-curly-spacing': ['error', 'always', {
+			"@stylistic/object-curly-spacing": ["error", "always", {
 				objectsInObjects: true,
 			}],
-			'@stylistic/jsx-curly-spacing': ['error', {
-				when: 'always',
+			"@stylistic/jsx-curly-spacing": ["error", {
+				when: "always",
 				children: true,
 			}],
-			'@stylistic/member-delimiter-style': ['error', {
+			"@stylistic/member-delimiter-style": ["error", {
 				multiline: {
-					delimiter: 'none',
+					delimiter: "none",
 				},
 				singleline: {
-					delimiter: 'comma',
+					delimiter: "comma",
 				},
-				multilineDetection: 'brackets',
+				multilineDetection: "brackets",
 			}],
-			'@stylistic/jsx-one-expression-per-line': 'off',
-			'@stylistic/keyword-spacing': ['error', {
+			"@stylistic/jsx-one-expression-per-line": "off",
+			"@stylistic/keyword-spacing": ["error", {
 				after: true,
 				before: true,
 				overrides: {
@@ -90,60 +89,59 @@ export default [
 					catch: { after: false },
 				},
 			}],
-			'@stylistic/comma-dangle': ['error', {
-				arrays: 'always-multiline',
-				objects: 'always-multiline',
-				imports: 'always-multiline',
-				exports: 'always-multiline',
-				functions: 'only-multiline',
+			"@stylistic/comma-dangle": ["error", {
+				arrays: "always-multiline",
+				objects: "always-multiline",
+				imports: "always-multiline",
+				exports: "always-multiline",
+				functions: "only-multiline",
 			}],
-			'@stylistic/multiline-ternary': ['error', 'always-multiline'],
-			'@stylistic/space-infix-ops': 'error',
-      '@stylistic/space-unary-ops': ['error', {
-        words: true,
-        nonwords: false,
-        overrides: {
-          '!': false,
-          '!!': false,
-        },
-      }],
-			'no-trailing-spaces': ['error', {
-        skipBlankLines: false,
-        ignoreComments: false
-      }],
-			'no-unused-vars': ['warn', {
-				vars: 'all',
-				args: 'none',
+			"@stylistic/multiline-ternary": ["error", "always-multiline"],
+			"@stylistic/space-infix-ops": "error",
+			"@stylistic/space-unary-ops": ["error", {
+				words: true,
+				nonwords: false,
+				overrides: {
+					"!": false,
+					"!!": false,
+				},
 			}],
-			'eqeqeq': 'error',
-			'no-console': 'warn',
-			'eol-last': ['error', 'always'],
+			"no-trailing-spaces": ["error", {
+				skipBlankLines: false,
+				ignoreComments: false,
+			}],
+			"no-unused-vars": ["warn", {
+				vars: "all",
+				args: "none",
+			}],
+			"eqeqeq": "error",
+			"no-console": "warn",
+			"eol-last": ["error", "always"],
 			...reactHooksPlugin.configs.recommended.rules,
 		},
 	},
 	// Typescript declaration files
 	{
-		files: ['**/*.d.ts'],
+		files: ["**/*.d.ts"],
 		ignores,
 		rules: {
-			'no-unused-vars': 'off',
-			'@typescript-eslint/member-delimiter-style': 'off',
-			'@stylistic/ts/indent': 'off',
+			"no-unused-vars": "off",
+			"@typescript-eslint/member-delimiter-style": "off",
+			"@stylistic/ts/indent": "off",
 		},
 	},
 	// Json files
 	{
-		files: ['**/*.json', '**/*.jsonc'],
+		files: ["**/*.json", "**/*.jsonc"],
 		ignores,
-		plugins: {
-			jsonc: jsoncPlugin,
-		},
 		languageOptions: {
 			parser: jsoncParser,
 		},
 		rules: {
-			'jsonc/indent': ['error', 2, { ignoredNodes: ['Property'] }],
-			'@stylistic/no-multi-spaces': 'off',
+			"indent": ["error", 2, { ignoredNodes: ["Property"] }],
+			"@stylistic/no-multi-spaces": "off",
 		},
 	},
 ]
+
+export default config

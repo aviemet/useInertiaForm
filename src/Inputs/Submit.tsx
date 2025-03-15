@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react'
-import { useForm } from '../Form'
-import { isUnset } from '../utils'
+import React, { useCallback } from "react"
+import { useForm } from "../Form"
+import { isUnset } from "../utils"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	component?: string | React.ComponentType
@@ -8,7 +8,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Submit = React.forwardRef<HTMLButtonElement, ButtonProps>((
-	{ children, type = 'submit', disabled = false, component:Component = 'button', requiredFields, ...props },
+	{ children, type = "submit", disabled = false, component:Component = "button", requiredFields, ...props },
 	ref,
 ) => {
 	const { data, getData, processing } = useForm()

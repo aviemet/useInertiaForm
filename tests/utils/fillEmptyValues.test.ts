@@ -1,9 +1,9 @@
-import { fillEmptyValues } from '../../src/utils'
+import { fillEmptyValues } from "../../src/utils"
 
-describe('fillEmptyValues', () => {
-	it('should replace undefined or null values with empty strings', () => {
+describe("fillEmptyValues", () => {
+	it("should replace undefined or null values with empty strings", () => {
 		const sanitized = fillEmptyValues({
-			one: 'one',
+			one: "one",
 			two: undefined,
 			three: null,
 			nested: {
@@ -13,12 +13,12 @@ describe('fillEmptyValues', () => {
 		})
 
 		expect(sanitized).toMatchObject({
-			one: 'one',
-			two: '',
-			three: '',
+			one: "one",
+			two: "",
+			three: "",
 			nested: {
-				four: '',
-				five: '',
+				four: "",
+				five: "",
 			},
 		})
 	})

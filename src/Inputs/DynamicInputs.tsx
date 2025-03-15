@@ -1,6 +1,6 @@
-import React from 'react'
-import NestedFields from './NestedFields'
-import useDynamicInputs from './useDynamicInputs'
+import React from "react"
+import NestedFields from "./NestedFields"
+import useDynamicInputs from "./useDynamicInputs"
 
 export interface DynamicInputsProps {
 	children: React.ReactNode
@@ -21,11 +21,11 @@ const DynamicInputs = ({
 
 	return (
 		<>
-			{ React.cloneElement(addInputButton, { onClick: ()=> addInput(), type: 'button' }) }
+			{ React.cloneElement(addInputButton, { onClick: () => addInput(), type: "button" }) }
 			{ paths.map((path, i) => (
 				<NestedFields key={ i } model={ path }>
 					<div>{ children }</div>
-					{ React.cloneElement(removeInputButton, { onClick: () => removeInput(i), type: 'button' }) }
+					{ React.cloneElement(removeInputButton, { onClick: () => removeInput(i), type: "button" }) }
 				</NestedFields>
 			)) }
 		</>

@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useCallback, useEffect } from 'react'
-import { type VisitOptions } from '@inertiajs/core'
-import useInertiaForm, { NestedObject } from '../useInertiaForm'
-import { useForm, type UseFormProps, type HTTPVerb, FormProvider } from './FormProvider'
-import FormMetaWrapper, { useFormMeta, type FormMetaValue } from './FormMetaWrapper'
-import { unsetCompact } from '../utils'
+import React, { useCallback, useEffect } from "react"
+import { type VisitOptions } from "@inertiajs/core"
+import useInertiaForm, { NestedObject } from "../useInertiaForm"
+import { useForm, type UseFormProps, type HTTPVerb, FormProvider } from "./FormProvider"
+import FormMetaWrapper, { useFormMeta, type FormMetaValue } from "./FormMetaWrapper"
+import { unsetCompact } from "../utils"
 
-type PartialHTMLForm = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onChange' | 'onSubmit' | 'onError'>
+type PartialHTMLForm = Omit<React.FormHTMLAttributes<HTMLFormElement>, "onChange" | "onSubmit" | "onError">
 
 export interface FormProps<TForm> extends PartialHTMLForm {
 	data?: TForm
@@ -21,8 +21,8 @@ export interface FormProps<TForm> extends PartialHTMLForm {
 	filter?: string[]
 	onChange?: (form: UseFormProps<TForm>) => void
 	onSubmit?: (form: UseFormProps<TForm>) => boolean | void
-	onBefore?: (form:  UseFormProps<TForm>) => void
-	onStart?: (form:  UseFormProps<TForm>) => void
+	onBefore?: (form: UseFormProps<TForm>) => void
+	onStart?: (form: UseFormProps<TForm>) => void
 	onSuccess?: (form: UseFormProps<TForm>) => void
 	onError?: (form: UseFormProps<TForm>) => void
 	onFinish?: (form: UseFormProps<TForm>) => void
@@ -32,7 +32,7 @@ const Form = <TForm extends NestedObject>({
 	children,
 	model,
 	data,
-	method = 'post',
+	method = "post",
 	to,
 	async = false,
 	resetAfterSubmit,
@@ -46,7 +46,7 @@ const Form = <TForm extends NestedObject>({
 	onError,
 	onFinish,
 	...props
-}: Omit<FormProps<TForm>, 'railsAttributes'>) => {
+}: Omit<FormProps<TForm>, "railsAttributes">) => {
 	/**
 	 * Omit values by key from the data object
 	 */
@@ -72,7 +72,7 @@ const Form = <TForm extends NestedObject>({
 	 * Submits the form. If async prop is true, submits using axios,
 	 * otherwise submits using Inertia's `useForm.submit` method
 	 */
-	const submit = async (options?: Partial<VisitOptions>) => {
+	const submit = async(options?: Partial<VisitOptions>) => {
 		let shouldSubmit = to && onSubmit?.(contextValueObject()) === false ? false : true
 
 		if(!shouldSubmit) return

@@ -1,4 +1,4 @@
-import { isPlainObject } from 'es-toolkit'
+import { isPlainObject } from "lodash"
 
 /**
  * Replaces undefined or null values with empty values,
@@ -18,7 +18,7 @@ export const fillEmptyValues = <TForm>(data: TForm) => {
 			clone[key] = clone[key].map(el => fillEmptyValues(el))
 		} else if(clone[key] === undefined || clone[key] === null) {
 			// @ts-ignore
-			clone[key] = ''
+			clone[key] = ""
 		}
 	}
 

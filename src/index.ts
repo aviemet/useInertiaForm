@@ -2,12 +2,12 @@ export {
 	default as useInertiaForm,
 	type UseInertiaFormProps,
 	type NestedObject,
-} from './useInertiaForm'
+} from "./useInertiaForm"
 
 export {
 	default as useInertiaInput,
 	type UseInertiaInputProps,
-} from './useInertiaInput'
+} from "./useInertiaInput"
 
 export {
 	Form,
@@ -15,7 +15,7 @@ export {
 	type HTTPVerb,
 	type UseFormProps,
 	type FormProps,
-} from './Form'
+} from "./Form"
 
 export {
 	Input,
@@ -25,4 +25,4 @@ export {
 	useDynamicInputs,
 	type NestedFieldsProps,
 	type DynamicInputsProps,
-} from './Inputs'
+} from "./Inputs"

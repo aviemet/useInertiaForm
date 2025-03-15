@@ -3,6 +3,6 @@
   "compilerOptions": {
     "removeComments": true,
   },
-  "include": ["src"],
+  "include": ["src", "rollup.config.ts"],
   "exclude": ["node_modules", "dist", "tests", "**/__tests__/**"]
 }

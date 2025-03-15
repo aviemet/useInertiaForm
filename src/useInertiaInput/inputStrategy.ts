@@ -18,14 +18,14 @@ const inputStrategy: InputStrategy = (name, model) => {
 
 	let inputName: string
 
-	if(name.charAt(0) === '[') {
+	if(name.charAt(0) === "[") {
 		inputName = `${model}${name}`
 	} else {
 		inputName = `${model}.${name}`
 	}
 
 	return {
-		inputId: `${model}_${name}`.replace('.', '_').replace(/\[(\d)\]/, '_$1'),
+		inputId: `${model}_${name}`.replace(".", "_").replace(/\[(\d)\]/, "_$1"),
 		inputName: inputName,
 	}
 }
