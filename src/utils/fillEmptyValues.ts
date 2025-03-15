@@ -1,4 +1,4 @@
-import { isPlainObject } from "lodash"
+import { isPlainObject } from "es-toolkit"
 
 /**
  * Replaces undefined or null values with empty values,

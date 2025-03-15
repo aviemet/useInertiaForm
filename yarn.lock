@@ -6025,6 +6025,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"es-toolkit@npm:^1.33.0":
+  version: 1.33.0
+  resolution: "es-toolkit@npm:1.33.0"
+  dependenciesMeta:
+    "@trivago/prettier-plugin-sort-imports@4.3.0":
+      unplugged: true
+    prettier-plugin-sort-re-exports@0.0.1:
+      unplugged: true
+  checksum: 10/db613d885c407dc3b84b3939b8b0c9976f658bfb03fa0f9cd3a3fe8383a60a75e1e4f34584e86c3fbf00def50ea0ca5f1a5264a1014018286dedbed08426b5f0
+  languageName: node
+  linkType: hard
+
 "escalade@npm:^3.1.1, escalade@npm:^3.2.0":
   version: 3.2.0
   resolution: "escalade@npm:3.2.0"
@@ -13816,6 +13828,7 @@ __metadata:
     circular-json: "npm:^0.5.9"
     commitizen: "npm:^4.3.1"
     cz-conventional-changelog: "npm:^3.3.0"
+    es-toolkit: "npm:^1.33.0"
     eslint: "npm:^9.17.0"
     eslint-config-airbnb-typescript: "npm:^18.0.0"
     eslint-import-resolver-typescript: "npm:^3.7.0"
@@ -13833,7 +13846,6 @@ __metadata:
     jest-fixed-jsdom: "npm:^0.0.9"
     jest-mock-axios: "npm:^4.8.0"
     lint-staged: "npm:^15.3.0"
-    lodash: "npm:^4.17.21"
     msw: "npm:^2.7.0"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
@@ -13853,7 +13865,6 @@ __metadata:
   peerDependencies:
     "@inertiajs/react": ^1.0.0 || ^2.0.0
     axios: ^1.7.8
-    lodash: ^2.0.0 || ^3.0.0 || ^4.0.0
     react: ^16.9.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.9.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
   languageName: unknown
