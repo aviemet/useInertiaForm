@@ -1,4 +1,3 @@
-import type { Linter } from "eslint"
 import { fixupPluginRules } from "@eslint/compat"
 import stylistic from "@stylistic/eslint-plugin"
 import reactHooksPlugin from "eslint-plugin-react-hooks"
@@ -12,7 +11,7 @@ const ignores = [
 	".yarn/**/*",
 ]
 
-const config: Linter.FlatConfig[] = [
+const config = [
 	// Typescript/Javascript files
 	{
 		...stylistic.configs.customize({
