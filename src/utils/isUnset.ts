@@ -1,4 +1,4 @@
-import { isEmpty } from "lodash"
+import { isEmpty } from "es-toolkit/compat"
 
 /**
  * Returns whether a value should be considered empty in the context of a form input
