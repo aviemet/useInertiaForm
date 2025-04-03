@@ -66,4 +66,38 @@ describe ("useInertiaInput", () => {
 		})
 
 	})
+
+	describe("Text input value changes", () => {
+		it("maintains empty value when all characters are deleted", () => {
+			render(
+				<Form role="form" to="/" model="values" data={ { values: { name: "initial" } } } remember={ false }>
+					<Input role="input" name="name" />
+				</Form>,
+			)
+
+			const input = screen.getByRole("input")
+
+			// Initial state
+			expect(input).toHaveValue("initial")
+
+			// Delete some characters (backspace)
+			fireEvent.input(input, { target: { value: "init" } })
+			expect(input).toHaveValue("init")
+
+			// Delete all characters (backspace)
+			fireEvent.input(input, { target: { value: "" } })
+			expect(input).toHaveValue("")
+
+			// Delete all characters (select all + delete)
+			fireEvent.input(input, { target: { value: "" } })
+			expect(input).toHaveValue("")
+
+			// Try setting to undefined
+			fireEvent.input(input, { target: { value: undefined } })
+			expect(input).toHaveValue("")
+
+			// Verify value stays empty
+			expect(input).toHaveValue("")
+		})
+	})
 })
