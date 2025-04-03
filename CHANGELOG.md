@@ -1,3 +1,10 @@
+# [4.6.0](https://github.com/aviemet/useInertiaForm/compare/v4.5.0...v4.6.0) (2025-04-03)
+
+
+### Features
+
+* 🎸 changes lodash to es-toolkit ([bc84730](https://github.com/aviemet/useInertiaForm/commit/bc84730b16f6a2c4e6f1b6a1de05cb747dd2b1d9)), closes [#39](https://github.com/aviemet/useInertiaForm/issues/39)
+
 # [4.5.0](https://github.com/aviemet/useInertiaForm/compare/v4.4.0...v4.5.0) (2025-01-07)
 
 
