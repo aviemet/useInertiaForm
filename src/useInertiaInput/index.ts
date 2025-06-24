@@ -63,7 +63,7 @@ const useInertiaInput = <T = string | number | boolean, TForm = NestedObject>({
 		form,
 		inputName: inputName,
 		inputId,
-		value: value ?? "" as T,
+		value: value ?? defaultValue ?? "" as T,
 		setValue: (value: T) => {
 			return form.setData(inputName, value)
 		},
